@@ -80,6 +80,82 @@ class FauxDepot implements SamaClasseRepository {
         final ligne = (_donnees['lecons'] as Map?)?['$id'];
         return ligne == null ? null : Lecon.fromJson(ligne as Map<String, dynamic>);
       });
+
+  /// Toujours « en ligne » : ce faux dépôt teste les écrans, pas la
+  /// synchronisation (voir FausseSource et ContenuHorsLigne pour celle-ci).
+  @override
+  final ValueNotifier<EtatContenu> etat = ValueNotifier(const EtatContenu());
+
+  @override
+  Future<void> actualiser() async {}
+}
+
+/// Le jeu enregistré (`test/fixtures/supabase.json`) mis à la forme des
+/// quatre requêtes de synchronisation (listes à plat, `classe_id` et
+/// `matiere_id` sur chaque chapitre), comme `TelechargementSupabase`.
+Instantane instantaneReel([Map<String, dynamic>? donnees]) {
+  final d = donnees ?? donneesReelles;
+  List<Map<String, dynamic>> copie(Object? v) =>
+      ((v as List?) ?? const []).map((e) => Map<String, dynamic>.from(e as Map)).toList();
+  return Instantane(
+    classesBrutes: copie(d['classes']),
+    matieresBrutes: [for (final v in ((d['matieres'] as Map?) ?? const {}).values) ...copie(v)],
+    chapitresBruts: [
+      for (final MapEntry(:key, :value) in ((d['chapitres'] as Map?) ?? const {}).entries)
+        for (final c in copie(value))
+          {
+            ...c,
+            'classe_id': int.parse((key as String).split('-')[0]),
+            'matiere_id': int.parse(key.split('-')[1]),
+          },
+    ],
+    leconsBrutes: copie(((d['lecons'] as Map?) ?? const {}).values.toList()),
+  );
+}
+
+/// Serveur simulé pour ContenuHorsLigne : renvoie [contenu], peut tomber en
+/// panne (`enPanne`) ou faire attendre sa réponse (`attente`).
+class FausseSource implements SourceContenu {
+  FausseSource([Instantane? contenu]) : contenu = contenu ?? instantaneReel();
+
+  Instantane contenu;
+  bool enPanne = false;
+  Completer<void>? attente;
+  int telechargements = 0;
+
+  @override
+  Future<Instantane> telechargerTout() async {
+    telechargements++;
+    if (attente != null) await attente!.future;
+    if (enPanne) throw const SocketException('Pas de connexion (test)');
+    return contenu;
+  }
+}
+
+/// Stockage en mémoire pour ContenuHorsLigne. Passe par le vrai format
+/// d'enregistrement (texte JSON), pour tester aussi l'aller-retour.
+class FauxStockage implements StockageCopie {
+  FauxStockage([this.texte]);
+
+  /// Ce qui serait écrit sur l'appareil.
+  String? texte;
+  int ecritures = 0;
+
+  @override
+  Future<CopieContenu?> lire() async {
+    if (texte == null) return null;
+    try {
+      return decoderCopie(texte!);
+    } catch (_) {
+      return null; // Comme CopieLocale : une copie illisible est ignorée.
+    }
+  }
+
+  @override
+  Future<void> ecrire(CopieContenu copie) async {
+    ecritures++;
+    texte = encoderCopie(copie);
+  }
 }
 
 /// Préférences en mémoire (le vrai stockage demande une plateforme).

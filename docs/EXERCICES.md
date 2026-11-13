@@ -77,9 +77,16 @@ est décrit dans l'énoncé. Réponse élève : `List<String>`.
 ```
 Saisie (`SaisieClassement`) : chaque élément (trié sans accents, pour ne pas
 trahir la réponse) reçoit une catégorie par des puces. Réponse élève :
-`Map<String, List<String>>`. Limite connue : les clés de catégorie s'affichent
-via `libelleCle` (« Homogene », sans accent). Piste : un champ
-`donnees.categories` avec les libellés affichables, à décider avec Bocar.
+`Map<String, List<String>>`.
+
+Libellés des catégories (décision D14) : champ facultatif `donnees.categories`.
+```json
+"donnees": {"categories": {"homogene": "Homogène", "heterogene": "Hétérogène"}},
+"reponse": {"homogene": ["eau sucrée", "air"], "heterogene": ["eau + sable", "eau + huile"]}
+```
+Ses clés sont celles de `reponse` ; leur ordre est l'ordre d'affichage des
+puces. Sans ce champ (ou pour une clé absente), le libellé vient de la clé
+via `libelleCle` (« Homogene », sans accent).
 
 ### `tableau` imbriqué (non corrigé automatiquement)
 ```json

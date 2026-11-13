@@ -6,16 +6,29 @@
 Écran (StatefulWidget + FutureBuilder)
    │  AppScope.of(context)
    ▼
-SamaClasseRepository  ──►  Supabase (PostgREST, clé publishable, RLS)
-   │
+SamaClasseRepository (contrat)  =  ContenuHorsLigne
+   │                                  │  copie locale (shared_preferences)
+   │                                  │  + synchronisation en arrière-plan
+   │                                  ▼
+   │                          TelechargementSupabase ──► Supabase (clé publishable, RLS)
    ▼
 Modèles (fromJson)  ──►  fonctions pures (correction, libellés, regroupements)
 ```
 
+Hors connexion (décision D16) : tout le contenu publié (environ 50 Ko) est
+téléchargé en quatre requêtes et gardé sur l'appareil. Les écrans lisent cette
+copie (affichage immédiat) ; une synchronisation la met à jour au lancement et
+quand on tire pour actualiser. Si le contenu a changé, `etat.version` augmente
+et les écrans ouverts se rechargent (`RechargeSiNouveauContenu`, sauf l'écran
+d'exercices pour ne pas effacer les réponses). Sans réseau, le bandeau
+`BandeauHorsConnexion` l'indique. Sans copie ni réseau (premier lancement),
+l'écran affiche l'erreur et « Réessayer ».
+
 Trois couches seulement, volontairement :
 
 1. **Données** (`lib/data/`) : modèles immuables construits depuis le JSON de
-   Supabase, un dépôt qui porte toutes les requêtes, la correction des exercices.
+   Supabase, le contenu hors connexion et son téléchargement, la correction
+   des exercices.
 2. **Noyau** (`lib/core/`) : configuration, thème, préférences locales,
    composants partagés.
 3. **Fonctionnalités** (`lib/features/<nom>/`) : un dossier par écran ou groupe
@@ -47,7 +60,12 @@ lib/
   data/
     models.dart                 Classe, MatiereDeClasse, Chapitre, LeconResume, Lecon,
                                 Exercice, ElementARetenir, ContexteLecon + énumérations
-    samaclasse_repository.dart  classes(), matieres(), chapitres(), lecon()
+    samaclasse_repository.dart  contrat des écrans : classes(), matieres(), chapitres(),
+                                lecon(), etat, actualiser() ; EtatContenu
+    contenu_hors_ligne.dart     ContenuHorsLigne : copie locale + synchronisation (D16)
+    telechargement_supabase.dart les quatre requêtes Supabase (colonnes explicites)
+    instantane.dart             tout le contenu publié en JSON brut, lecture par écran
+    copie_locale.dart           enregistrement sur l'appareil (clé contenu_v1)
     correction.dart             corriger(), estAutoCorrigeable(), normaliser()…
     data.dart                   export groupé
   features/
@@ -62,8 +80,12 @@ test/
   data/                         modèles et correction, sur de vrais exercices
   features/                     fonctions pures des écrans
   features/ecrans_test.dart     les quatre écrans : états, parcours, débordements à 200 %
+  features/hors_connexion_test.dart bandeau, mode avion, mise à jour automatique des écrans
+  features/puces_test.dart      lisibilité des puces de choix
+  data/contenu_hors_ligne_test.dart synchronisation, copie locale, erreurs réseau
   core/seyes_test.dart          alignement du texte sur les lignes Seyès (vraies polices)
-  outils/faux_depot.dart        FauxDepot, FaussesPreferences, lancerApp()
+  outils/faux_depot.dart        FauxDepot, FaussesPreferences, lancerApp(),
+                                FausseSource, FauxStockage, instantaneReel()
   outils/polices.dart           chargement des vraies polices dans un test
   fixtures/supabase.json        réponses Supabase réelles (rôle anon, sans artefact_url)
   widget_test.dart              composants et zones de réponse
@@ -139,9 +161,13 @@ class _XScreenState extends State<XScreen> {
 
 ### Ajouter une requête
 
-1. Écrire la méthode dans `SamaClasseRepository` : sélection explicite des
-   colonnes, tri explicite (`order`), tri des tables imbriquées avec
-   `referencedTable`.
+1. Ajouter les colonnes ou la table à `TelechargementSupabase.telechargerTout`
+   (sélection explicite des colonnes, jamais de données de rédaction, tri
+   explicite avec `order` et `referencedTable`), puis la lecture dans
+   `Instantane` et, si l'écran en a besoin, la méthode dans le contrat
+   `SamaClasseRepository` (et `ContenuHorsLigne`, `FauxDepot`).
+   Changer la forme de l'instantané impose de passer la clé `contenu_v1` à
+   `contenu_v2` dans `copie_locale.dart` (les anciennes copies sont ignorées).
 2. Ajouter ou adapter le modèle (`fromJson`) dans `models.dart`.
 3. Ajouter un test de `fromJson` avec la forme réelle de la réponse (la relever
    avec `execute_sql` ou dans le tableau de bord).

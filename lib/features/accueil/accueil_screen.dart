@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/app_scope.dart';
+import '../../core/recharge.dart';
 import '../../core/services/preferences.dart';
 import '../../core/theme/couleurs.dart';
 import '../../core/theme/matieres.dart';
@@ -19,7 +20,7 @@ class AccueilScreen extends StatefulWidget {
   State<AccueilScreen> createState() => _AccueilScreenState();
 }
 
-class _AccueilScreenState extends State<AccueilScreen> {
+class _AccueilScreenState extends State<AccueilScreen> with RechargeSiNouveauContenu {
   late AppScope _scope;
   Future<List<Classe>>? _classes;
   Future<List<MatiereDeClasse>>? _matieres;
@@ -74,7 +75,15 @@ class _AccueilScreenState extends State<AccueilScreen> {
     _scope.preferences.choisirClasse(id);
   }
 
+  /// Contenu nouveau arrivé en arrière-plan (RechargeSiNouveauContenu).
+  @override
+  void recharger() => setState(() { _classes = _chargerClasses(); });
+
+  /// Tirer pour actualiser : demande d'abord une mise à jour au serveur
+  /// (sans réseau, la copie locale reste et le bandeau s'affiche).
   Future<void> _actualiser() async {
+    await _scope.repository.actualiser();
+    if (!mounted) return;
     final classes = _chargerClasses();
     setState(() { _classes = classes; });
     await classes;

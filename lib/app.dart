@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/theme/theme.dart';
+import 'core/widgets/bandeau_hors_connexion.dart';
 import 'router.dart';
 
 class SamaClasseApp extends StatefulWidget {
@@ -37,6 +38,8 @@ class _SamaClasseAppState extends State<SamaClasseApp> {
       locale: const Locale('fr'),
       supportedLocales: const [Locale('fr')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      // Bandeau « Hors connexion » au-dessus de toutes les pages.
+      builder: (context, page) => BandeauHorsConnexion(child: page ?? const SizedBox.shrink()),
     );
   }
 }

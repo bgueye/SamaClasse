@@ -6,6 +6,56 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D20. Lecture à voix haute reportée
+*Bocar, 13/11/2026.*
+Le bouton « Écouter la leçon » des maquettes n'est pas pour la phase 1. Piste
+retenue pour plus tard : `flutter_tts` (voix du téléphone, gratuite, suit les
+corrections du texte), à rediscuter le moment venu.
+
+### D19. Icône et écran de lancement : maquette proposée, puis validée
+*Bocar, 13/11/2026.*
+Claude propose une icône dans la charte (protège-cahier bleu encre, marge
+rouge, « S » cursif) ; rien n'est intégré avant la validation de Bocar.
+Génération par `flutter_launcher_icons` et `flutter_native_splash`, en
+dépendances de développement seulement (rien de plus dans l'application).
+
+### D18. Page « À propos » : texte rédigé par Claude, relu par Bocar
+*Bocar, 13/11/2026.*
+Présentation, version, licences des polices, contact. La version est écrite
+dans le code à chaque publication (pas de `package_info_plus`). Aucune adresse
+de contact affichée sans l'accord explicite de Bocar.
+
+### D17. Police de secours pour les symboles
+*Bocar, 13/11/2026.*
+Un sous-ensemble de Noto Sans Math (licence OFL), limité aux symboles utiles
+(flèches, ensembles, opérateurs), est embarqué comme police de secours
+d'Atkinson et de Playwrite. Raison : → et ℝ, présents dans les exercices,
+manquent à ces polices ; sur le web, ils dépendraient d'un téléchargement.
+Le contenu des leçons n'est pas modifié.
+
+### D16. Hors connexion : tout le contenu publié gardé sur l'appareil
+*Bocar, 13/11/2026.*
+Le programme et les leçons publiées (moins de 100 Ko au total) sont gardés
+sur l'appareil avec `shared_preferences`, sans nouvelle dépendance. L'écran
+s'affiche tout de suite avec la copie locale, puis se met à jour en arrière-
+plan quand le réseau répond. Un texte signale quand on lit une copie hors
+connexion. Rien n'est envoyé : c'est une copie en lecture du contenu public.
+
+### D15. Schémas des leçons : stockage Supabase public
+*Bocar, 13/11/2026.*
+Images dans un espace de stockage public `schemas`, insérées dans le Markdown
+(`![description](url)`). Description obligatoire (lecteurs d'écran), images
+de moins de 150 Ko (3G). Bocar dépose les images par le tableau de bord. La
+création de l'espace et de sa règle de lecture est une migration à lui
+soumettre avant de l'appliquer.
+
+### D14. Libellés des catégories : champ `donnees.categories`
+*Bocar, 13/11/2026.*
+Champ facultatif `donnees.categories` des tableaux de classement :
+`{"homogene": "Homogène", "heterogene": "Hétérogène"}`. Ses clés sont celles
+de `reponse` et leur ordre est l'ordre d'affichage. Sans ce champ, l'application
+garde le libellé tiré de la clé (« Homogene »). Bocar complète les tableaux en base.
+
 ### D13. Exercices : un exercice par écran, toutes ses questions ensemble
 *Proposition technique, 13/11/2026.*
 La maquette montrait une affirmation de vrai ou faux par écran. Ce format ne

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/app_scope.dart';
+import '../../core/recharge.dart';
 import '../../core/theme/couleurs.dart';
 import '../../core/theme/matieres.dart';
 import '../../core/widgets/composants.dart';
@@ -31,7 +32,7 @@ class MatiereScreen extends StatefulWidget {
   State<MatiereScreen> createState() => _MatiereScreenState();
 }
 
-class _MatiereScreenState extends State<MatiereScreen> {
+class _MatiereScreenState extends State<MatiereScreen> with RechargeSiNouveauContenu {
   Future<_DonneesMatiere>? _chargement;
   _Filtre _filtre = _Filtre.tout;
 
@@ -40,6 +41,10 @@ class _MatiereScreenState extends State<MatiereScreen> {
     super.didChangeDependencies();
     _chargement ??= _charger();
   }
+
+  /// Contenu nouveau arrivé en arrière-plan (RechargeSiNouveauContenu).
+  @override
+  void recharger() => setState(() { _chargement = _charger(); });
 
   Future<_DonneesMatiere> _charger() async {
     final repo = AppScope.of(context).repository;
@@ -104,6 +109,9 @@ class _MatiereScreenState extends State<MatiereScreen> {
                   )
                 : RefreshIndicator(
                     onRefresh: () async {
+                      // D'abord une mise à jour depuis le serveur, puis relecture.
+                      await AppScope.of(context).repository.actualiser();
+                      if (!mounted) return;
                       final f = _charger();
                       setState(() { _chargement = f; });
                       await f;

@@ -39,7 +39,7 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
 - Le squelette, écrit sans compilateur, **compile désormais** (13/11/2026) :
   deux imports manquants corrigés (`page_seyes.dart` dans `lecon_screen.dart`,
   `flutter/foundation.dart` dans `main.dart`). `flutter analyze` : aucun
-  problème ; `flutter test` : 74/74, dont des tests d'écrans sur la vraie
+  problème ; `flutter test` : 95/95, dont des tests d'écrans sur la vraie
   application avec un faux dépôt (`test/outils/faux_depot.dart`),
   l'alignement Seyès et la lisibilité des puces. Vérifié à la main sur
   Android (Galaxy S23 Ultra, Android 17) et sur Chrome.
@@ -84,6 +84,10 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   ne doit pas renvoyer de `Future`).
 - Accès aux données uniquement par `SamaClasseRepository` (`lib/data/`), obtenu
   par `AppScope.of(context)`. Pas d'appel `Supabase.instance` dans les écrans.
+  Dans l'application, c'est `ContenuHorsLigne` (copie locale synchronisée,
+  D16) ; les requêtes Supabase sont dans `TelechargementSupabase`.
+- Un écran de lecture se recharge seul quand du contenu nouveau arrive
+  (`with RechargeSiNouveauContenu`) ; jamais l'écran d'exercices.
 - Logique pure (correction, libellés, regroupements) hors des widgets, dans des
   fonctions testables.
 - Navigation : go_router, routes déclarées dans `lib/router.dart`, adresses

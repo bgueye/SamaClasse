@@ -140,24 +140,38 @@ Conséquence pour le code : une leçon non publiée renvoie `null`
 
 ## Requêtes de l'application
 
+Depuis la décision D16 (hors connexion), l'application télécharge **tout le
+contenu publié** en quatre requêtes lancées ensemble
+(`lib/data/telechargement_supabase.dart`), environ 50 Ko au 13/11/2026, et
+le garde sur l'appareil :
+
 ```dart
 // classes, dans l'ordre du cursus
 from('classes').select('id, code, libelle, cycle, ordre').order('ordre');
 
-// matières d'une classe, avec compteurs
-from('matieres_par_classe').select().eq('classe_id', id).order('nom');
+// matières de toutes les classes, avec compteurs
+from('matieres_par_classe')
+  .select('classe_id, matiere_id, slug, nom, nb_chapitres, nb_lecons').order('nom');
 
-// chapitres d'une matière, avec leçons publiées et nombre d'exercices
+// tous les chapitres, avec leçons publiées et nombre d'exercices
 from('chapitres')
-  .select('id, numero, titre, partie, statut, remarque, lecons(id, numero, titre, exercices(count))')
-  .eq('classe_id', c).eq('matiere_id', m)
+  .select('id, classe_id, matiere_id, numero, titre, partie, statut, '
+          'lecons(id, numero, titre, exercices(count))')
   .order('numero').order('numero', referencedTable: 'lecons');
 
-// leçon complète
+// toutes les leçons publiées, complètes
 from('lecons')
-  .select('*, exercices(*), chapitres(titre, partie, classes(libelle), matieres(nom, slug))')
-  .eq('id', id).order('ordre', referencedTable: 'exercices').maybeSingle();
+  .select('id, chapitre_id, numero, titre, date_cours, objectifs, introduction, corps, '
+          'a_retenir, statut, exercices(id, ordre, niveau, type, enonce, donnees, reponse, corrige), '
+          'chapitres(titre, partie, classes(libelle), matieres(nom, slug))')
+  .order('ordre', referencedTable: 'exercices');
 ```
+
+Les colonnes de rédaction (`chapitres.remarque`, `lecons.points_a_verifier`,
+`lecons.artefact_url`) ne sont pas demandées : elles ne sont donc ni
+téléchargées ni gardées sur les téléphones. Limite : 1 000 lignes par requête
+(réglage par défaut de PostgREST) ; 192 chapitres pour deux classes.
+Pour tout le cursus, passer à une synchronisation par classe.
 
 `exercices(count)` renvoie `[{"count": 5}]` : `LeconResume.fromJson` le lit.
 

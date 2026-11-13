@@ -29,8 +29,16 @@ Future<void> main() async {
 
   await Supabase.initialize(url: Config.supabaseUrl, publishableKey: Config.supabaseCle);
 
+  // Contenu disponible hors connexion (D16) : copie locale, mise à jour en
+  // arrière-plan. `demarrer()` n'est pas attendu : la lecture de la copie se
+  // fait pendant que le premier écran se construit, qui l'attendra au besoin.
+  final contenu = ContenuHorsLigne(
+    source: TelechargementSupabase(Supabase.instance.client),
+    stockage: CopieLocale(),
+  )..demarrer().ignore();
+
   runApp(AppScope(
-    repository: SamaClasseRepository(Supabase.instance.client),
+    repository: contenu,
     preferences: Preferences(),
     child: const SamaClasseApp(),
   ));

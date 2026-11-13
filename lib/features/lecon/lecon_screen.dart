@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/app_scope.dart';
+import '../../core/recharge.dart';
 import '../../core/services/preferences.dart';
 import '../../core/theme/couleurs.dart';
 import '../../core/theme/theme.dart';
@@ -23,7 +24,7 @@ class LeconScreen extends StatefulWidget {
   State<LeconScreen> createState() => _LeconScreenState();
 }
 
-class _LeconScreenState extends State<LeconScreen> {
+class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu {
   Future<Lecon?>? _chargement;
   _Onglet _onglet = _Onglet.lecon;
 
@@ -32,6 +33,10 @@ class _LeconScreenState extends State<LeconScreen> {
     super.didChangeDependencies();
     _chargement ??= _charger();
   }
+
+  /// Leçon corrigée et republiée pendant la lecture (RechargeSiNouveauContenu).
+  @override
+  void recharger() => setState(() { _chargement = _charger(); });
 
   Future<Lecon?> _charger() async {
     final scope = AppScope.of(context);

@@ -80,16 +80,18 @@ Critères d'acceptation :
 
 ## Phase 1 : finitions de la lecture (sans compte)
 
-Candidats, à prioriser avec Bocar :
+Décisions prises par Bocar le 13/11/2026 (voir `DECISIONS.md`, D14 à D20).
+Ordre de réalisation :
 
-| Sujet | Contenu | Décision à prendre |
-| --- | --- | --- |
-| Libellés des catégories | `donnees.categories` pour afficher « Homogène » au lieu de « Homogene » | format JSON, et mise à jour des 11 tableaux en base (par Bocar) |
-| Schémas des leçons | remplacer les lignes « *[schéma …]* » par des images (Supabase Storage, `![](url)` dans le Markdown) | bucket public ou non, qui dépose les images |
-| Lecture à voix haute | bouton « Écouter la leçon » des maquettes (`flutter_tts`) | ajouter la dépendance ? voix française disponible hors ligne ? |
-| Hors connexion | garder les dernières leçons ouvertes sur l'appareil | quel volume, combien de temps |
-| Page « À propos » | version, licences (`showLicensePage`), contact | texte de présentation |
-| Icône et écran de lancement | identité SamaClasse | visuel à fournir |
+| # | Sujet | Décision | État |
+| --- | --- | --- | --- |
+| 1 | Hors connexion | tout le contenu publié gardé sur l'appareil, mise à jour en arrière-plan (D16) | fait le 13/11/2026 (95 tests), vérifié sur le téléphone en mode avion |
+| 2 | Libellés des catégories | champ facultatif `donnees.categories` (D14) ; Bocar complète les tableaux en base | à faire |
+| 3 | Police de secours | sous-ensemble de Noto Sans Math embarqué (D17) | à faire |
+| 4 | Page « À propos » | texte rédigé par Claude, relu par Bocar ; contact seulement avec son accord (D18) | à faire |
+| 5 | Icône et écran de lancement | maquette proposée par Claude, validée par Bocar (D19) | à faire |
+| 6 | Schémas des leçons | stockage Supabase public `schemas`, migration à soumettre à Bocar (D15) | à faire |
+| — | Lecture à voix haute | reportée (D20) | plus tard |
 
 Critère commun : rien ne doit ralentir l'ouverture de l'application sur un
 téléphone d'entrée de gamme avec une connexion 3G.
@@ -234,13 +236,13 @@ Critères d'acceptation :
 
 | # | Question | Phase |
 | --- | --- | --- |
-| 1 | Format des libellés de catégories des tableaux | 1 |
-| 2 | Images des schémas : stockage, dépôt | 1 |
-| 3 | Lecture à voix haute (dépendance) | 1 |
+| 1 | ~~Format des libellés de catégories des tableaux~~ : tranché (D14) | 1 |
+| 2 | ~~Images des schémas : stockage, dépôt~~ : tranché (D15) | 1 |
+| 3 | ~~Lecture à voix haute (dépendance)~~ : reportée (D20) | plus tard |
 | 4 | Connexion des élèves mineurs (a, b ou c) | 2 |
 | 5 | Méthode de connexion | 2 |
 | 6 | Enregistrement hors connexion des résultats | 3 |
 | 7 | Historique des points levés | 4 |
 | 8 | Identifiant Android, hébergement web | 5 |
 | 9 | `ordre` des séries d'une même année (Seconde S / L) | à l'ajout de nouvelles classes |
-| 10 | Police de secours pour les symboles absents d'Atkinson et de Playwrite (→, ℝ, présents dans les exercices) : Android les prend dans la police système (vérifié sur le téléphone), le web doit les télécharger (cases vides possibles hors connexion) | 1 |
+| 10 | ~~Police de secours pour les symboles absents d'Atkinson et de Playwrite (→, ℝ)~~ : tranché (D17) | 1 |
