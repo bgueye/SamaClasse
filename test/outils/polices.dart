@@ -26,6 +26,10 @@ Future<void> chargerPolicesReelles() async {
     'assets/fonts/AtkinsonHyperlegibleNext-Bold.ttf',
   ]);
   await _charger('PlaywriteFRModerne', ['assets/fonts/PlaywriteFRModerne-Regular.ttf']);
+  // Polices de secours (D17) : sans elles, exposants et flèches seraient des
+  // cases vides dans les captures (les tests n'ont pas de police système).
+  await _charger('NotoSansSecours', ['assets/fonts/NotoSansSecours-Regular.ttf']);
+  await _charger('NotoSansMathSecours', ['assets/fonts/NotoSansMathSecours-Regular.ttf']);
   final flutter = Platform.environment['FLUTTER_ROOT'];
   final icones = '$flutter/bin/cache/artifacts/material_fonts/materialicons-regular.otf';
   if (flutter != null && File(icones).existsSync()) {

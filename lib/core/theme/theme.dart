@@ -5,6 +5,13 @@ import 'couleurs.dart';
 const policeTexte = 'AtkinsonHyperlegibleNext';
 const policeCahier = 'PlaywriteFRModerne';
 
+/// Polices de secours (décision D17), essayées dans l'ordre pour chaque
+/// caractère absent de la police principale : exposants (10⁻³), flèches,
+/// grec, alphabet phonétique, puis symboles mathématiques (ℝ, ≈, ≤).
+/// Embarquées pour ne dépendre ni de la police du téléphone ni, sur le web,
+/// d'un téléchargement (hors connexion, ces caractères seraient des cases vides).
+const policesSecours = ['NotoSansSecours', 'NotoSansMathSecours'];
+
 /// Hauteur d'un interligne Seyès : le texte de leçon s'aligne sur ces lignes.
 const interligne = 32.0;
 
@@ -50,10 +57,20 @@ ThemeData themeSamaClasse() {
     useMaterial3: true,
     colorScheme: schema,
     fontFamily: policeTexte,
+    // Hérité par tous les textes, y compris ceux qui précisent leur police
+    // (titres cursifs, boutons) : un TextStyle sans secours garde celui-ci.
+    fontFamilyFallback: policesSecours,
     scaffoldBackgroundColor: Couleurs.fond,
   );
   final boutonForme = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
-  const boutonTexte = TextStyle(fontFamily: policeTexte, fontSize: 16, fontWeight: FontWeight.w600);
+  // Les boutons appliquent ce style tel quel, sans hériter du thème : les
+  // polices de secours doivent y être répétées (vérifié par polices_test.dart).
+  const boutonTexte = TextStyle(
+    fontFamily: policeTexte,
+    fontFamilyFallback: policesSecours,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+  );
 
   return base.copyWith(
     textTheme: base.textTheme.apply(bodyColor: Couleurs.texte, displayColor: Couleurs.texte),
@@ -99,8 +116,10 @@ ThemeData themeSamaClasse() {
       // (couleur comprise), et un texte sans couleur est peint en blanc.
       // C'était le défaut des puces « Avais-tu juste ? » (blanc sur blanc).
       // Une puce qui veut un autre texte (blanc sur encre) le précise elle-même.
+      // Même chose pour les polices de secours, à répéter ici.
       labelStyle: const TextStyle(
         fontFamily: policeTexte,
+        fontFamilyFallback: policesSecours,
         fontSize: 15,
         fontWeight: FontWeight.w600,
         color: Couleurs.texte,

@@ -43,3 +43,13 @@ flutter:
     - family: PlaywriteFRModerne
       fonts:
         - asset: assets/fonts/PlaywriteFRModerne-Regular.ttf
+    # Polices de secours (décision D17) : exposants, flèches, grec, symboles
+    # mathématiques et phonétiques absents des deux polices ci-dessus.
+    # Sous-ensembles de Noto Sans et Noto Sans Math (OFL), fabriqués par
+    # tool/polices/sous_ensembles.py. Utilisées seulement pour ces caractères.
+    - family: NotoSansSecours
+      fonts:
+        - asset: assets/fonts/NotoSansSecours-Regular.ttf
+    - family: NotoSansMathSecours
+      fonts:
+        - asset: assets/fonts/NotoSansMathSecours-Regular.ttf

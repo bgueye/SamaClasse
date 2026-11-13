@@ -17,6 +17,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:samaclasse/app.dart';
+import 'package:samaclasse/core/theme/theme.dart';
 
 import '../../test/outils/faux_depot.dart';
 import '../../test/outils/polices.dart';
@@ -83,6 +84,33 @@ void main() {
       await _capturer(tester, 'tel${suffixe}_06_bilan');
     });
   }
+
+  // Polices de secours (D17) mêlées au texte : exposants, flèches, grec,
+  // symboles mathématiques et phonétiques, dans le texte courant et en cursive.
+  testWidgets('symboles', (tester) async {
+    await lancerApp(tester, depot: FauxDepot(), chemin: '/lecon/1');
+    await tester.pumpAndSettle();
+    final contexte = tester.element(find.byType(Scaffold).first);
+    // Pas de `await` : push ne se termine qu'à la fermeture de la page.
+    Navigator.of(contexte).push(MaterialPageRoute<void>(
+      builder: (_) => Scaffold(
+        body: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.all(24),
+            children: [
+              for (final style in [Styles.lecon, Styles.lecon.copyWith(fontWeight: FontWeight.w700), Styles.cahier(taille: 20)])
+                Text(
+                  '10⁻³ m ; 10ⁿ × 10ᵐ = 10ⁿ⁺ᵐ ; x ∈ ℝ ; a ≤ b ; a ≈ 3,14 ; '
+                  'liquide → gaz ; R = 12 Ω ; Δt ; π ; µg ; [ʃ] [ʒ] [ɛ] [ɑ̃]',
+                  style: style,
+                ),
+            ],
+          ),
+        ),
+      ),
+    ));
+    await _capturer(tester, 'symboles');
+  });
 
   testWidgets('web large', (tester) async {
     for (final (chemin, nom) in [

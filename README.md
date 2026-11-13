@@ -76,7 +76,8 @@ lib/
     exercices/               un exercice par écran, correction, bilan final
       saisies/               zone de réponse par type d'exercice
 test/                        tests sans réseau (données, outils, widgets)
-assets/fonts/                Atkinson Hyperlegible Next, Playwrite FR Moderne (licence OFL)
+assets/fonts/                Atkinson Hyperlegible Next, Playwrite FR Moderne, et en secours des
+                             sous-ensembles de Noto Sans et Noto Sans Math (licence OFL)
 config/supabase.json         URL du projet et clé publishable
 ```
 

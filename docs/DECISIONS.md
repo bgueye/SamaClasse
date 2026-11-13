@@ -32,6 +32,12 @@ Un sous-ensemble de Noto Sans Math (licence OFL), limité aux symboles utiles
 d'Atkinson et de Playwrite. Raison : → et ℝ, présents dans les exercices,
 manquent à ces polices ; sur le web, ils dépendraient d'un téléchargement.
 Le contenu des leçons n'est pas modifié.
+Mise en œuvre du 13/11/2026 (proposition technique) : le relevé du contenu a
+montré un manque bien plus large que → et ℝ (exposants 10⁻³ et 10ⁿ⁺ᵐ, grec,
+phonétique, ¹ ² ³ en cursive, ŋ du wolof). Deux sous-ensembles sont donc
+embarqués : Noto Sans (texte : latin-1 et latin étendu A, exposants, grec,
+phonétique, flèches) et Noto Sans Math (ℝ, opérateurs), en regular seulement,
+153 Ko au total. Fabriqués par `tool/polices/sous_ensembles.py`.
 
 ### D16. Hors connexion : tout le contenu publié gardé sur l'appareil
 *Bocar, 13/11/2026.*

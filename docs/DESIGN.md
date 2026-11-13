@@ -66,6 +66,26 @@ jamais comme couleur de texte : plusieurs n'atteignent pas 4,5:1 sur blanc.
   tirées des polices variables Google Fonts, licence OFL enregistrée dans
   `LicenseRegistry`). Ne pas passer par `google_fonts` : l'application doit
   fonctionner avec une connexion faible.
+- **Polices de secours** (D17) : `NotoSansSecours` puis `NotoSansMathSecours`
+  (`policesSecours`, déclarées dans le thème), pour chaque caractère absent
+  d'Atkinson ou de Playwrite : exposants (10⁻³, 10ⁿ⁺ᵐ), flèches, grec (Ω, Δ,
+  π), symboles mathématiques (ℝ, ≈, ≤), phonétique ([ʃ], [ɑ̃]), ¹ ² ³ en
+  cursive, Ŋ ŋ. Sous-ensembles de Noto Sans et Noto Sans Math (OFL), 153 Ko.
+  Un style appliqué « tel quel » (boutons, puces) doit répéter
+  `fontFamilyFallback: policesSecours` ; `test/core/polices_test.dart` le vérifie.
+- Avant de publier un contenu avec de nouveaux symboles, vérifier qu'ils sont
+  couverts : relever les caractères utilisés (requête ci-dessous, en lecture),
+  puis les comparer aux polices avec `tool/polices/sous_ensembles.py`, et
+  l'adapter au besoin. Capture de contrôle : `symboles.png` de l'outil de captures.
+
+  ```sql
+  with t as (select coalesce(titre,'')||coalesce(introduction,'')||coalesce(corps,'')
+               ||coalesce(a_retenir::text,'') as x from lecons
+             union all select coalesce(enonce,'')||coalesce(corrige,'')
+               ||coalesce(donnees::text,'')||coalesce(reponse::text,'') from exercices)
+  select c, to_hex(ascii(c)) from (select regexp_split_to_table(x,'') c from t) s
+  where ascii(c) > 591 group by c order by ascii(c);
+  ```
 
 | Style | Taille | Graisse | Usage |
 | --- | --- | --- | --- |

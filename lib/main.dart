@@ -50,6 +50,8 @@ void _enregistrerLicencesPolices() {
     for (final (police, fichier) in const [
       ('Atkinson Hyperlegible Next', 'atkinson-hyperlegible-next-OFL.txt'),
       ('Playwrite FR Moderne', 'playwrite-fr-moderne-OFL.txt'),
+      ('Noto Sans (sous-ensemble)', 'noto-sans-OFL.txt'),
+      ('Noto Sans Math (sous-ensemble)', 'noto-sans-math-OFL.txt'),
     ]) {
       final texte = await rootBundle.loadString('assets/fonts/licences/$fichier');
       yield LicenseEntryWithLineBreaks([police], texte);

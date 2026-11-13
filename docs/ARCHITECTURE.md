@@ -90,9 +90,10 @@ test/
   fixtures/supabase.json        réponses Supabase réelles (rôle anon, sans artefact_url)
   widget_test.dart              composants et zones de réponse
 tool/captures/                  captures d'écran (flutter test tool/captures/…), images dans build/captures/
+tool/polices/sous_ensembles.py  fabrique les polices de secours (Python + fontTools, D17)
 supabase/migrations/            SQL du schéma, identique à la base
 config/supabase.json            URL + clé publishable (publique par nature)
-assets/fonts/                   polices embarquées + licences OFL
+assets/fonts/                   polices embarquées (dont les polices de secours, D17) + licences OFL
 ```
 
 ## Routes
