@@ -65,6 +65,37 @@ List<String> elementsAClasser(Map attendu) {
   return elements;
 }
 
+/// Catégories d'un tableau de classement, dans l'ordre d'affichage, avec
+/// leur libellé (décision D14, format dans EXERCICES.md).
+///
+/// Les clés viennent de `reponse` (ce sont elles que la correction compare).
+/// `donnees.categories`, facultatif, donne le libellé affichable de chaque
+/// clé (« homogene » → « Homogène ») :
+/// - une clé de `donnees.categories` absente de `reponse` est ignorée (aucun
+///   élément ne pourrait y aller) ;
+/// - un libellé absent, vide ou mal formé retombe sur [libelleCle].
+///
+/// Ordre : alphabétique des libellés, sans tenir compte des accents. On ne
+/// peut pas se fier à l'ordre des clés : la base les range dans un objet
+/// `jsonb` par longueur puis par ordre alphabétique (« cotiers, insulaire,
+/// continentaux »), quel que soit l'ordre d'écriture. L'ordre alphabétique est
+/// prévisible et ne trahit pas la réponse.
+List<({String cle, String libelle})> categoriesDuClassement(Exercice exercice) {
+  final attendu = exercice.reponse;
+  if (attendu is! Map) return const [];
+  final cles = attendu.keys.cast<String>().toList();
+
+  final donnees = exercice.donnees;
+  final fournis = donnees is Map && donnees['categories'] is Map ? donnees['categories'] as Map : const {};
+  String libelle(String cle) {
+    final texte = fournis[cle];
+    return texte is String && texte.trim().isNotEmpty ? texte.trim() : libelleCle(cle);
+  }
+
+  return [for (final cle in cles) (cle: cle, libelle: libelle(cle))]
+    ..sort((a, b) => normaliser(a.libelle).compareTo(normaliser(b.libelle)));
+}
+
 /// Catégorie attendue d'un élément dans un tableau de classement.
 String? categorieAttendue(Map attendu, String element) {
   for (final entree in attendu.entries) {

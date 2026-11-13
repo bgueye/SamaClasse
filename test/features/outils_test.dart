@@ -110,4 +110,71 @@ void main() {
       expect(detailMatiere(matiere(1, 1)), '1 leçon prête sur 1 chapitre');
     });
   });
+
+  group('catégories d’un tableau de classement (D14)', () {
+    const reponse = {
+      'homogene': ['eau sucrée', 'air'],
+      'heterogene': ['eau + sable'],
+    };
+    Exercice classement(Object? donnees) => Exercice.fromJson({
+          'id': 1,
+          'ordre': 1,
+          'niveau': 'j_applique',
+          'type': 'tableau',
+          'enonce': 'Classe ces mélanges.',
+          'donnees': donnees,
+          'reponse': reponse,
+          'corrige': null,
+        });
+    List<String> libelles(Object? donnees) =>
+        categoriesDuClassement(classement(donnees)).map((c) => c.libelle).toList();
+
+    test('sans donnees.categories : libellés tirés des clés, par ordre alphabétique', () {
+      expect(libelles(null), ['Heterogene', 'Homogene']);
+      expect(libelles({'autre': 1}), ['Heterogene', 'Homogene']);
+    });
+
+    test('avec donnees.categories : libellés accentués, triés sans tenir compte des accents', () {
+      final categories = categoriesDuClassement(classement({
+        'categories': {'homogene': 'Homogène', 'heterogene': 'Hétérogène'},
+      }));
+      expect(categories.map((c) => c.libelle), ['Hétérogène', 'Homogène']);
+      // Les clés restent celles de `reponse` : la correction n'est pas touchée.
+      expect(categories.map((c) => c.cle), ['heterogene', 'homogene']);
+    });
+
+    test('ordre indépendant de l’ordre des clés (la base range les objets jsonb à sa façon)', () {
+      // Exercice 31 (Afrique de l'Ouest) : la base renvoie « cotiers, insulaire, continentaux ».
+      final e = Exercice.fromJson({
+        'id': 31,
+        'ordre': 3,
+        'niveau': 'j_applique',
+        'type': 'tableau',
+        'enonce': 'Classe ces pays.',
+        'donnees': {
+          'categories': {'cotiers': 'Côtiers', 'insulaire': 'Insulaire', 'continentaux': 'Continentaux'},
+        },
+        'reponse': {
+          'cotiers': ['Sénégal'],
+          'insulaire': ['Cap-Vert'],
+          'continentaux': ['Mali'],
+        },
+        'corrige': null,
+      });
+      expect(categoriesDuClassement(e).map((c) => c.libelle), ['Continentaux', 'Côtiers', 'Insulaire']);
+    });
+
+    test('champ incomplet : les clés oubliées gardent le libellé tiré de la clé', () {
+      expect(libelles({'categories': {'heterogene': 'Hétérogène'}}), ['Hétérogène', 'Homogene']);
+    });
+
+    test('clé inconnue de la réponse : ignorée', () {
+      expect(libelles({'categories': {'gaz': 'Gaz', 'homogene': 'Homogène'}}), ['Heterogene', 'Homogène']);
+    });
+
+    test('libellé vide ou mal formé : retour au libellé tiré de la clé', () {
+      expect(libelles({'categories': {'homogene': '  ', 'heterogene': 3}}), ['Heterogene', 'Homogene']);
+      expect(libelles({'categories': ['Homogène', 'Hétérogène']}), ['Heterogene', 'Homogene']);
+    });
+  });
 }

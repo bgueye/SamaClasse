@@ -87,7 +87,9 @@ class SaisieClassement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final attendu = exercice.reponse as Map;
-    final categories = attendu.keys.cast<String>().toList();
+    // Clés de `reponse`, avec le libellé et l'ordre de `donnees.categories` (D14).
+    final categories = categoriesDuClassement(exercice);
+    final libelles = {for (final c in categories) c.cle: c.libelle};
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -106,10 +108,10 @@ class SaisieClassement extends StatelessWidget {
                   children: [
                     for (final categorie in categories)
                       ChoiceChip(
-                        label: Text(libelleCle(categorie)),
-                        selected: _categorieChoisie(element) == categorie,
+                        label: Text(categorie.libelle),
+                        selected: _categorieChoisie(element) == categorie.cle,
                         materialTapTargetSize: MaterialTapTargetSize.padded,
-                        onSelected: corrige ? null : (_) => _placer(element, categorie),
+                        onSelected: corrige ? null : (_) => _placer(element, categorie.cle),
                       ),
                   ],
                 ),
@@ -117,7 +119,10 @@ class SaisieClassement extends StatelessWidget {
                   Builder(builder: (context) {
                     final bonne = categorieAttendue(attendu, element);
                     final juste = bonne != null && _categorieChoisie(element) == bonne;
-                    return RetourChamp(juste: juste, attendu: bonne == null ? null : libelleCle(bonne));
+                    return RetourChamp(
+                      juste: juste,
+                      attendu: bonne == null ? null : (libelles[bonne] ?? libelleCle(bonne)),
+                    );
                   }),
               ],
             ),

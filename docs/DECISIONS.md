@@ -53,8 +53,13 @@ soumettre avant de l'appliquer.
 *Bocar, 13/11/2026.*
 Champ facultatif `donnees.categories` des tableaux de classement :
 `{"homogene": "Homogène", "heterogene": "Hétérogène"}`. Ses clés sont celles
-de `reponse` et leur ordre est l'ordre d'affichage. Sans ce champ, l'application
-garde le libellé tiré de la clé (« Homogene »). Bocar complète les tableaux en base.
+de `reponse`. Sans ce champ, l'application garde le libellé tiré de la clé
+(« Homogene »). Bocar complète les tableaux en base.
+Correction du 13/11/2026 (proposition technique) : l'ordre des clés ne peut
+pas servir d'ordre d'affichage, car PostgreSQL range les clés d'un objet
+`jsonb` par longueur puis par ordre alphabétique. Les puces sont donc triées
+par ordre alphabétique de leur libellé (prévisible, ne trahit pas la réponse).
+Si un ordre choisi devient nécessaire, ajouter un format en liste.
 
 ### D13. Exercices : un exercice par écran, toutes ses questions ensemble
 *Proposition technique, 13/11/2026.*

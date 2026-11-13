@@ -70,4 +70,56 @@ void main() {
     expect(find.byIcon(Icons.check_rounded), findsOneWidget);
     expect(find.byIcon(Icons.close_rounded), findsOneWidget);
   });
+
+  group('tableau de classement avec donnees.categories (D14)', () {
+    final classement = Exercice.fromJson({
+      'id': 33,
+      'ordre': 3,
+      'niveau': 'j_applique',
+      'type': 'tableau',
+      'enonce': 'Classe ces mélanges.',
+      'donnees': {
+        'categories': {'homogene': 'Homogène', 'heterogene': 'Hétérogène'},
+      },
+      'reponse': {
+        'homogene': ['eau sucrée'],
+        'heterogene': ['eau + sable'],
+      },
+      'corrige': null,
+    });
+
+    testWidgets('les puces affichent les libellés accentués et renvoient la clé', (tester) async {
+      Object? recu;
+      await tester.pumpWidget(_app(SingleChildScrollView(
+        child: SaisieExercice(
+          exercice: classement,
+          reponse: const {'homogene': <String>[], 'heterogene': <String>[]},
+          correction: null,
+          onChanged: (v) => recu = v,
+        ),
+      )));
+      expect(find.text('Homogène'), findsNWidgets(2)); // une puce par élément à classer
+      expect(find.text('Homogene'), findsNothing);
+
+      await tester.tap(find.text('Hétérogène').first); // premier élément : « eau + sable »
+      expect((recu as Map)['heterogene'], ['eau + sable']);
+    });
+
+    testWidgets('corrigé : « Attendu » utilise aussi le libellé accentué', (tester) async {
+      await tester.pumpWidget(_app(SingleChildScrollView(
+        child: SaisieExercice(
+          exercice: classement,
+          // Les deux éléments placés à l'envers.
+          reponse: const {
+            'homogene': ['eau + sable'],
+            'heterogene': ['eau sucrée'],
+          },
+          correction: const CorrectionAuto([false, false]),
+          onChanged: (_) {},
+        ),
+      )));
+      expect(find.text('Attendu : Homogène'), findsOneWidget);
+      expect(find.text('Attendu : Hétérogène'), findsOneWidget);
+    });
+  });
 }

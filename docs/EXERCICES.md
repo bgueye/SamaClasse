@@ -84,9 +84,12 @@ Libellés des catégories (décision D14) : champ facultatif `donnees.categories
 "donnees": {"categories": {"homogene": "Homogène", "heterogene": "Hétérogène"}},
 "reponse": {"homogene": ["eau sucrée", "air"], "heterogene": ["eau + sable", "eau + huile"]}
 ```
-Ses clés sont celles de `reponse` ; leur ordre est l'ordre d'affichage des
-puces. Sans ce champ (ou pour une clé absente), le libellé vient de la clé
-via `libelleCle` (« Homogene », sans accent).
+Ses clés sont celles de `reponse` (une clé inconnue de `reponse` est
+ignorée). Sans ce champ (ou pour une clé absente), le libellé vient de la clé
+via `libelleCle` (« Homogene », sans accent). Les puces sont triées par ordre
+alphabétique des libellés, sans tenir compte des accents : l'ordre d'écriture
+des clés est perdu, la base rangeant les objets `jsonb` à sa façon (par
+longueur, puis par ordre alphabétique).
 
 ### `tableau` imbriqué (non corrigé automatiquement)
 ```json
