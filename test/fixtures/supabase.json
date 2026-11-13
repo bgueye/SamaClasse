@@ -1,0 +1,2066 @@
+{
+ "classes": [
+  {
+   "id": 1,
+   "code": "4e",
+   "libelle": "4ème",
+   "cycle": "moyen",
+   "ordre": 9
+  },
+  {
+   "id": 2,
+   "code": "2nde-L",
+   "libelle": "Seconde L",
+   "cycle": "secondaire",
+   "ordre": 11
+  }
+ ],
+ "matieres": {
+  "1": [
+   {
+    "classe_id": 1,
+    "matiere_id": 9,
+    "slug": "education-civique",
+    "nom": "Éducation civique",
+    "nb_chapitres": 1,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 1,
+    "matiere_id": 8,
+    "slug": "espagnol",
+    "nom": "Espagnol",
+    "nb_chapitres": 4,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 1,
+    "matiere_id": 4,
+    "slug": "francais",
+    "nom": "Français",
+    "nb_chapitres": 24,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 1,
+    "matiere_id": 6,
+    "slug": "geographie",
+    "nom": "Géographie",
+    "nb_chapitres": 22,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 1,
+    "matiere_id": 5,
+    "slug": "histoire",
+    "nom": "Histoire",
+    "nb_chapitres": 21,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 1,
+    "matiere_id": 1,
+    "slug": "mathematiques",
+    "nom": "Mathématiques",
+    "nb_chapitres": 14,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 1,
+    "matiere_id": 2,
+    "slug": "sciences-physiques",
+    "nom": "Sciences physiques",
+    "nb_chapitres": 12,
+    "nb_lecons": 1
+   },
+   {
+    "classe_id": 1,
+    "matiere_id": 3,
+    "slug": "svt",
+    "nom": "SVT",
+    "nb_chapitres": 13,
+    "nb_lecons": 0
+   }
+  ],
+  "2": [
+   {
+    "classe_id": 2,
+    "matiere_id": 10,
+    "slug": "economie",
+    "nom": "Économie",
+    "nb_chapitres": 1,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 2,
+    "matiere_id": 4,
+    "slug": "francais",
+    "nom": "Français",
+    "nb_chapitres": 9,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 2,
+    "matiere_id": 6,
+    "slug": "geographie",
+    "nom": "Géographie",
+    "nb_chapitres": 20,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 2,
+    "matiere_id": 5,
+    "slug": "histoire",
+    "nom": "Histoire",
+    "nb_chapitres": 25,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 2,
+    "matiere_id": 1,
+    "slug": "mathematiques",
+    "nom": "Mathématiques",
+    "nb_chapitres": 7,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 2,
+    "matiere_id": 2,
+    "slug": "sciences-physiques",
+    "nom": "Sciences physiques",
+    "nb_chapitres": 11,
+    "nb_lecons": 0
+   },
+   {
+    "classe_id": 2,
+    "matiere_id": 3,
+    "slug": "svt",
+    "nom": "SVT",
+    "nb_chapitres": 8,
+    "nb_lecons": 0
+   }
+  ]
+ },
+ "chapitres": {
+  "1-9": [
+   {
+    "id": 111,
+    "numero": 1,
+    "titre": "La nation sénégalaise",
+    "partie": null,
+    "statut": "cahier",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "1-8": [
+   {
+    "id": 107,
+    "numero": 1,
+    "titre": "Les possessifs et les équivalents de « on »",
+    "partie": "Étude de la langue",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 108,
+    "numero": 2,
+    "titre": "L'obligation personnelle et impersonnelle – impératif, ordre et défense",
+    "partie": "Étude de la langue",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 109,
+    "numero": 3,
+    "titre": "Futur de l'indicatif des verbes réguliers et irréguliers",
+    "partie": "Étude de la langue",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 110,
+    "numero": 4,
+    "titre": "Passé simple des verbes réguliers",
+    "partie": "Étude de la langue",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "1-4": [
+   {
+    "id": 40,
+    "numero": 1,
+    "titre": "La pronominalisation",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 41,
+    "numero": 2,
+    "titre": "Les différentes formes de phrase",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 42,
+    "numero": 3,
+    "titre": "La mise en relief",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 43,
+    "numero": 4,
+    "titre": "La juxtaposition et la coordination",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 44,
+    "numero": 5,
+    "titre": "La subordination",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 45,
+    "numero": 6,
+    "titre": "Les subordonnées introduites par « que »",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 46,
+    "numero": 7,
+    "titre": "Le discours direct et le discours indirect",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 47,
+    "numero": 8,
+    "titre": "La subordonnée de temps",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 48,
+    "numero": 9,
+    "titre": "Les subordonnées de cause, de conséquence et de but",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 49,
+    "numero": 10,
+    "titre": "La subordonnée d'opposition",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 50,
+    "numero": 11,
+    "titre": "La subordonnée de comparaison",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 51,
+    "numero": 12,
+    "titre": "La subordonnée de condition",
+    "partie": "Grammaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 52,
+    "numero": 13,
+    "titre": "Le pluriel des noms : cas particuliers",
+    "partie": "Orthographe",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 53,
+    "numero": 14,
+    "titre": "Le pluriel des noms composés",
+    "partie": "Orthographe",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 54,
+    "numero": 15,
+    "titre": "L'accord des adjectifs de couleur",
+    "partie": "Orthographe",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 55,
+    "numero": 16,
+    "titre": "Accord du participe passé avec avoir suivi d'un infinitif",
+    "partie": "Orthographe",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 56,
+    "numero": 17,
+    "titre": "Hyperonymes et hyponymes",
+    "partie": "Vocabulaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 57,
+    "numero": 18,
+    "titre": "Préfixation et suffixation",
+    "partie": "Vocabulaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 58,
+    "numero": 19,
+    "titre": "La formation des mots avec des affixes scientifiques",
+    "partie": "Vocabulaire",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 59,
+    "numero": 20,
+    "titre": "Valeurs du présent, de l'imparfait et du passé simple",
+    "partie": "Conjugaison",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 60,
+    "numero": 21,
+    "titre": "Quelques verbes irréguliers et formes rares",
+    "partie": "Conjugaison",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 61,
+    "numero": 22,
+    "titre": "La concordance des temps",
+    "partie": "Conjugaison",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 62,
+    "numero": 23,
+    "titre": "La lettre familière et la lettre administrative",
+    "partie": "Expression écrite",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 63,
+    "numero": 24,
+    "titre": "Le rapport et le compte rendu",
+    "partie": "Expression écrite",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "1-6": [
+   {
+    "id": 85,
+    "numero": 1,
+    "titre": "Étude de situation",
+    "partie": "L'Afrique de l'Ouest",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 86,
+    "numero": 2,
+    "titre": "Les problèmes de développement",
+    "partie": "L'Afrique de l'Ouest",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 87,
+    "numero": 3,
+    "titre": "Les problèmes d'intégration",
+    "partie": "L'Afrique de l'Ouest",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 88,
+    "numero": 4,
+    "titre": "Étude de situation : localisation, carte",
+    "partie": "L'Afrique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 89,
+    "numero": 5,
+    "titre": "La diversité physique et humaine",
+    "partie": "L'Afrique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 90,
+    "numero": 6,
+    "titre": "La pauvreté et la dépendance : facteurs, manifestations, conséquences",
+    "partie": "L'Afrique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 91,
+    "numero": 7,
+    "titre": "La coopération internationale et l'aide au développement",
+    "partie": "L'Afrique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 92,
+    "numero": 8,
+    "titre": "Étude de situation",
+    "partie": "L'Europe",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 93,
+    "numero": 9,
+    "titre": "Le relief et le climat",
+    "partie": "L'Europe",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 94,
+    "numero": 10,
+    "titre": "La population",
+    "partie": "L'Europe",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 95,
+    "numero": 11,
+    "titre": "Les problèmes d'intégration",
+    "partie": "L'Europe",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 96,
+    "numero": 12,
+    "titre": "Étude de situation",
+    "partie": "L'Amérique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 97,
+    "numero": 13,
+    "titre": "Les unités naturelles",
+    "partie": "L'Amérique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 98,
+    "numero": 14,
+    "titre": "La diversité des peuples",
+    "partie": "L'Amérique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 99,
+    "numero": 15,
+    "titre": "Les disparités économiques et sociales",
+    "partie": "L'Amérique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 100,
+    "numero": 16,
+    "titre": "Les problèmes d'intégration",
+    "partie": "L'Amérique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 101,
+    "numero": 17,
+    "titre": "Étude de situation",
+    "partie": "L'Asie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 102,
+    "numero": 18,
+    "titre": "Les contrastes naturels",
+    "partie": "L'Asie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 103,
+    "numero": 19,
+    "titre": "Les populations de l'Asie",
+    "partie": "L'Asie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 104,
+    "numero": 20,
+    "titre": "Disparités économiques et sociales, problèmes d'intégration",
+    "partie": "L'Asie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 105,
+    "numero": 21,
+    "titre": "Étude de situation : localisation, carte (orientation, représentation)",
+    "partie": "L'Océanie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 106,
+    "numero": 22,
+    "titre": "Disparités économiques et sociales, problèmes d'intégration",
+    "partie": "L'Océanie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "1-5": [
+   {
+    "id": 64,
+    "numero": 1,
+    "titre": "L'Afrique au XVIe siècle",
+    "partie": "Le monde au XVIe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 65,
+    "numero": 2,
+    "titre": "L'Asie et le Nouveau Monde au XVIe siècle : arrivée des Européens",
+    "partie": "Le monde au XVIe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 66,
+    "numero": 3,
+    "titre": "La traite négrière : naissance, mécanisme et évolution",
+    "partie": "La traite négrière et ses conséquences",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 67,
+    "numero": 4,
+    "titre": "Les conséquences de la traite négrière en Afrique",
+    "partie": "La traite négrière et ses conséquences",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 68,
+    "numero": 5,
+    "titre": "Les conséquences de la traite en Europe, en Amérique et en Asie",
+    "partie": "La traite négrière et ses conséquences",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 69,
+    "numero": 6,
+    "titre": "La traite au Sénégal",
+    "partie": "La traite négrière et ses conséquences",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 70,
+    "numero": 7,
+    "titre": "Le mouvement abolitionniste",
+    "partie": "La traite négrière et ses conséquences",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 71,
+    "numero": 8,
+    "titre": "La Sénégambie : dislocation du Jolof et émergence de nouveaux royaumes",
+    "partie": "L'espace sénégambien du VIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 72,
+    "numero": 9,
+    "titre": "L'évolution du Fouta du XVIIe au XIXe siècle",
+    "partie": "L'espace sénégambien du VIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 73,
+    "numero": 10,
+    "titre": "Les entités politiques nées du déclin du Gaabu",
+    "partie": "L'espace sénégambien du VIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 74,
+    "numero": 11,
+    "titre": "Les empires peuls du Sokoto et du Macina",
+    "partie": "L'Afrique du XVIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 75,
+    "numero": 12,
+    "titre": "L'empire toucouleur d'El Hadj Omar Tall",
+    "partie": "L'Afrique du XVIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 76,
+    "numero": 13,
+    "titre": "Tchaka et le mouvement zoulou",
+    "partie": "L'Afrique du XVIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 77,
+    "numero": 14,
+    "titre": "Madagascar : de la formation des royaumes au milieu du XIXe siècle",
+    "partie": "L'Afrique du XVIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 78,
+    "numero": 15,
+    "titre": "La première révolution industrielle",
+    "partie": "L'Europe du XVIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 79,
+    "numero": 16,
+    "titre": "Le mouvement des idées au XVIIIe siècle",
+    "partie": "L'Europe du XVIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 80,
+    "numero": 17,
+    "titre": "La Révolution française de 1789 et ses conséquences",
+    "partie": "L'Europe du XVIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 81,
+    "numero": 18,
+    "titre": "L'Amérique du Nord : naissance des États-Unis",
+    "partie": "L'Amérique et l'Asie du XVIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 82,
+    "numero": 19,
+    "titre": "L'Empire ottoman",
+    "partie": "L'Amérique et l'Asie du XVIIe au XIXe siècle",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 83,
+    "numero": 20,
+    "titre": "Initiation à la dissertation",
+    "partie": "Méthodologie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 84,
+    "numero": 21,
+    "titre": "Initiation au commentaire de texte historique",
+    "partie": "Méthodologie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "1-1": [
+   {
+    "id": 1,
+    "numero": 1,
+    "titre": "Nombres rationnels",
+    "partie": "Activités numériques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 2,
+    "numero": 2,
+    "titre": "Calcul algébrique",
+    "partie": "Activités numériques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 3,
+    "numero": 3,
+    "titre": "Équations à une inconnue",
+    "partie": "Activités numériques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 4,
+    "numero": 4,
+    "titre": "Inéquations et systèmes de deux inéquations à une inconnue",
+    "partie": "Activités numériques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 5,
+    "numero": 5,
+    "titre": "Applications linéaires",
+    "partie": "Activités numériques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 6,
+    "numero": 6,
+    "titre": "Statistique",
+    "partie": "Activités numériques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 7,
+    "numero": 7,
+    "titre": "Distance",
+    "partie": "Activités géométriques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 8,
+    "numero": 8,
+    "titre": "Droites des milieux",
+    "partie": "Activités géométriques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 9,
+    "numero": 9,
+    "titre": "Droites remarquables dans un triangle",
+    "partie": "Activités géométriques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 10,
+    "numero": 10,
+    "titre": "Triangle rectangle",
+    "partie": "Activités géométriques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 11,
+    "numero": 11,
+    "titre": "Translations et vecteurs",
+    "partie": "Activités géométriques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 12,
+    "numero": 12,
+    "titre": "Projection orthogonale dans le plan",
+    "partie": "Activités géométriques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 13,
+    "numero": 13,
+    "titre": "Rotations – polygones réguliers",
+    "partie": "Activités géométriques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 14,
+    "numero": 14,
+    "titre": "Géométrie dans l'espace",
+    "partie": "Activités géométriques",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "1-2": [
+   {
+    "id": 15,
+    "numero": 1,
+    "titre": "Introduction aux sciences physiques",
+    "partie": "Physique",
+    "statut": "source",
+    "remarque": null,
+    "lecons": [
+     {
+      "id": 1,
+      "titre": "Introduction aux sciences physiques",
+      "numero": 1,
+      "exercices": [
+       {
+        "count": 5
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": 16,
+    "numero": 2,
+    "titre": "Grandeurs physiques et mesures",
+    "partie": "Physique",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 17,
+    "numero": 3,
+    "titre": "Masse, masse volumique et densité",
+    "partie": "Physique",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 18,
+    "numero": 4,
+    "titre": "Poids, relation entre poids et masse",
+    "partie": "Physique",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 19,
+    "numero": 5,
+    "titre": "Introduction à l'électricité",
+    "partie": "Physique",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 20,
+    "numero": 6,
+    "titre": "Sources et récepteurs de lumière",
+    "partie": "Physique",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 21,
+    "numero": 7,
+    "titre": "Propagation rectiligne de la lumière",
+    "partie": "Physique",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 22,
+    "numero": 8,
+    "titre": "Réflexion et réfraction de la lumière",
+    "partie": "Physique",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 23,
+    "numero": 9,
+    "titre": "Mélanges et corps purs",
+    "partie": "Chimie",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 24,
+    "numero": 10,
+    "titre": "Structure de la matière",
+    "partie": "Chimie",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 25,
+    "numero": 11,
+    "titre": "Moles et grandeurs molaires",
+    "partie": "Chimie",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 26,
+    "numero": 12,
+    "titre": "Réaction chimique",
+    "partie": "Chimie",
+    "statut": "source",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "1-3": [
+   {
+    "id": 27,
+    "numero": 1,
+    "titre": "Les ressources naturelles et leur gestion durable",
+    "partie": "Environnement",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 28,
+    "numero": 2,
+    "titre": "La digestion des aliments",
+    "partie": "Fonction de nutrition",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 29,
+    "numero": 3,
+    "titre": "Le sang : composition et maladies sanguines",
+    "partie": "Fonction de nutrition",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 30,
+    "numero": 4,
+    "titre": "La circulation et le rôle du sang",
+    "partie": "Fonction de nutrition",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 31,
+    "numero": 5,
+    "titre": "Pression artérielle et maladies cardio-vasculaires",
+    "partie": "Fonction de nutrition",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 32,
+    "numero": 6,
+    "titre": "La puberté et le rôle des organes génitaux",
+    "partie": "Fonction de reproduction",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 33,
+    "numero": 7,
+    "titre": "De la fécondation à l'accouchement",
+    "partie": "Fonction de reproduction",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 34,
+    "numero": 8,
+    "titre": "Comment éviter une grossesse ?",
+    "partie": "Fonction de reproduction",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 35,
+    "numero": 9,
+    "titre": "La transmission des caractères héréditaires",
+    "partie": "Génétique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 36,
+    "numero": 10,
+    "titre": "La contamination par les microorganismes",
+    "partie": "Les agressions contre l'homme",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 37,
+    "numero": 11,
+    "titre": "Le volcanisme",
+    "partie": "Volcanisme – roches magmatiques",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 38,
+    "numero": 12,
+    "titre": "La formation des roches magmatiques",
+    "partie": "Volcanisme – roches magmatiques",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 39,
+    "numero": 13,
+    "titre": "Séismes et structure du globe",
+    "partie": "Séismes et structure du globe",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "2-10": [
+   {
+    "id": 192,
+    "numero": 1,
+    "titre": "Objet et méthode de la science économique",
+    "partie": null,
+    "statut": "cahier",
+    "remarque": "Matière absente des sources de programme consultées ; chapitre ajouté d'après le cahier de l'élève (12/11/2026).",
+    "lecons": []
+   }
+  ],
+  "2-4": [
+   {
+    "id": 119,
+    "numero": 1,
+    "titre": "L'Humanisme (XVIe siècle)",
+    "partie": "Mouvements littéraires",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 120,
+    "numero": 2,
+    "titre": "Le Classicisme (XVIIe siècle)",
+    "partie": "Mouvements littéraires",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 121,
+    "numero": 3,
+    "titre": "Les Lumières (XVIIIe siècle)",
+    "partie": "Mouvements littéraires",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 122,
+    "numero": 4,
+    "titre": "Naissance de la littérature négro-africaine : les précurseurs de la Négritude",
+    "partie": "Littérature africaine",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 123,
+    "numero": 5,
+    "titre": "Les figures de style",
+    "partie": "Outils d'analyse",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 124,
+    "numero": 6,
+    "titre": "Le résumé suivi de discussion",
+    "partie": "Exercices écrits",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 125,
+    "numero": 7,
+    "titre": "Le commentaire de texte",
+    "partie": "Exercices écrits",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 126,
+    "numero": 8,
+    "titre": "La dissertation",
+    "partie": "Exercices écrits",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 127,
+    "numero": 9,
+    "titre": "La versification (exercice littéraire)",
+    "partie": "Outils d'analyse",
+    "statut": "cahier",
+    "remarque": "Absente des sources en ligne : programme de français de Seconde incomplet",
+    "lecons": []
+   }
+  ],
+  "2-6": [
+   {
+    "id": 153,
+    "numero": 1,
+    "titre": "Les moyens de connaissance de l'Univers",
+    "partie": "La Terre dans le système solaire",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 154,
+    "numero": 2,
+    "titre": "Les mouvements de la Terre",
+    "partie": "La Terre dans le système solaire",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 155,
+    "numero": 3,
+    "titre": "TP : planètes du système solaire, représentations de la Terre, coordonnées géographiques",
+    "partie": "La Terre dans le système solaire",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 156,
+    "numero": 4,
+    "titre": "La répartition des continents et des océans",
+    "partie": "La planète Terre – Continents, océans et mers",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 157,
+    "numero": 5,
+    "titre": "Les eaux marines",
+    "partie": "La planète Terre – Continents, océans et mers",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 158,
+    "numero": 6,
+    "titre": "TP : planisphère des océans, des mers et des courants marins",
+    "partie": "La planète Terre – Continents, océans et mers",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 159,
+    "numero": 7,
+    "titre": "L'atmosphère : structure et composition",
+    "partie": "La planète Terre – Les climats",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 160,
+    "numero": 8,
+    "titre": "Les facteurs du climat",
+    "partie": "La planète Terre – Les climats",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 161,
+    "numero": 9,
+    "titre": "Les éléments du climat",
+    "partie": "La planète Terre – Les climats",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 162,
+    "numero": 10,
+    "titre": "TP : carte des climats et construction de diagrammes",
+    "partie": "La planète Terre – Les climats",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 163,
+    "numero": 11,
+    "titre": "La tectonique des plaques et l'isostasie",
+    "partie": "La planète Terre – Les reliefs",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 164,
+    "numero": 12,
+    "titre": "Les roches",
+    "partie": "La planète Terre – Les reliefs",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 165,
+    "numero": 13,
+    "titre": "Les grands types de structure et leur répartition",
+    "partie": "La planète Terre – Les reliefs",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 166,
+    "numero": 14,
+    "titre": "L'érosion",
+    "partie": "La planète Terre – Les reliefs",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 167,
+    "numero": 15,
+    "titre": "Les formes de relief terrestre et leur répartition",
+    "partie": "La planète Terre – Les reliefs",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 168,
+    "numero": 16,
+    "titre": "TP : carte des formes de relief, initiation à la coupe topographique",
+    "partie": "La planète Terre – Les reliefs",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 169,
+    "numero": 17,
+    "titre": "Les régions intertropicales",
+    "partie": "Les régions naturelles du globe",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 170,
+    "numero": 18,
+    "titre": "Les régions tempérées",
+    "partie": "Les régions naturelles du globe",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 171,
+    "numero": 19,
+    "titre": "Les régions polaires",
+    "partie": "Les régions naturelles du globe",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 172,
+    "numero": 20,
+    "titre": "L'originalité des montagnes et des littoraux",
+    "partie": "Les régions naturelles du globe",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "2-5": [
+   {
+    "id": 128,
+    "numero": 1,
+    "titre": "Définition, objet et importance de l'histoire",
+    "partie": "Introduction",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 129,
+    "numero": 2,
+    "titre": "Histoire africaine : sources et méthodes (tradition orale, archéologie, linguistique)",
+    "partie": "Introduction",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 130,
+    "numero": 3,
+    "titre": "L'Afrique, berceau de l'humanité",
+    "partie": "La préhistoire africaine",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 131,
+    "numero": 4,
+    "titre": "Les civilisations paléolithiques",
+    "partie": "La préhistoire africaine",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 132,
+    "numero": 5,
+    "titre": "La révolution néolithique et ses conséquences",
+    "partie": "La préhistoire africaine",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 133,
+    "numero": 6,
+    "titre": "Préhistoire et protohistoire du Sénégal",
+    "partie": "La préhistoire africaine",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 134,
+    "numero": 7,
+    "titre": "A.C. : exercices sur la technique de la dissertation",
+    "partie": "La préhistoire africaine",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 135,
+    "numero": 8,
+    "titre": "La civilisation de l'Égypte pharaonique",
+    "partie": "Les civilisations de l'Afrique ancienne",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 136,
+    "numero": 9,
+    "titre": "Axoum",
+    "partie": "Les civilisations de l'Afrique ancienne",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 137,
+    "numero": 10,
+    "titre": "La Méditerranée et le monde noir : contacts, échanges, migrations, influences",
+    "partie": "Les civilisations de l'Afrique ancienne",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 138,
+    "numero": 11,
+    "titre": "A.C. : parenté entre l'Égypte et le reste de l'Afrique (exemple du Sénégal)",
+    "partie": "Les civilisations de l'Afrique ancienne",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 139,
+    "numero": 12,
+    "titre": "Les civilisations du Soudan médiéval (Ghana, Mali, Songhaï)",
+    "partie": "L'Afrique occidentale du VIIe au XVIIe siècle",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 140,
+    "numero": 13,
+    "titre": "Le processus d'islamisation en Afrique occidentale",
+    "partie": "L'Afrique occidentale du VIIe au XVIIe siècle",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 141,
+    "numero": 14,
+    "titre": "L'empire du Jolof",
+    "partie": "L'Afrique occidentale du VIIe au XVIIe siècle",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 142,
+    "numero": 15,
+    "titre": "L'empire du Gaabu",
+    "partie": "L'Afrique occidentale du VIIe au XVIIe siècle",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 143,
+    "numero": 16,
+    "titre": "A.C. : exercices sur la technique du commentaire historique",
+    "partie": "L'Afrique occidentale du VIIe au XVIIe siècle",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 144,
+    "numero": 17,
+    "titre": "La traite arabe",
+    "partie": "La traite négrière et ses conséquences",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 145,
+    "numero": 18,
+    "titre": "La traite atlantique",
+    "partie": "La traite négrière et ses conséquences",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 146,
+    "numero": 19,
+    "titre": "A.C. : dossier sur la traite au Sénégal",
+    "partie": "La traite négrière et ses conséquences",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 147,
+    "numero": 20,
+    "titre": "La révolution Torodo",
+    "partie": "L'Afrique du XVIIIe s. à la veille de la poussée impérialiste",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 148,
+    "numero": 21,
+    "titre": "L'empire d'El Hadji Omar Tall",
+    "partie": "L'Afrique du XVIIIe s. à la veille de la poussée impérialiste",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 149,
+    "numero": 22,
+    "titre": "L'empire zoulou de Tchaka",
+    "partie": "L'Afrique du XVIIIe s. à la veille de la poussée impérialiste",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 150,
+    "numero": 23,
+    "titre": "La révolution américaine",
+    "partie": "L'Europe et l'Amérique de 1776 à 1870",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 151,
+    "numero": 24,
+    "titre": "La révolution française de 1789",
+    "partie": "L'Europe et l'Amérique de 1776 à 1870",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 152,
+    "numero": 25,
+    "titre": "L'indépendance d'Haïti",
+    "partie": "L'Europe et l'Amérique de 1776 à 1870",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "2-1": [
+   {
+    "id": 112,
+    "numero": 1,
+    "titre": "Calcul dans ℝ",
+    "partie": "Semestre 1",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 113,
+    "numero": 2,
+    "titre": "Situations de proportionnalité",
+    "partie": "Semestre 1",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 114,
+    "numero": 3,
+    "titre": "Systèmes d'équations et d'inéquations à deux inconnues",
+    "partie": "Semestre 1",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 115,
+    "numero": 4,
+    "titre": "Équations et inéquations du second degré",
+    "partie": "Semestre 1",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 116,
+    "numero": 5,
+    "titre": "Fonctions affines et droites du plan",
+    "partie": "Semestre 2",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 117,
+    "numero": 6,
+    "titre": "Lectures graphiques et tracé de courbes",
+    "partie": "Semestre 2",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 118,
+    "numero": 7,
+    "titre": "Statistique",
+    "partie": "Semestre 2",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "2-2": [
+   {
+    "id": 181,
+    "numero": 1,
+    "titre": "Poids, masse : relation poids-masse",
+    "partie": "Physique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 182,
+    "numero": 2,
+    "titre": "Interactions entre objets : la force",
+    "partie": "Physique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 183,
+    "numero": 3,
+    "titre": "Mouvement : vitesse",
+    "partie": "Physique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 184,
+    "numero": 4,
+    "titre": "Le circuit électrique",
+    "partie": "Physique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 185,
+    "numero": 5,
+    "titre": "Notions d'intensité et de tension",
+    "partie": "Physique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 186,
+    "numero": 6,
+    "titre": "L'électricité dans notre environnement",
+    "partie": "Physique",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 187,
+    "numero": 7,
+    "titre": "Mélanges et corps purs",
+    "partie": "Chimie",
+    "statut": "a_valider",
+    "remarque": "Chapitre 1 (C1) dans le cahier : ordre des chapitres de PC à revoir",
+    "lecons": []
+   },
+   {
+    "id": 188,
+    "numero": 8,
+    "titre": "Structure de la matière",
+    "partie": "Chimie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 189,
+    "numero": 9,
+    "titre": "Quantité de matière",
+    "partie": "Chimie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 190,
+    "numero": 10,
+    "titre": "Transformation de la matière",
+    "partie": "Chimie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 191,
+    "numero": 11,
+    "titre": "Solutions acides, basiques ou neutres",
+    "partie": "Chimie",
+    "statut": "a_valider",
+    "remarque": null,
+    "lecons": []
+   }
+  ],
+  "2-3": [
+   {
+    "id": 173,
+    "numero": 1,
+    "titre": "Structure d'un écosystème",
+    "partie": "Notions fondamentales d'écologie",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 174,
+    "numero": 2,
+    "titre": "Fonctionnement et évolution de l'écosystème",
+    "partie": "Notions fondamentales d'écologie",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 175,
+    "numero": 3,
+    "titre": "Diversité et répartition des écosystèmes au Sénégal",
+    "partie": "Notions fondamentales d'écologie",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 176,
+    "numero": 4,
+    "titre": "Les sols",
+    "partie": "Ressources naturelles et leur gestion",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 177,
+    "numero": 5,
+    "titre": "L'eau",
+    "partie": "Ressources naturelles et leur gestion",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 178,
+    "numero": 6,
+    "titre": "L'énergie",
+    "partie": "Ressources naturelles et leur gestion",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 179,
+    "numero": 7,
+    "titre": "L'espace rural",
+    "partie": "L'aménagement de l'espace",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   },
+   {
+    "id": 180,
+    "numero": 8,
+    "titre": "L'espace urbain",
+    "partie": "L'aménagement de l'espace",
+    "statut": "officiel",
+    "remarque": null,
+    "lecons": []
+   }
+  ]
+ },
+ "lecons": {
+  "1": {
+   "id": 1,
+   "chapitre_id": 15,
+   "numero": 1,
+   "titre": "Introduction aux sciences physiques",
+   "date_cours": null,
+   "objectifs": [
+    "Distinguer un phénomène physique d'un phénomène chimique",
+    "Décrire les trois états de la matière",
+    "Nommer les six changements d'état et leurs caractéristiques"
+   ],
+   "introduction": "Ce premier chapitre présente les deux grandes familles de phénomènes, physiques et chimiques, puis les trois états de la matière et leurs changements.",
+   "corps": "## I. Phénomènes physiques et phénomènes chimiques\n\n### 1) Quelques exemples\n\n- Un enfant qui tire son jouet.\n- Le passage du courant électrique dans la lampe produit de la lumière.\n- L'aimant attire le clou de fer.\n\n## II. Classification des phénomènes\n\nNotre univers se compose de différentes formes de matière et d'énergie. La matière est le siège de transformations que nous appellerons **phénomènes** : un phénomène est toute transformation qui modifie les propriétés de la matière.\n\nAinsi, les phénomènes se répartissent plutôt en deux groupes : les phénomènes physiques et les phénomènes chimiques.\n\n### 1) Phénomènes physiques\n\n**a) Définition** : un phénomène physique est une transformation qui ne modifie pas la nature du corps qui la subit.\n\n**Exemples** :\n\n- un jouet tiré par un enfant ;\n- une bille qui roule sur une table ;\n- l'action de l'aimant sur le fer ;\n- l'allongement d'un ressort.\n\n### 2) Phénomènes chimiques\n\n**b) Définition** : un phénomène chimique est une transformation qui modifie la nature du corps qui la subit.\n\n**Exemples** :\n\n- la digestion ;\n- la carbonisation.\n\n## III. Divers états de la matière\n\nSur Terre, nous sommes entourés de plusieurs corps comme l'eau, l'air, les métaux, le bois, le sable… On a l'habitude de les classer en trois catégories, qui sont les solides, les liquides et les gaz.\n\nLes physiciens disent que la matière se présente à l'état solide, à l'état liquide ou à l'état gazeux.\n\n### 1) État solide\n\nLes corps solides sont saisissables : ils possèdent une forme et un volume propres. Ils sont incompressibles et difficiles à déformer.\n\n**Exemples** : la glace, la roche, le sable.\n\n### 2) État liquide\n\nLes liquides sont insaisissables : ce sont des fluides. Les corps liquides ont un volume propre ; ils ne sont ni compressibles ni expansibles. Les liquides ont une forme variable et une surface libre plane et horizontale.\n\n**Exemples** : l'eau, la boisson.\n\n### 3) État gazeux\n\nLes gaz sont des fluides. Ils sont insaisissables, compressibles et expansibles : ils ont tendance à occuper tout le volume qui leur est offert. Les gaz n'ont ni forme propre ni volume propre.\n\n**Exemples** : l'air et le gaz.\n\n## IV. Étude des différents changements d'état\n\n### 1) Définition\n\n- L'**état physique** d'un corps est l'aspect sous lequel se présente ce corps dans l'espace.\n- On appelle **changement d'état physique** d'un corps donné le passage de ce corps d'un état physique à un autre état physique.\n\n### 2) Schéma récapitulatif\n\n*[Schéma : les 3 états et les 6 changements d'état.]*\n\n*Complément :* chaque flèche va de l'état de départ vers l'état d'arrivée. Chaque changement a son inverse : fusion et solidification, vaporisation et liquéfaction, sublimation et condensation.\n\n### 3) Caractéristiques du changement d'état physique d'un corps\n\n- Le changement d'état physique d'un corps ne change pas la nature du corps qui le subit.\n- Le changement d'état physique d'un corps ne change pas la masse du corps.\n- Lors du changement d'état d'un corps pur, sa température reste constante.\n\n**Remarque** : on distingue deux types de vaporisation :\n\n- **l'ébullition** est une vaporisation en profondeur, sous l'effet de la chaleur et à une température fixe appelée température d'ébullition ;\n- **l'évaporation** est une vaporisation en surface, qui a lieu à toutes les températures, tant que le corps est liquide.",
+   "a_retenir": [
+    {
+     "notion": "Phénomène physique",
+     "essentiel": "Ne modifie pas la nature du corps (bille qui roule, ressort qui s'allonge)"
+    },
+    {
+     "notion": "Phénomène chimique",
+     "essentiel": "Modifie la nature du corps (digestion, carbonisation)"
+    },
+    {
+     "notion": "Solide",
+     "essentiel": "Forme et volume propres, incompressible"
+    },
+    {
+     "notion": "Liquide",
+     "essentiel": "Volume propre, prend la forme du récipient, surface libre plane et horizontale"
+    },
+    {
+     "notion": "Gaz",
+     "essentiel": "Ni forme ni volume propres, compressible et expansible"
+    },
+    {
+     "notion": "Changement d'état",
+     "essentiel": "Passage d'un état à un autre ; nature et masse conservées ; température constante pour un corps pur"
+    },
+    {
+     "notion": "Vaporisation",
+     "essentiel": "Ébullition (en profondeur, à température fixe) ou évaporation (en surface, à toute température)"
+    }
+   ],
+   "points_a_verifier": [],
+   "statut": "publiee",
+   "artefact_url": null,
+   "created_at": "2026-11-12T12:33:52.352881+00:00",
+   "updated_at": "2026-11-12T19:48:08.029579+00:00",
+   "exercices": [
+    {
+     "id": 20,
+     "type": "question_cours",
+     "ordre": 1,
+     "enonce": "Définis : phénomène physique, phénomène chimique, changement d'état physique.",
+     "niveau": "je_connais",
+     "corrige": "*Complément.* Un phénomène physique est une transformation qui ne modifie pas la nature du corps qui la subit. Un phénomène chimique est une transformation qui modifie la nature du corps qui la subit. Un changement d'état physique est le passage d'un corps d'un état physique à un autre.",
+     "donnees": null,
+     "reponse": null,
+     "lecon_id": 1
+    },
+    {
+     "id": 21,
+     "type": "tableau",
+     "ordre": 2,
+     "enonce": "Nomme le passage : liquide → solide ; solide → liquide ; liquide → gaz ; gaz → liquide ; solide → gaz ; gaz → solide.",
+     "niveau": "je_connais",
+     "corrige": "*Complément.* Solidification ; fusion ; vaporisation ; liquéfaction ; sublimation ; condensation.",
+     "donnees": null,
+     "reponse": [
+      "solidification",
+      "fusion",
+      "vaporisation",
+      "liquéfaction",
+      "sublimation",
+      "condensation"
+     ],
+     "lecon_id": 1
+    },
+    {
+     "id": 22,
+     "type": "tableau",
+     "ordre": 3,
+     "enonce": "Classe en phénomènes physiques ou chimiques : la glace qui fond ; le bois qui brûle ; un ressort qui s'allonge ; la digestion ; l'aimant qui attire un clou ; le pain qui carbonise.",
+     "niveau": "j_applique",
+     "corrige": "*Complément.* Physiques : la glace qui fond, le ressort qui s'allonge, l'aimant qui attire un clou. Chimiques : le bois qui brûle, la digestion, le pain qui carbonise.",
+     "donnees": null,
+     "reponse": {
+      "chimique": [
+       "le bois qui brûle",
+       "la digestion",
+       "le pain qui carbonise"
+      ],
+      "physique": [
+       "la glace qui fond",
+       "un ressort qui s'allonge",
+       "l'aimant qui attire un clou"
+      ]
+     },
+     "lecon_id": 1
+    },
+    {
+     "id": 23,
+     "type": "vrai_faux",
+     "ordre": 4,
+     "enonce": "Vrai ou faux ?",
+     "niveau": "j_applique",
+     "corrige": "*Complément.* 1. Vrai. 2. Faux : un liquide n'est ni compressible ni expansible. 3. Vrai. 4. Faux : la température reste constante pendant la fusion d'un corps pur. 5. Faux : la masse ne change pas.",
+     "donnees": {
+      "affirmations": [
+       "Un solide a une forme propre et un volume propre.",
+       "Un liquide est compressible.",
+       "Un gaz occupe tout le volume qui lui est offert.",
+       "Pendant la fusion de la glace pure, la température augmente.",
+       "Un changement d'état modifie la masse du corps."
+      ]
+     },
+     "reponse": [
+      true,
+      false,
+      true,
+      false,
+      false
+     ],
+     "lecon_id": 1
+    },
+    {
+     "id": 24,
+     "type": "question_cours",
+     "ordre": 5,
+     "enonce": "Le linge sèche au soleil ; l'eau bout dans la marmite. Quel changement d'état se produit dans les deux cas ? En quoi ces deux situations diffèrent-elles ?",
+     "niveau": "je_reflechis",
+     "corrige": "*Complément.* Dans les deux cas, c'est une vaporisation. Le linge sèche par **évaporation** : vaporisation en surface, à toute température. L'eau bout par **ébullition** : vaporisation en profondeur, à une température fixe (100 °C pour l'eau pure).",
+     "donnees": null,
+     "reponse": null,
+     "lecon_id": 1
+    }
+   ],
+   "chapitres": {
+    "titre": "Introduction aux sciences physiques",
+    "partie": "Physique",
+    "classes": {
+     "libelle": "4ème"
+    },
+    "matieres": {
+     "nom": "Sciences physiques",
+     "slug": "sciences-physiques"
+    }
+   }
+  }
+ }
+}

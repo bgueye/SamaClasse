@@ -1,0 +1,182 @@
+# Architecture
+
+## Vue d'ensemble
+
+```
+Écran (StatefulWidget + FutureBuilder)
+   │  AppScope.of(context)
+   ▼
+SamaClasseRepository  ──►  Supabase (PostgREST, clé publishable, RLS)
+   │
+   ▼
+Modèles (fromJson)  ──►  fonctions pures (correction, libellés, regroupements)
+```
+
+Trois couches seulement, volontairement :
+
+1. **Données** (`lib/data/`) : modèles immuables construits depuis le JSON de
+   Supabase, un dépôt qui porte toutes les requêtes, la correction des exercices.
+2. **Noyau** (`lib/core/`) : configuration, thème, préférences locales,
+   composants partagés.
+3. **Fonctionnalités** (`lib/features/<nom>/`) : un dossier par écran ou groupe
+   d'écrans, avec ses widgets et ses fonctions pures.
+
+Pas de gestionnaire d'état externe. Si un besoin d'état partagé apparaît
+(compte connecté, progression), en discuter avant d'ajouter une dépendance ;
+la piste par défaut est un `ChangeNotifier` exposé par `AppScope`.
+
+## Arborescence
+
+```
+lib/
+  main.dart                     Supabase.initialize, AppScope, licences des polices,
+                                écran « Configuration manquante » si pas de clés
+  app.dart                      MaterialApp.router, thème, localisation fr
+  router.dart                   routes go_router + PageIntrouvable
+  core/
+    config.dart                 SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY (dart-define)
+    app_scope.dart              InheritedWidget : repository + preferences
+    services/preferences.dart   SharedPreferencesAsync : classe choisie, dernière leçon
+    theme/couleurs.dart         palette (voir DESIGN.md)
+    theme/matieres.dart         couleur de protège-cahier par slug de matière
+    theme/theme.dart            ThemeData, Styles, interligne Seyès (32 px)
+    widgets/composants.dart     DosCahier, LienRetour, ControleSegmente, LargeurLecture
+    widgets/etats.dart          Chargement, MessageErreur, MessageVide
+    widgets/page_seyes.dart     page de cahier défilante (lignes + marge)
+    widgets/markdown_cahier.dart rendu Markdown des leçons et exercices
+  data/
+    models.dart                 Classe, MatiereDeClasse, Chapitre, LeconResume, Lecon,
+                                Exercice, ElementARetenir, ContexteLecon + énumérations
+    samaclasse_repository.dart  classes(), matieres(), chapitres(), lecon()
+    correction.dart             corriger(), estAutoCorrigeable(), normaliser()…
+    data.dart                   export groupé
+  features/
+    accueil/accueil_screen.dart       classe, reprise, matières
+    matiere/matiere_screen.dart       chapitres par partie, filtre
+    matiere/regroupement.dart         regrouperParPartie(), etatChapitre()
+    lecon/lecon_screen.dart           onglets « La leçon » / « À retenir »
+    exercices/exercices_screen.dart   série d'exercices, bilan
+    exercices/outils_exercices.dart   reponseInitiale(), libelleChemin()…
+    exercices/saisies/                une zone de réponse par type (voir EXERCICES.md)
+test/
+  data/                         modèles et correction, sur de vrais exercices
+  features/                     fonctions pures des écrans
+  features/ecrans_test.dart     les quatre écrans : états, parcours, débordements à 200 %
+  core/seyes_test.dart          alignement du texte sur les lignes Seyès (vraies polices)
+  outils/faux_depot.dart        FauxDepot, FaussesPreferences, lancerApp()
+  outils/polices.dart           chargement des vraies polices dans un test
+  fixtures/supabase.json        réponses Supabase réelles (rôle anon, sans artefact_url)
+  widget_test.dart              composants et zones de réponse
+tool/captures/                  captures d'écran (flutter test tool/captures/…), images dans build/captures/
+supabase/migrations/            SQL du schéma, identique à la base
+config/supabase.json            URL + clé publishable (publique par nature)
+assets/fonts/                   polices embarquées + licences OFL
+```
+
+## Routes
+
+| Adresse | Écran | Données chargées |
+| --- | --- | --- |
+| `/` | `AccueilScreen` | `classes()`, puis `matieres(classeId)` ; préférences locales |
+| `/classe/:classeId/matiere/:matiereId` | `MatiereScreen` | `classes()`, `matieres()`, `chapitres()` en parallèle |
+| `/lecon/:leconId` | `LeconScreen` | `lecon(id)` ; mémorise la dernière leçon |
+| `/lecon/:leconId/exercices` | `ExercicesScreen` | la `Lecon` passée en `extra`, sinon `lecon(id)` |
+
+Règles :
+- Les identifiants viennent de l'URL ; un identifiant non numérique affiche
+  `PageIntrouvable`.
+- `extra` n'est qu'un raccourci : l'écran doit savoir recharger ses données
+  (ouverture directe d'une adresse sur le web, rechargement de la page).
+- Retour : `LienRetour` fait `pop()` s'il y a un écran précédent, sinon `go()`
+  vers une adresse de repli.
+
+## Modèle d'écran
+
+```dart
+class XScreen extends StatefulWidget { … }
+
+class _XScreenState extends State<XScreen> {
+  Future<Donnees>? _chargement;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _chargement ??= _charger();            // une seule fois
+  }
+
+  Future<Donnees> _charger() async {
+    final repo = AppScope.of(context).repository;   // lu avant tout await
+    return …;
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: SafeArea(
+          child: FutureBuilder<Donnees>(
+            future: _chargement,
+            builder: (context, instantane) {
+              if (instantane.hasError) {
+                return MessageErreur(
+                  erreur: instantane.error!,
+                  onReessayer: () => setState(() { _chargement = _charger(); }),
+                );
+              }
+              if (!instantane.hasData) return const Chargement();
+              // contenu, ou MessageVide si la liste est vide
+            },
+          ),
+        ),
+      );
+}
+```
+
+- Envelopper le contenu dans `LargeurLecture` (720 px maximum) pour le web et
+  les tablettes.
+- Listes longues : `ListView.builder` / `SliverList`, avec `RefreshIndicator`.
+- Jamais de `BuildContext` utilisé après un `await` sans vérifier `mounted`.
+
+## Recettes
+
+### Ajouter une requête
+
+1. Écrire la méthode dans `SamaClasseRepository` : sélection explicite des
+   colonnes, tri explicite (`order`), tri des tables imbriquées avec
+   `referencedTable`.
+2. Ajouter ou adapter le modèle (`fromJson`) dans `models.dart`.
+3. Ajouter un test de `fromJson` avec la forme réelle de la réponse (la relever
+   avec `execute_sql` ou dans le tableau de bord).
+4. Vérifier en rôle `anon` que la règle RLS laisse passer ce qu'il faut, et
+   seulement ça.
+
+### Ajouter un écran
+
+1. Dossier `lib/features/<nom>/`, écran sur le modèle ci-dessus.
+2. Route dans `lib/router.dart`, adresse lisible et en français.
+3. Fonctions pures dans un fichier à part, avec tests dans `test/features/`.
+4. Vérifier les quatre états et l'accessibilité (voir `DESIGN.md`).
+
+### Ajouter un type d'exercice
+
+Voir `EXERCICES.md`, section « Ajouter un type ».
+
+## Configuration et secrets
+
+- `config/supabase.json` est lu par `--dart-define-from-file`. Il contient
+  l'URL et la clé **publishable** : elle est faite pour être embarquée, la
+  sécurité repose sur les RLS. Il peut rester dans le dépôt.
+- Aucune autre clé dans le dépôt. Si une fonction serveur (Edge Function)
+  devient nécessaire, ses secrets vont dans les secrets Supabase.
+- Sans configuration, `main.dart` affiche un écran d'explication au lieu de
+  planter.
+
+## Dépendances
+
+| Paquet | Usage |
+| --- | --- |
+| `supabase_flutter` ^2.17.1 | Accès à la base. Le code utilise déjà `publishableKey`. La v3 n'existe qu'en préversion (`3.0.0-dev`, au 13/11/2026 ; dernière stable 2.18.3). Migration à planifier à sa sortie stable, voir FEUILLE_DE_ROUTE. |
+| `go_router` | Navigation et adresses web |
+| `flutter_markdown_plus` | Texte des leçons, énoncés, corrigés |
+| `shared_preferences` (`SharedPreferencesAsync`) | Préférences locales |
+| `flutter_localizations` | Textes Material en français |
+
+Toute nouvelle dépendance se discute d'abord (poids de l'application, entretien).
