@@ -48,6 +48,7 @@ lib/
   router.dart                   routes go_router + PageIntrouvable
   core/
     config.dart                 SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY (dart-define)
+    version.dart                version affichée, à garder égale à pubspec.yaml (testé)
     app_scope.dart              InheritedWidget : repository + preferences
     services/preferences.dart   SharedPreferencesAsync : classe choisie, dernière leçon
     theme/couleurs.dart         palette (voir DESIGN.md)
@@ -69,7 +70,8 @@ lib/
     correction.dart             corriger(), estAutoCorrigeable(), normaliser()…
     data.dart                   export groupé
   features/
-    accueil/accueil_screen.dart       classe, reprise, matières
+    a_propos/a_propos_screen.dart     présentation, version, licences, crédit (D18)
+    accueil/accueil_screen.dart       classe, reprise, matières, bouton « À propos »
     matiere/matiere_screen.dart       chapitres par partie, filtre
     matiere/regroupement.dart         regrouperParPartie(), etatChapitre()
     lecon/lecon_screen.dart           onglets « La leçon » / « À retenir »
@@ -89,6 +91,7 @@ test/
   outils/polices.dart           chargement des vraies polices dans un test
   fixtures/supabase.json        réponses Supabase réelles (rôle anon, sans artefact_url)
   widget_test.dart              composants et zones de réponse
+  flutter_test_config.dart      réglage commun : un tap qui manque sa cible fait échouer le test
 tool/captures/                  captures d'écran (flutter test tool/captures/…), images dans build/captures/
 tool/polices/sous_ensembles.py  fabrique les polices de secours (Python + fontTools, D17)
 supabase/migrations/            SQL du schéma, identique à la base
@@ -104,6 +107,7 @@ assets/fonts/                   polices embarquées (dont les polices de secours
 | `/classe/:classeId/matiere/:matiereId` | `MatiereScreen` | `classes()`, `matieres()`, `chapitres()` en parallèle |
 | `/lecon/:leconId` | `LeconScreen` | `lecon(id)` ; mémorise la dernière leçon |
 | `/lecon/:leconId/exercices` | `ExercicesScreen` | la `Lecon` passée en `extra`, sinon `lecon(id)` |
+| `/a-propos` | `AProposScreen` | aucune (page fixe : présentation, version, licences, D18) |
 
 Règles :
 - Les identifiants viennent de l'URL ; un identifiant non numérique affiche

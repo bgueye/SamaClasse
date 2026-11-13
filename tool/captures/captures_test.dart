@@ -82,6 +82,9 @@ void main() {
         await tester.pumpAndSettle();
       }
       await _capturer(tester, 'tel${suffixe}_06_bilan');
+
+      await ouvrir('/a-propos');
+      await _capturer(tester, 'tel${suffixe}_07_a_propos');
     });
   }
 

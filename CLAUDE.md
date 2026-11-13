@@ -39,7 +39,7 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
 - Le squelette, écrit sans compilateur, **compile désormais** (13/11/2026) :
   deux imports manquants corrigés (`page_seyes.dart` dans `lecon_screen.dart`,
   `flutter/foundation.dart` dans `main.dart`). `flutter analyze` : aucun
-  problème ; `flutter test` : 105/105, dont des tests d'écrans sur la vraie
+  problème ; `flutter test` : 109/109, dont des tests d'écrans sur la vraie
   application avec un faux dépôt (`test/outils/faux_depot.dart`),
   l'alignement Seyès et la lisibilité des puces. Vérifié à la main sur
   Android (Galaxy S23 Ultra, Android 17) et sur Chrome.

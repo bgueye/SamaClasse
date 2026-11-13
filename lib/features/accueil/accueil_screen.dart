@@ -153,12 +153,24 @@ class _AccueilScreenState extends State<AccueilScreen> with RechargeSiNouveauCon
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Semantics(
-            header: true,
-            child: const Text(
-              'SamaClasse',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Couleurs.encre),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: const Text(
+                    'SamaClasse',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Couleurs.encre),
+                  ),
+                ),
+              ),
+              // Discret, mais cible tactile de 48 px et nom lu par TalkBack.
+              IconButton(
+                onPressed: () => context.push('/a-propos'),
+                tooltip: 'À propos',
+                icon: const Icon(Icons.info_outline_rounded, color: Couleurs.texteSecondaire),
+              ),
+            ],
           ),
           const SizedBox(height: 18),
           if (classes.length > 1)

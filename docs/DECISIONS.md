@@ -24,6 +24,8 @@ dépendances de développement seulement (rien de plus dans l'application).
 Présentation, version, licences des polices, contact. La version est écrite
 dans le code à chaque publication (pas de `package_info_plus`). Aucune adresse
 de contact affichée sans l'accord explicite de Bocar.
+Validé le 13/11/2026 : texte accepté tel quel, **pas d'adresse de contact**,
+crédit « Conçue par Bocar Gueye ». Page ouverte par le bouton ⓘ de l'accueil.
 
 ### D17. Police de secours pour les symboles
 *Bocar, 13/11/2026.*

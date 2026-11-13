@@ -28,6 +28,9 @@ void main() {
     expect(find.text('Hors connexion · contenu du 13/11/2026'), findsOneWidget);
 
     // On peut lire une leçon et faire ses exercices sans réseau.
+    // Avec le bandeau, la matière peut être juste sous le bas de l'écran.
+    await tester.ensureVisible(find.text('Sciences physiques'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Sciences physiques'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Introduction aux sciences physiques'));

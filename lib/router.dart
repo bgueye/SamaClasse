@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'core/widgets/composants.dart';
 import 'core/widgets/etats.dart';
 import 'data/data.dart';
+import 'features/a_propos/a_propos_screen.dart';
 import 'features/accueil/accueil_screen.dart';
 import 'features/exercices/exercices_screen.dart';
 import 'features/lecon/lecon_screen.dart';
@@ -14,6 +15,7 @@ import 'features/matiere/matiere_screen.dart';
 ///   /classe/1/matiere/5             chapitres d'une matière
 ///   /lecon/12                       une leçon
 ///   /lecon/12/exercices             ses exercices
+///   /a-propos                       présentation, version, licences
 ///
 /// [emplacementInitial] sert aux tests (ouvrir directement `/lecon/1`, comme
 /// une adresse tapée sur le web) ; l'application démarre toujours sur `/`.
@@ -24,6 +26,7 @@ GoRouter creerRouteur({String emplacementInitial = '/'}) => GoRouter(
           path: '/',
           builder: (context, state) => const AccueilScreen(),
           routes: [
+            GoRoute(path: 'a-propos', builder: (context, state) => const AProposScreen()),
             GoRoute(
               path: 'classe/:classeId/matiere/:matiereId',
               builder: (context, state) {
