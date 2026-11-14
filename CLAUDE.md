@@ -62,8 +62,11 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   (quatre états, 200 %) et le regarder avec `tool/captures/captures_test.dart`.
 - Écrans livrés : accueil, matière, leçon, exercices, « À propos ». Lecture
   seule, sans compte.
-- Une seule leçon est publiée en base : c'est normal que les autres matières
-  affichent « Leçon pas encore disponible ».
+- 10 leçons sur 13 sont publiées en base (14/11/2026) : c'est normal que les
+  autres affichent « Leçon pas encore disponible ».
+- Phase 2 en cours : tables `enfants` et `redacteurs` créées (migration
+  `comptes_parents_enfants`, D21 à D23) ; écrans de connexion et de profils
+  enfants à faire.
 - Dépôt distant : `origin` = https://github.com/bgueye/SamaClasse (branche
   `main`). Toujours demander avant de pousser.
 

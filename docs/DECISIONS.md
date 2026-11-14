@@ -6,6 +6,28 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D23. Rôle rédacteur : plusieurs rédacteurs, attribués à la main
+*Bocar, 14/11/2026.*
+D'autres rédacteurs que Bocar sont prévus. Le rôle se donne à la main, par le
+tableau de bord (table `redacteurs`), jamais depuis l'application. Un
+rédacteur peut aussi être parent. La phase 4 gardera la trace de qui a publié
+quoi.
+
+### D22. Connexion : code à 6 chiffres reçu par e-mail
+*Bocar, 14/11/2026.*
+Pas de mot de passe : le parent saisit son e-mail, reçoit un code et le tape
+dans l'application. Gratuit, et fonctionne même si l'e-mail est lu sur un
+autre appareil (contrairement au lien magique). Avant la diffusion, brancher
+un service d'envoi d'e-mails (SMTP) : l'envoi intégré de Supabase est limité
+à quelques messages par heure. SMS écarté (coût).
+
+### D21. Élèves : compte parent et profils enfants sans identifiants
+*Bocar, 14/11/2026.*
+Seul le parent a un compte. Il crée des profils enfants : prénom et classe,
+rien d'autre. Le moins de données possible sur des mineurs, et adapté au
+téléphone familial. Sans compte, l'application reste entièrement utilisable
+en lecture.
+
 ### D20. Lecture à voix haute reportée
 *Bocar, 13/11/2026.*
 Le bouton « Écouter la leçon » des maquettes n'est pas pour la phase 1. Piste

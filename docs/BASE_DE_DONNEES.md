@@ -11,16 +11,15 @@ Le SQL de référence est dans `supabase/migrations/` :
 | 20261112123201 | `schema_programme_lecons` | énumérations, tables, trigger `updated_at`, RLS |
 | 20261112133342 | `vue_matieres_par_classe` | vue des compteurs, index |
 
-## Contenu au 13/11/2026
+## Contenu au 14/11/2026
 
 | Classe | Code | Cycle | Ordre | Chapitres | Leçons | Publiées |
 | --- | --- | --- | --- | --- | --- | --- |
-| 4ème | `4e` | moyen | 9 | 111 | 8 | 1 |
-| Seconde L | `2nde-L` | secondaire | 11 | 81 | 5 | 0 |
+| 4ème | `4e` | moyen | 9 | 111 | 8 | 6 |
+| Seconde L | `2nde-L` | secondaire | 11 | 81 | 5 | 4 |
 
-10 matières, 11 sources, 63 exercices. Seule la leçon « Introduction aux
-sciences physiques » (4ème) est publiée ; les 12 autres sont au statut
-`a_verifier`. Les valeurs de `ordre` (4ème = 9, Seconde L = 11) correspondent
+10 matières, 11 sources, 63 exercices. 10 leçons publiées par Bocar ; les
+3 autres sont au statut `a_verifier`. Les valeurs de `ordre` (4ème = 9, Seconde L = 11) correspondent
 à la position dans le cursus complet (CI = 1 … Terminale = 13) : garder cette
 numérotation pour les classes ajoutées. À décider avant d'ajouter Seconde S :
 les séries d'une même année partagent-elles le même `ordre` ?
@@ -39,6 +38,9 @@ classes ─┐
 sources ─┘       │  (source_id, facultatif)
                  └─< lecons ─< exercices
                         └─< lecon_sources >── sources
+
+auth.users ─< enfants >── classes        (phase 2, D21)
+auth.users ─── redacteurs                (phase 2, D23)
 ```
 
 ### `classes`
@@ -104,6 +106,15 @@ Formats de `donnees` et `reponse` : voir `EXERCICES.md`.
 ### `lecon_sources`
 Clé (`lecon_id`, `source_id`), `nature` (`nature_source`).
 
+### `enfants` (phase 2, D21)
+`id`, `parent_id` (compte parent, rempli par défaut avec `auth.uid()`),
+`prenom` (1 à 40 caractères), `classe_id`, `created_at`. 10 profils au plus
+par compte (déclencheur `limiter_enfants`). Aucune autre donnée sur l'enfant.
+
+### `redacteurs` (phase 2, D23)
+`id` (compte), `ajoute_le`. Ajout à la main seulement :
+`insert into public.redacteurs (id) select id from auth.users where email = '…';`
+
 ### Vue `matieres_par_classe` (security_invoker)
 `classe_id`, `matiere_id`, `slug`, `nom`, `nb_chapitres`, `nb_lecons`
 (leçons **publiées**). Comme elle applique les RLS de la personne qui lit, les
@@ -125,15 +136,22 @@ base impose de l'ajouter côté Dart dans la même livraison.
 
 ## Règles RLS
 
-RLS activée sur toutes les tables. Lecture seule pour `anon` et `authenticated` :
+RLS activée sur toutes les tables. Contenu en lecture seule pour `anon` et
+`authenticated` ; comptes (phase 2) réservés à leur propriétaire :
 
 | Table | Qui voit quoi |
 | --- | --- |
 | `classes`, `matieres`, `sources`, `chapitres` | tout (programme public) |
 | `lecons` | `statut = 'publiee'` seulement |
 | `exercices`, `lecon_sources` | seulement ceux d'une leçon publiée |
+| `enfants` | `authenticated` : ses propres enfants seulement (lecture, ajout, modification, suppression) ; `anon` : rien |
+| `redacteurs` | `authenticated` : sa propre ligne (savoir s'il est rédacteur) ; aucune écriture ; `anon` : rien |
 
-Aucune politique d'écriture : la saisie se fait aujourd'hui par le tableau de
+Tests du 14/11/2026 (deux comptes simulés) : un parent ne voit, ne modifie
+ni ne supprime les enfants d'un autre, ne peut pas lui en donner un, ne peut
+pas se déclarer rédacteur ; le 11e profil est refusé.
+
+Aucune politique d'écriture sur le contenu : la saisie se fait aujourd'hui par le tableau de
 bord ou une connexion d'administration, jamais depuis l'application.
 Conséquence pour le code : une leçon non publiée renvoie `null`
 (`maybeSingle`), et l'écran affiche « Leçon pas encore disponible ».

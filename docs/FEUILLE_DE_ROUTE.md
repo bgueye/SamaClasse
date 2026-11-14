@@ -89,7 +89,7 @@ Ordre de réalisation :
 | 2 | Libellés des catégories | champ facultatif `donnees.categories` (D14) ; Bocar complète les tableaux en base | côté application fait le 13/11/2026 ; tableaux 17 et 31 à compléter en base |
 | 3 | Police de secours | sous-ensembles de Noto Sans et Noto Sans Math embarqués (D17) | fait le 13/11/2026 |
 | 4 | Page « À propos » | texte rédigé par Claude, validé par Bocar ; pas de contact, crédit « Conçue par Bocar Gueye » (D18) | fait le 13/11/2026 |
-| 5 | Icône et écran de lancement | variante A « Couverture » choisie par Bocar (D19) | intégrée le 14/11/2026 ; à vérifier sur le téléphone |
+| 5 | Icône et écran de lancement | variante A « Couverture » choisie par Bocar (D19) | fait le 14/11/2026, vérifié sur le téléphone par Bocar |
 | 6 | Schémas des leçons | stockage Supabase public `schemas` (D15) | fait le 14/11/2026 (espace de stockage et affichage) ; à vérifier avec une vraie image déposée par Bocar |
 | — | Lecture à voix haute | reportée (D20) | plus tard |
 
@@ -103,7 +103,11 @@ téléphone d'entrée de gamme avec une connexion 3G.
 Objectif : savoir qui utilise l'application (élève, parent, rédacteur) sans
 fermer l'accès libre au programme et aux leçons publiées.
 
-### Décisions ouvertes (à trancher par Bocar avant de coder)
+### Décisions (tranchées par Bocar le 14/11/2026 : D21, D22, D23)
+
+Choix retenus : 1 a), code à 6 chiffres par e-mail, plusieurs rédacteurs
+attribués à la main. Migration proposée :
+`supabase/migrations/20261114101641_comptes_parents_enfants.sql` (appliquée le 14/11/2026).
 
 1. **Comment un élève se connecte-t-il ?** Les élèves sont mineurs.
    - a) Compte parent, profils enfants rattachés (l'enfant n'a pas
@@ -239,8 +243,8 @@ Critères d'acceptation :
 | 1 | ~~Format des libellés de catégories des tableaux~~ : tranché (D14) | 1 |
 | 2 | ~~Images des schémas : stockage, dépôt~~ : tranché (D15) | 1 |
 | 3 | ~~Lecture à voix haute (dépendance)~~ : reportée (D20) | plus tard |
-| 4 | Connexion des élèves mineurs (a, b ou c) | 2 |
-| 5 | Méthode de connexion | 2 |
+| 4 | ~~Connexion des élèves mineurs~~ : tranché (D21, compte parent et profils enfants) | 2 |
+| 5 | ~~Méthode de connexion~~ : tranché (D22, code par e-mail) ; rôle rédacteur : D23 | 2 |
 | 6 | Enregistrement hors connexion des résultats | 3 |
 | 7 | Historique des points levés | 4 |
 | 8 | Identifiant Android, hébergement web | 5 |
