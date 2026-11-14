@@ -138,6 +138,23 @@ bord ou une connexion d'administration, jamais depuis l'application.
 Conséquence pour le code : une leçon non publiée renvoie `null`
 (`maybeSingle`), et l'écran affiche « Leçon pas encore disponible ».
 
+## Stockage des schémas (D15)
+
+Espace de stockage **public** `schemas` (migration `stockage_schemas`) :
+150 Ko maximum par fichier, PNG, JPEG ou WebP seulement (pas de SVG).
+Bocar dépose les images par le tableau de bord, puis les insère dans le
+Markdown avec une description obligatoire :
+`![Description](https://earcfeorkfeenqprsxpg.supabase.co/storage/v1/object/public/schemas/<chemin>)`.
+
+Aucune politique sur `storage.objects` : un fichier se télécharge par son
+adresse publique, mais `anon` et `authenticated` ne peuvent ni lister
+l'espace, ni déposer, remplacer ou supprimer un fichier (vérifié le
+14/11/2026). Ne pas ajouter de politique « select » : elle permettrait
+seulement de lister tous les fichiers.
+
+Hors connexion, les images ne sont pas gardées sur le téléphone : la
+description s'affiche à leur place (à revoir quand les schémas seront nombreux).
+
 ## Requêtes de l'application
 
 Depuis la décision D16 (hors connexion), l'application télécharge **tout le
