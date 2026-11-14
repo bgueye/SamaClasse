@@ -58,6 +58,7 @@ lib/
     widgets/etats.dart          Chargement, MessageErreur, MessageVide
     widgets/page_seyes.dart     page de cahier défilante (lignes + marge)
     widgets/markdown_cahier.dart rendu Markdown des leçons et exercices
+    widgets/schema_cahier.dart  schémas insérés dans le Markdown (D15) : filtre d'adresse, description de secours
   data/
     models.dart                 Classe, MatiereDeClasse, Chapitre, LeconResume, Lecon,
                                 Exercice, ElementARetenir, ContexteLecon + énumérations

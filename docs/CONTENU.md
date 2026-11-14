@@ -43,6 +43,22 @@ Aujourd'hui l'application n'affiche pas ce statut aux élèves. Le montrer
 8. Sources et fidélité → `lecon_sources` (et l'artefact)
 9. Points à vérifier (facultatif) → `points_a_verifier`
 
+## Insérer un schéma (D15)
+
+1. Préparer l'image : PNG, JPEG ou WebP, **moins de 150 Ko** (le serveur
+   refuse au-delà). Une largeur de 1 000 à 1 200 pixels suffit ; pas de SVG.
+2. La déposer dans l'espace de stockage `schemas` par le tableau de bord
+   Supabase (Storage), par exemple `4eme/svt/cycle_eau.png`.
+3. L'insérer dans `introduction`, `corps`, un énoncé ou un corrigé, sur une
+   ligne à part :
+   `![Le cycle de l’eau : évaporation, condensation, précipitations](https://earcfeorkfeenqprsxpg.supabase.co/storage/v1/object/public/schemas/4eme/svt/cycle_eau.png)`
+
+La **description est obligatoire** et doit se suffire à elle-même : elle est
+lue par les lecteurs d'écran et s'affiche à la place de l'image hors connexion
+ou si l'image ne charge pas (« Schéma : … »). L'application n'affiche que les
+images de l'espace `schemas` ; une adresse d'un autre site est remplacée par
+sa description.
+
 ## Cycle de vie d'une leçon (`statut_lecon`)
 
 ```

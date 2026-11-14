@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
+import '../config.dart';
 import '../theme/couleurs.dart';
 import '../theme/theme.dart';
 import 'page_seyes.dart';
+import 'schema_cahier.dart';
 
 /// Texte Markdown des leçons et des exercices.
 ///
@@ -11,10 +13,19 @@ import 'page_seyes.dart';
 /// l'interligne de 32 px et les titres de partie (`##`) sont écrits en
 /// cursive rouge, comme dans les maquettes.
 class MarkdownCahier extends StatelessWidget {
-  const MarkdownCahier({super.key, required this.data, this.surSeyes = false});
+  const MarkdownCahier({
+    super.key,
+    required this.data,
+    this.surSeyes = false,
+    this.urlSupabase = Config.supabaseUrl,
+  });
 
   final String data;
   final bool surSeyes;
+
+  /// Projet Supabase dont les schémas sont autorisés (voir [SchemaCahier]).
+  /// Paramètre seulement pour les tests.
+  final String urlSupabase;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +69,14 @@ class MarkdownCahier extends StatelessWidget {
       softLineBreak: true,
       // Sur une page Seyès, les titres cursifs sont recalés sur les lignes.
       builders: surSeyes ? {'h1': _titreCursif, 'h2': _titreCursif} : const {},
+      // Schémas (D15) : seulement ceux de l'espace `schemas`, description
+      // lue par les lecteurs d'écran et affichée si l'image manque.
+      imageBuilder: (adresse, titre, description) => SchemaCahier(
+        adresse: adresse,
+        description: description,
+        surSeyes: surSeyes,
+        urlSupabase: urlSupabase,
+      ),
     );
   }
 }

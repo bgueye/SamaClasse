@@ -90,7 +90,7 @@ Ordre de réalisation :
 | 3 | Police de secours | sous-ensembles de Noto Sans et Noto Sans Math embarqués (D17) | fait le 13/11/2026 |
 | 4 | Page « À propos » | texte rédigé par Claude, validé par Bocar ; pas de contact, crédit « Conçue par Bocar Gueye » (D18) | fait le 13/11/2026 |
 | 5 | Icône et écran de lancement | variante A « Couverture » choisie par Bocar (D19) | intégrée le 14/11/2026 ; à vérifier sur le téléphone |
-| 6 | Schémas des leçons | stockage Supabase public `schemas` (D15) | espace créé le 14/11/2026 ; affichage dans l’application à faire |
+| 6 | Schémas des leçons | stockage Supabase public `schemas` (D15) | fait le 14/11/2026 (espace de stockage et affichage) ; à vérifier avec une vraie image déposée par Bocar |
 | — | Lecture à voix haute | reportée (D20) | plus tard |
 
 Critère commun : rien ne doit ralentir l'ouverture de l'application sur un
