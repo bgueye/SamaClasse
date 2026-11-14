@@ -1,0 +1,13 @@
+# Écran de lancement de SamaClasse (décision D19) : fond bleu encre, « Sc »
+# blanc au centre, comme l'icône.
+# Régénérer : dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#2140C9"
+  image: assets/icone/icone_lettres.png
+  # Android 12+ impose son propre écran : icône centrée dans un cercle.
+  android_12:
+    image: assets/icone/icone_lettres.png
+    color: "#2140C9"
+  android: true
+  ios: true
+  web: true

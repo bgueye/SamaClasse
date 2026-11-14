@@ -18,6 +18,11 @@ Claude propose une icône dans la charte (protège-cahier bleu encre, marge
 rouge, « S » cursif) ; rien n'est intégré avant la validation de Bocar.
 Génération par `flutter_launcher_icons` et `flutter_native_splash`, en
 dépendances de développement seulement (rien de plus dans l'application).
+Choisi le 13/11/2026 : variante A « Couverture » (fond bleu encre, lignes
+Seyès, marge rouge, monogramme « Sc » blanc ; le S seul de Playwrite ne se
+lisait pas comme une écriture de cahier). Images sources dans `assets/icone/`,
+fabriquées par `tool/icone/icone_test.dart` ; écran de lancement bleu encre
+avec « Sc » blanc.
 
 ### D18. Page « À propos » : texte rédigé par Claude, relu par Bocar
 *Bocar, 13/11/2026.*

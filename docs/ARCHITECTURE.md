@@ -94,6 +94,11 @@ test/
   flutter_test_config.dart      réglage commun : un tap qui manque sa cible fait échouer le test
 tool/captures/                  captures d'écran (flutter test tool/captures/…), images dans build/captures/
 tool/polices/sous_ensembles.py  fabrique les polices de secours (Python + fontTools, D17)
+tool/icone/icone_test.dart      dessine l'icône (D19) → assets/icone/, puis
+                                dart run flutter_launcher_icons && dart run flutter_native_splash:create
+assets/icone/                   images sources de l'icône et de l'écran de lancement
+flutter_launcher_icons.yaml,
+flutter_native_splash.yaml      réglages des deux générateurs (dépendances de développement)
 supabase/migrations/            SQL du schéma, identique à la base
 config/supabase.json            URL + clé publishable (publique par nature)
 assets/fonts/                   polices embarquées (dont les polices de secours, D17) + licences OFL

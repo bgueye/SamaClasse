@@ -1,0 +1,21 @@
+# Icône de SamaClasse (décision D19, variante A « Couverture »).
+# Images sources fabriquées par tool/icone/icone_test.dart.
+# Régénérer : flutter test tool/icone/icone_test.dart && dart run flutter_launcher_icons
+flutter_launcher_icons:
+  image_path: "assets/icone/icone.png"
+  android: true
+  min_sdk_android: 21
+  # Icône adaptative (Android 8+) : les deux couches sont déjà dessinées à
+  # l'échelle 108 dp, lettres dans la zone sûre ; pas de marge supplémentaire.
+  adaptive_icon_background: "assets/icone/icone_fond.png"
+  adaptive_icon_foreground: "assets/icone/icone_lettres.png"
+  adaptive_icon_foreground_inset: 0
+  # Icônes à thème (Android 13+) : la silhouette des lettres.
+  adaptive_icon_monochrome: "assets/icone/icone_lettres.png"
+  ios: true
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/icone/icone.png"
+    background_color: "#2140C9"
+    theme_color: "#2140C9"

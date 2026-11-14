@@ -89,7 +89,7 @@ Ordre de réalisation :
 | 2 | Libellés des catégories | champ facultatif `donnees.categories` (D14) ; Bocar complète les tableaux en base | côté application fait le 13/11/2026 ; tableaux 17 et 31 à compléter en base |
 | 3 | Police de secours | sous-ensembles de Noto Sans et Noto Sans Math embarqués (D17) | fait le 13/11/2026 |
 | 4 | Page « À propos » | texte rédigé par Claude, validé par Bocar ; pas de contact, crédit « Conçue par Bocar Gueye » (D18) | fait le 13/11/2026 |
-| 5 | Icône et écran de lancement | maquette proposée par Claude, validée par Bocar (D19) | à faire |
+| 5 | Icône et écran de lancement | variante A « Couverture » choisie par Bocar (D19) | intégrée le 14/11/2026 ; à vérifier sur le téléphone |
 | 6 | Schémas des leçons | stockage Supabase public `schemas`, migration à soumettre à Bocar (D15) | à faire |
 | — | Lecture à voix haute | reportée (D20) | plus tard |
 

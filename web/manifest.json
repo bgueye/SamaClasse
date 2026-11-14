@@ -1,11 +1,11 @@
 {
-    "name": "samaclasse",
-    "short_name": "samaclasse",
+    "name": "SamaClasse",
+    "short_name": "SamaClasse",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#2140C9",
+    "theme_color": "#2140C9",
+    "description": "Le programme scolaire du Sénégal : leçons et exercices corrigés.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
