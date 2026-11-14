@@ -1,5 +1,6 @@
-// Préférences gardées sur l'appareil : classe choisie et dernière leçon
-// ouverte (pour « Reprendre où tu t'es arrêté »). Rien n'est envoyé au serveur.
+// Préférences gardées sur l'appareil : classe choisie, dernière leçon
+// ouverte (pour « Reprendre où tu t'es arrêté ») et profil enfant utilisé sur
+// ce téléphone (phase 2). Rien n'est envoyé au serveur.
 
 import 'dart:convert';
 
@@ -37,6 +38,22 @@ class DerniereLecon {
       );
 }
 
+/// Profil enfant choisi sur ce téléphone (« Utiliser sur ce téléphone »).
+///
+/// Gardé localement pour l'afficher sans réseau (« Bonjour Awa ! ») ; la
+/// phase 3 s'en servira pour rattacher les résultats au bon enfant.
+class EnfantActif {
+  const EnfantActif({required this.id, required this.prenom});
+
+  final int id;
+  final String prenom;
+
+  Map<String, Object?> toJson() => {'id': id, 'prenom': prenom};
+
+  factory EnfantActif.fromJson(Map<String, dynamic> json) =>
+      EnfantActif(id: (json['id'] as num).toInt(), prenom: json['prenom'] as String);
+}
+
 class Preferences {
   Preferences([SharedPreferencesAsync? stockage]) : _stockage = stockage ?? SharedPreferencesAsync();
 
@@ -44,6 +61,7 @@ class Preferences {
 
   static const _cleClasse = 'classe_id';
   static const _cleDerniereLecon = 'derniere_lecon';
+  static const _cleEnfantActif = 'enfant_actif';
 
   /// Les préférences ne doivent jamais bloquer l'application : en cas
   /// d'erreur du stockage, on fait comme s'il était vide.
@@ -76,6 +94,30 @@ class Preferences {
   Future<void> memoriserLecon(DerniereLecon lecon) async {
     try {
       await _stockage.setString(_cleDerniereLecon, jsonEncode(lecon.toJson()));
+    } catch (_) {
+      // Sans gravité : la préférence ne sera simplement pas retenue.
+    }
+  }
+
+  Future<EnfantActif?> enfantActif() async {
+    try {
+      final texte = await _stockage.getString(_cleEnfantActif);
+      if (texte == null) return null;
+      return EnfantActif.fromJson(jsonDecode(texte) as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Retient [enfant] comme profil de ce téléphone ; `null` l'oublie (à la
+  /// déconnexion, ou quand le profil est supprimé).
+  Future<void> choisirEnfant(EnfantActif? enfant) async {
+    try {
+      if (enfant == null) {
+        await _stockage.remove(_cleEnfantActif);
+      } else {
+        await _stockage.setString(_cleEnfantActif, jsonEncode(enfant.toJson()));
+      }
     } catch (_) {
       // Sans gravité : la préférence ne sera simplement pas retenue.
     }

@@ -106,8 +106,14 @@ fermer l'accès libre au programme et aux leçons publiées.
 ### Décisions (tranchées par Bocar le 14/11/2026 : D21, D22, D23)
 
 Choix retenus : 1 a), code à 6 chiffres par e-mail, plusieurs rédacteurs
-attribués à la main. Migration proposée :
+attribués à la main. Migration :
 `supabase/migrations/20261114101641_comptes_parents_enfants.sql` (appliquée le 14/11/2026).
+
+Avancement (14/11/2026) : écrans « Espace parents » faits (connexion par code,
+« Mes enfants », profil de ce téléphone, déconnexion), 26 tests. Reste :
+réglages du tableau de bord (modèles d'e-mail avec `{{ .Token }}`), essai réel
+sur le téléphone, texte « Tes données » de la page « À propos » à revoir avec
+Bocar (il dit « Pas de compte à créer »).
 
 1. **Comment un élève se connecte-t-il ?** Les élèves sont mineurs.
    - a) Compte parent, profils enfants rattachés (l'enfant n'a pas

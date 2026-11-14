@@ -40,6 +40,9 @@ Future<void> main() async {
   runApp(AppScope(
     repository: contenu,
     preferences: Preferences(),
+    // Compte parent (phase 2). La session est restaurée par Supabase au
+    // lancement, sans réseau : le compte connecté est connu tout de suite.
+    compte: CompteSupabase(Supabase.instance.client),
     child: const SamaClasseApp(),
   ));
 }

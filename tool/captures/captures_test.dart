@@ -17,12 +17,20 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:samaclasse/app.dart';
+import 'package:samaclasse/core/services/preferences.dart';
 import 'package:samaclasse/core/theme/theme.dart';
+import 'package:samaclasse/data/data.dart';
 
 import '../../test/outils/faux_depot.dart';
 import '../../test/outils/polices.dart';
 
 const _dossier = 'build/captures';
+
+/// Profils de l'espace parents pour les captures.
+const _enfants = [
+  Enfant(id: 1, prenom: 'Awa', classeId: 1),
+  Enfant(id: 2, prenom: 'Moussa', classeId: 2),
+];
 
 /// Enregistre l'écran entier en PNG.
 Future<void> _capturer(WidgetTester tester, String nom) async {
@@ -85,6 +93,30 @@ void main() {
 
       await ouvrir('/a-propos');
       await _capturer(tester, 'tel${suffixe}_07_a_propos');
+
+      // Espace parents (phase 2) : connexion, puis profils enfants.
+      await ouvrir('/compte');
+      await _capturer(tester, 'tel${suffixe}_08_connexion');
+      await lancerApp(
+        tester,
+        depot: FauxDepot(),
+        compte: FauxCompte(connecte: 'parent@exemple.sn', enfants: _enfants),
+        preferences: FaussesPreferences(enfant: const EnfantActif(id: 1, prenom: 'Awa')),
+        chemin: '/compte',
+        echelleTexte: echelle,
+      );
+      await _capturer(tester, 'tel${suffixe}_09_mes_enfants');
+      await tester.ensureVisible(find.text('Ajouter un enfant'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Ajouter un enfant'));
+      await _capturer(tester, 'tel${suffixe}_10_fiche_enfant');
+      await lancerApp(
+        tester,
+        depot: FauxDepot(),
+        preferences: FaussesPreferences(enfant: const EnfantActif(id: 1, prenom: 'Awa')),
+        echelleTexte: echelle,
+      );
+      await _capturer(tester, 'tel${suffixe}_11_accueil_profil');
     });
   }
 
@@ -121,9 +153,19 @@ void main() {
       ('/classe/1/matiere/2', 'web_02_matiere'),
       ('/lecon/1', 'web_03_lecon'),
       ('/lecon/1/exercices', 'web_05_exercice'),
+      ('/compte', 'web_08_connexion'),
     ]) {
       await lancerApp(tester, depot: FauxDepot(), chemin: chemin, taille: tailleWeb);
       await _capturer(tester, nom);
     }
+    await lancerApp(
+      tester,
+      depot: FauxDepot(),
+      compte: FauxCompte(connecte: 'parent@exemple.sn', enfants: _enfants),
+      preferences: FaussesPreferences(enfant: const EnfantActif(id: 1, prenom: 'Awa')),
+      chemin: '/compte',
+      taille: tailleWeb,
+    );
+    await _capturer(tester, 'web_09_mes_enfants');
   });
 }

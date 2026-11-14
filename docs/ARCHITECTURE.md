@@ -34,9 +34,10 @@ Trois couches seulement, volontairement :
 3. **Fonctionnalités** (`lib/features/<nom>/`) : un dossier par écran ou groupe
    d'écrans, avec ses widgets et ses fonctions pures.
 
-Pas de gestionnaire d'état externe. Si un besoin d'état partagé apparaît
-(compte connecté, progression), en discuter avant d'ajouter une dépendance ;
-la piste par défaut est un `ChangeNotifier` exposé par `AppScope`.
+Pas de gestionnaire d'état externe. Le compte parent (phase 2) suit la piste
+prévue : un `ChangeNotifier` (`Compte`) exposé par `AppScope`, que les écrans
+écoutent avec un `ListenableBuilder`. Pour un autre besoin d'état partagé
+(progression…), même piste ; en discuter avant d'ajouter une dépendance.
 
 ## Arborescence
 
@@ -49,8 +50,9 @@ lib/
   core/
     config.dart                 SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY (dart-define)
     version.dart                version affichée, à garder égale à pubspec.yaml (testé)
-    app_scope.dart              InheritedWidget : repository + preferences
-    services/preferences.dart   SharedPreferencesAsync : classe choisie, dernière leçon
+    app_scope.dart              InheritedWidget : repository + preferences + compte
+    services/preferences.dart   SharedPreferencesAsync : classe choisie, dernière leçon,
+                                profil enfant de ce téléphone (EnfantActif)
     theme/couleurs.dart         palette (voir DESIGN.md)
     theme/matieres.dart         couleur de protège-cahier par slug de matière
     theme/theme.dart            ThemeData, Styles, interligne Seyès (32 px)
@@ -69,10 +71,17 @@ lib/
     instantane.dart             tout le contenu publié en JSON brut, lecture par écran
     copie_locale.dart           enregistrement sur l'appareil (clé contenu_v1)
     correction.dart             corriger(), estAutoCorrigeable(), normaliser()…
+    compte.dart                 Enfant, Compte (contrat, ChangeNotifier), CompteSupabase :
+                                connexion par code e-mail (D22), table enfants (D21)
     data.dart                   export groupé
   features/
     a_propos/a_propos_screen.dart     présentation, version, licences, crédit (D18)
-    accueil/accueil_screen.dart       classe, reprise, matières, bouton « À propos »
+    accueil/accueil_screen.dart       classe, reprise, matières, « Bonjour Awa ! »,
+                                      boutons « Espace parents » et « À propos »
+    compte/compte_screen.dart         espace parents : connexion (e-mail puis code),
+                                      « Mes enfants » (vouvoiement : public parents)
+    compte/fiche_enfant.dart          fiche prénom + classe (boîte de dialogue)
+    compte/outils_compte.dart         validation des saisies, messageErreurCompte()
     matiere/matiere_screen.dart       chapitres par partie, filtre
     matiere/regroupement.dart         regrouperParPartie(), etatChapitre()
     lecon/lecon_screen.dart           onglets « La leçon » / « À retenir »
@@ -85,9 +94,10 @@ test/
   features/ecrans_test.dart     les quatre écrans : états, parcours, débordements à 200 %
   features/hors_connexion_test.dart bandeau, mode avion, mise à jour automatique des écrans
   features/puces_test.dart      lisibilité des puces de choix
+  features/compte_test.dart     espace parents : saisies, erreurs, écrans, 200 %
   data/contenu_hors_ligne_test.dart synchronisation, copie locale, erreurs réseau
   core/seyes_test.dart          alignement du texte sur les lignes Seyès (vraies polices)
-  outils/faux_depot.dart        FauxDepot, FaussesPreferences, lancerApp(),
+  outils/faux_depot.dart        FauxDepot, FaussesPreferences, FauxCompte, lancerApp(),
                                 FausseSource, FauxStockage, instantaneReel()
   outils/polices.dart           chargement des vraies polices dans un test
   fixtures/supabase.json        réponses Supabase réelles (rôle anon, sans artefact_url)
@@ -114,6 +124,7 @@ assets/fonts/                   polices embarquées (dont les polices de secours
 | `/lecon/:leconId` | `LeconScreen` | `lecon(id)` ; mémorise la dernière leçon |
 | `/lecon/:leconId/exercices` | `ExercicesScreen` | la `Lecon` passée en `extra`, sinon `lecon(id)` |
 | `/a-propos` | `AProposScreen` | aucune (page fixe : présentation, version, licences, D18) |
+| `/compte` | `CompteScreen` | connexion si pas de compte ; sinon `compte.enfants()` et `classes()` |
 
 Règles :
 - Les identifiants viennent de l'URL ; un identifiant non numérique affiche

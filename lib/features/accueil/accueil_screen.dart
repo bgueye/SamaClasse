@@ -27,6 +27,9 @@ class _AccueilScreenState extends State<AccueilScreen> with RechargeSiNouveauCon
   int? _classeId;
   DerniereLecon? _derniere;
 
+  /// Profil enfant choisi sur ce téléphone (« Bonjour Awa ! »), phase 2.
+  EnfantActif? _enfant;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -34,6 +37,7 @@ class _AccueilScreenState extends State<AccueilScreen> with RechargeSiNouveauCon
     if (_classes == null) {
       _classes = _chargerClasses();
       _chargerDerniereLecon();
+      _chargerEnfant();
     }
   }
 
@@ -64,6 +68,24 @@ class _AccueilScreenState extends State<AccueilScreen> with RechargeSiNouveauCon
   Future<void> _chargerDerniereLecon() async {
     final derniere = await _scope.preferences.derniereLecon();
     if (mounted) setState(() => _derniere = derniere);
+  }
+
+  Future<void> _chargerEnfant() async {
+    final enfant = await _scope.preferences.enfantActif();
+    if (mounted) setState(() => _enfant = enfant);
+  }
+
+  /// Retour de l'espace parents : le profil de ce téléphone, et donc la
+  /// classe à afficher, ont pu changer.
+  Future<void> _ouvrirCompte() async {
+    await context.push('/compte');
+    if (!mounted) return;
+    await _chargerEnfant();
+    final memorisee = await _scope.preferences.classeChoisie();
+    if (mounted && memorisee != null && memorisee != _classeId) {
+      final classes = await _classes;
+      if (mounted && (classes?.any((c) => c.id == memorisee) ?? false)) _choisirClasse(memorisee);
+    }
   }
 
   void _choisirClasse(int id) {
@@ -164,7 +186,12 @@ class _AccueilScreenState extends State<AccueilScreen> with RechargeSiNouveauCon
                   ),
                 ),
               ),
-              // Discret, mais cible tactile de 48 px et nom lu par TalkBack.
+              // Discrets, mais cibles tactiles de 48 px et noms lus par TalkBack.
+              IconButton(
+                onPressed: _ouvrirCompte,
+                tooltip: 'Espace parents',
+                icon: const Icon(Icons.person_outline_rounded, color: Couleurs.texteSecondaire),
+              ),
               IconButton(
                 onPressed: () => context.push('/a-propos'),
                 tooltip: 'À propos',
@@ -172,6 +199,10 @@ class _AccueilScreenState extends State<AccueilScreen> with RechargeSiNouveauCon
               ),
             ],
           ),
+          if (_enfant != null) ...[
+            const SizedBox(height: 4),
+            Text('Bonjour ${_enfant!.prenom} !', style: Styles.cahier(taille: 20)),
+          ],
           const SizedBox(height: 18),
           if (classes.length > 1)
             ControleSegmente<int>(

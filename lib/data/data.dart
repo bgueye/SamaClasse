@@ -1,4 +1,5 @@
 // Point d'entrée de la couche de données SamaClasse.
+export 'compte.dart';
 export 'contenu_hors_ligne.dart';
 export 'copie_locale.dart';
 export 'correction.dart';

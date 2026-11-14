@@ -19,6 +19,7 @@ import 'package:samaclasse/app.dart';
 import 'package:samaclasse/core/app_scope.dart';
 import 'package:samaclasse/core/services/preferences.dart';
 import 'package:samaclasse/data/data.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthApiException, PostgrestException;
 
 /// Les réponses Supabase enregistrées, lues une seule fois.
 final Map<String, dynamic> donneesReelles =
@@ -160,10 +161,17 @@ class FauxStockage implements StockageCopie {
 
 /// Préférences en mémoire (le vrai stockage demande une plateforme).
 class FaussesPreferences implements Preferences {
-  FaussesPreferences({this.classe, this.derniere});
+  FaussesPreferences({this.classe, this.derniere, this.enfant});
 
   int? classe;
   DerniereLecon? derniere;
+  EnfantActif? enfant;
+
+  @override
+  Future<EnfantActif?> enfantActif() async => enfant;
+
+  @override
+  Future<void> choisirEnfant(EnfantActif? e) async => enfant = e;
 
   @override
   Future<int?> classeChoisie() async => classe;
@@ -176,6 +184,99 @@ class FaussesPreferences implements Preferences {
 
   @override
   Future<void> memoriserLecon(DerniereLecon lecon) async => derniere = lecon;
+}
+
+/// Compte parent sans réseau : un seul code accepté ([codeValable]), profils
+/// en mémoire. Reproduit les refus de la base (10 profils au plus).
+class FauxCompte extends Compte {
+  FauxCompte({String? connecte, List<Enfant>? enfants})
+      : _email = connecte,
+        _enfants = [...?enfants];
+
+  static const codeValable = '123456';
+
+  String? _email;
+  final List<Enfant> _enfants;
+  var _prochainId = 100;
+
+  /// Nombre d'échecs à simuler par opération (`{'enfants': 1}`), comme
+  /// `FauxDepot.pannes`.
+  final pannes = <String, int>{};
+
+  /// Si renseigné, chaque opération attend ce signal (état de chargement).
+  Completer<void>? attente;
+
+  /// Adresses auxquelles un code a été « envoyé ».
+  final codesEnvoyes = <String>[];
+
+  List<Enfant> get profils => List.unmodifiable(_enfants);
+
+  Future<void> _avant(String operation) async {
+    if (attente != null) await attente!.future;
+    final restantes = pannes[operation] ?? 0;
+    if (restantes > 0) {
+      pannes[operation] = restantes - 1;
+      throw const SocketException('Pas de connexion (test)');
+    }
+  }
+
+  @override
+  String? get email => _email;
+
+  @override
+  Future<void> envoyerCode(String email) async {
+    await _avant('envoyerCode');
+    codesEnvoyes.add(email);
+  }
+
+  @override
+  Future<void> verifierCode(String email, String code) async {
+    await _avant('verifierCode');
+    if (code != codeValable) {
+      throw const AuthApiException('Token has expired or is invalid', statusCode: '403', code: 'otp_expired');
+    }
+    _email = email;
+    notifyListeners();
+  }
+
+  @override
+  Future<void> deconnecter() async {
+    await _avant('deconnecter');
+    _email = null;
+    notifyListeners();
+  }
+
+  @override
+  Future<List<Enfant>> enfants() async {
+    await _avant('enfants');
+    return List.of(_enfants);
+  }
+
+  @override
+  Future<Enfant> ajouterEnfant({required String prenom, required int classeId}) async {
+    await _avant('ajouterEnfant');
+    if (_enfants.length >= 10) {
+      throw const PostgrestException(message: 'Nombre maximal de profils enfants atteint (10).', code: '23514');
+    }
+    final e = Enfant(id: _prochainId++, prenom: prenom, classeId: classeId);
+    _enfants.add(e);
+    return e;
+  }
+
+  @override
+  Future<Enfant> modifierEnfant(Enfant enfant) async {
+    await _avant('modifierEnfant');
+    final i = _enfants.indexWhere((e) => e.id == enfant.id);
+    if (i < 0) throw const PostgrestException(message: 'no rows', code: 'PGRST116');
+    _enfants[i] = enfant;
+    return enfant;
+  }
+
+  @override
+  Future<void> supprimerEnfant(int id) async {
+    await _avant('supprimerEnfant');
+    _enfants.removeWhere((e) => e.id == id);
+  }
 }
 
 /// Taille d'un téléphone courant (390 × 844, comme dans CLAUDE.md).
@@ -193,6 +294,7 @@ Future<void> lancerApp(
   WidgetTester tester, {
   required SamaClasseRepository depot,
   Preferences? preferences,
+  Compte? compte,
   String chemin = '/',
   Size taille = tailleTelephone,
   double echelleTexte = 1,
@@ -209,6 +311,7 @@ Future<void> lancerApp(
     key: UniqueKey(),
     repository: depot,
     preferences: preferences ?? FaussesPreferences(),
+    compte: compte ?? FauxCompte(),
     child: SamaClasseApp(emplacementInitial: chemin),
   ));
 }
