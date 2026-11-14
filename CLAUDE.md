@@ -34,23 +34,38 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
    en rôle `anon` (et `authenticated` si concerné), puis conseillers de sécurité
    Supabase sans alerte.
 
-## État du code (13/11/2026)
+## État du code (14/11/2026)
 
-- Le squelette, écrit sans compilateur, **compile désormais** (13/11/2026) :
-  deux imports manquants corrigés (`page_seyes.dart` dans `lecon_screen.dart`,
-  `flutter/foundation.dart` dans `main.dart`). `flutter analyze` : aucun
-  problème ; `flutter test` : 109/109, dont des tests d'écrans sur la vraie
-  application avec un faux dépôt (`test/outils/faux_depot.dart`),
-  l'alignement Seyès et la lisibilité des puces. Vérifié à la main sur
-  Android (Galaxy S23 Ultra, Android 17) et sur Chrome.
-- **Phase 0 terminée** (13/11/2026). Prochaine étape : la phase 1, dont les
-  sujets attendent des décisions de Bocar (voir `docs/FEUILLE_DE_ROUTE.md`,
-  « Décisions ouvertes »).
+- **Phase 0 terminée** (13/11/2026) : le squelette compile, vérifié à la main
+  sur Android (Galaxy S23 Ultra, Android 17) et sur Chrome.
+- **Phase 1 terminée côté code** (14/11/2026), détail et état dans
+  `docs/FEUILLE_DE_ROUTE.md` :
+  - hors connexion : copie locale du contenu publié (D16), vérifiée en mode avion ;
+  - libellés des catégories des tableaux (D14) ;
+  - polices de secours pour les symboles absents (D17) ;
+  - page « À propos » (D18) ;
+  - icône et écran de lancement, variante « Couverture » (D19), générés depuis
+    `assets/icone/` (marche à suivre dans `docs/ARCHITECTURE.md`) ;
+  - schémas des leçons (D15) : espace de stockage public `schemas` (migration
+    `stockage_schemas`) et affichage par `SchemaCahier` ; seules les images de
+    cet espace sont chargées, sinon la description s'affiche.
+- Reste à vérifier par Bocar : l'icône et l'écran de lancement sur le
+  téléphone, un schéma réel déposé dans `schemas`, les libellés des tableaux
+  17 et 31 à compléter en base.
+- Prochaine étape : la phase 2 (comptes et rôles), qui attend les décisions
+  de Bocar sur la connexion des élèves mineurs et la méthode de connexion
+  (« Décisions ouvertes » 4 et 5).
+- `flutter analyze` : aucun problème ; `flutter test` : 120/120, sans réseau
+  (tests d'écrans sur la vraie application avec `test/outils/faux_depot.dart`,
+  alignement Seyès, puces, hors connexion, schémas).
 - Pour un nouvel écran : ajouter ses cas à `test/features/ecrans_test.dart`
   (quatre états, 200 %) et le regarder avec `tool/captures/captures_test.dart`.
-- Écrans livrés : accueil, matière, leçon, exercices. Lecture seule, sans compte.
+- Écrans livrés : accueil, matière, leçon, exercices, « À propos ». Lecture
+  seule, sans compte.
 - Une seule leçon est publiée en base : c'est normal que les autres matières
   affichent « Leçon pas encore disponible ».
+- Dépôt distant : `origin` = https://github.com/bgueye/SamaClasse (branche
+  `main`). Toujours demander avant de pousser.
 
 ## Règles impératives
 
