@@ -187,6 +187,8 @@ create table public.resultats (     -- une ligne par exercice validé
 ```
 
 Règles :
+- **Mettre à jour la page « À propos »** (« Tes données » dit « rien n’est
+  envoyé ») et la faire valider par Bocar avant de livrer cette phase.
 - **Ne pas enregistrer le texte libre des élèves** : l'écran promet que le
   brouillon « reste sur ton téléphone ». Seuls le résultat et le score partent.
 - Données minimales sur les enfants (prénom, classe), rien d'autre.
@@ -238,6 +240,10 @@ Critères d'acceptation :
 - Web : hébergement à choisir, URL, `web/index.html` (titre, langue,
   description).
 - iOS : seulement si un Mac et un compte Apple Developer sont disponibles.
+- **Suppression du compte** depuis l'application (exigée par Google Play pour
+  toute application qui permet d'en créer un) : bouton « Supprimer mon compte »
+  dans l'espace parents, fonction côté serveur à proposer à Bocar.
+- Service d'envoi d'e-mails dédié avec un domaine, à la place de Gmail (D22).
 - Passage à `supabase_flutter` v3, une fois sortie en version stable (préversion
   `3.0.0-dev` seulement au 13/11/2026) : suivre le guide de migration
   officiel ; le code utilise déjà `publishableKey`.

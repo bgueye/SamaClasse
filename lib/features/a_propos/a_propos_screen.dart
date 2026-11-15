@@ -51,10 +51,21 @@ class AProposScreen extends StatelessWidget {
                       'officiels et sur les cahiers. De nouvelles leçons arrivent au fil de l’année.',
                     ),
                     const _Titre('Tes données'),
+                    // À revoir en phase 3 : quand les résultats seront
+                    // enregistrés pour les enfants qui ont un profil,
+                    // « rien n’est envoyé » ne sera plus vrai pour eux.
                     const _Paragraphe(
-                      'Pas de compte à créer. Tes réponses aux exercices restent sur ton téléphone : '
-                      'rien n’est envoyé. Les leçons sont gardées sur le téléphone pour être lues '
-                      'même sans connexion.',
+                      'Pas besoin de compte pour lire les leçons et faire les exercices. Tes '
+                      'réponses restent sur ton téléphone : rien n’est envoyé. Les leçons sont '
+                      'gardées sur le téléphone pour être lues même sans connexion.',
+                    ),
+                    // Seule partie vouvoyée de la page : elle s'adresse aux
+                    // parents, comme l'espace parents (phase 2, D21).
+                    const _Titre('Pour les parents'),
+                    const _Paragraphe(
+                      'Un compte facultatif permet de créer le profil de vos enfants. Nous '
+                      'enregistrons seulement votre adresse e-mail, ainsi que le prénom et la '
+                      'classe de chaque enfant. Vous pouvez supprimer un profil à tout moment.',
                     ),
                     const SizedBox(height: 28),
                     const Divider(),

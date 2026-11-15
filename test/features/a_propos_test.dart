@@ -24,6 +24,12 @@ void main() {
     expect(find.text('Le programme scolaire du Sénégal, leçon par leçon.'), findsOneWidget);
     expect(find.text('D’où viennent les leçons ?'), findsOneWidget);
     expect(find.text('Tes données'), findsOneWidget);
+    // Texte validé par Bocar le 15/11/2026 (version B) : la lecture reste
+    // sans compte, et la partie parents dit exactement ce qui est enregistré.
+    expect(find.textContaining('Pas besoin de compte pour lire les leçons'), findsOneWidget);
+    expect(find.text('Pour les parents'), findsOneWidget);
+    expect(find.textContaining('votre adresse e-mail, ainsi que le prénom et la classe'), findsOneWidget);
+    expect(find.textContaining('Pas de compte à créer'), findsNothing);
     expect(find.text('Conçue par Bocar Gueye'), findsOneWidget);
     expect(find.text('Version $versionApplication'), findsOneWidget);
     // Pas d'adresse de contact (demande de Bocar).

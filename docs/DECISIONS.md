@@ -55,6 +55,10 @@ avec « Sc » blanc.
 
 ### D18. Page « À propos » : texte rédigé par Claude, relu par Bocar
 *Bocar, 13/11/2026.*
+Mise à jour du 15/11/2026 (phase 2) : « Tes données » ne dit plus « Pas de
+compte à créer » ; nouvelle partie « Pour les parents » (vouvoiement) sur le
+compte facultatif et les seules données enregistrées. Version B choisie par
+Bocar. À revoir en phase 3, quand des résultats seront enregistrés.
 Présentation, version, licences des polices, contact. La version est écrite
 dans le code à chaque publication (pas de `package_info_plus`). Aucune adresse
 de contact affichée sans l'accord explicite de Bocar.
