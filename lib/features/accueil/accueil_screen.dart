@@ -104,6 +104,8 @@ class _AccueilScreenState extends State<AccueilScreen> with RechargeSiNouveauCon
   /// Tirer pour actualiser : demande d'abord une mise à jour au serveur
   /// (sans réseau, la copie locale reste et le bandeau s'affiche).
   Future<void> _actualiser() async {
+    // En profite pour envoyer les résultats qui attendaient (D24).
+    _scope.suivi.envoyer().ignore();
     await _scope.repository.actualiser();
     if (!mounted) return;
     final classes = _chargerClasses();

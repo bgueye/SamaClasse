@@ -13,6 +13,7 @@ class AppScope extends InheritedWidget {
     required this.repository,
     required this.preferences,
     required this.compte,
+    required this.suivi,
     required super.child,
   });
 
@@ -24,6 +25,10 @@ class AppScope extends InheritedWidget {
   /// (AppScope lui-même ne change pas quand on se connecte).
   final Compte compte;
 
+  /// Lectures et résultats de l'enfant de ce téléphone (phase 3, D24). Les
+  /// écrans l'appellent sans attendre : il ne doit jamais gêner l'élève.
+  final SuiviResultats suivi;
+
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
     assert(scope != null, 'AppScope introuvable au-dessus de ce widget.');
@@ -34,5 +39,6 @@ class AppScope extends InheritedWidget {
   bool updateShouldNotify(AppScope oldWidget) =>
       repository != oldWidget.repository ||
       preferences != oldWidget.preferences ||
-      compte != oldWidget.compte;
+      compte != oldWidget.compte ||
+      suivi != oldWidget.suivi;
 }

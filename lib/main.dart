@@ -37,12 +37,26 @@ Future<void> main() async {
     stockage: CopieLocale(),
   )..demarrer().ignore();
 
+  final preferences = Preferences();
+  // Compte parent (phase 2). La session est restaurée par Supabase au
+  // lancement, sans réseau : le compte connecté est connu tout de suite.
+  final compte = CompteSupabase(Supabase.instance.client);
+  // Suivi des enfants (phase 3, D24) : ce qui attend sur le téléphone part
+  // dès le lancement, puis à chaque retour de l'application au premier plan
+  // (souvent, le réseau est revenu entre-temps).
+  final suivi = SuiviResultats(
+    compte: compte,
+    preferences: preferences,
+    envoi: EnvoiSupabase(Supabase.instance.client),
+    stockage: StockageFileLocal(),
+  )..envoyer().ignore();
+  AppLifecycleListener(onResume: () => suivi.envoyer().ignore());
+
   runApp(AppScope(
     repository: contenu,
-    preferences: Preferences(),
-    // Compte parent (phase 2). La session est restaurée par Supabase au
-    // lancement, sans réseau : le compte connecté est connu tout de suite.
-    compte: CompteSupabase(Supabase.instance.client),
+    preferences: preferences,
+    compte: compte,
+    suivi: suivi,
     child: const SamaClasseApp(),
   ));
 }

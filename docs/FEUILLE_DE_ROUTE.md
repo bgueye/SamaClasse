@@ -160,8 +160,10 @@ Critères d'acceptation :
 
 Décision 6 tranchée par Bocar le 15/11/2026 (D24) : résultats gardés hors
 connexion et envoyés au retour du réseau. Migration appliquée le 15/11/2026 :
-`supabase/migrations/20261115110503_lectures_resultats.sql`. Reste : file
-d'attente sur le téléphone, écran « Suivi de mes enfants », texte « À propos ». Elle remplace la
+`supabase/migrations/20261115110503_lectures_resultats.sql`. File d'attente
+faite le 15/11/2026 (`lib/data/suivi.dart`, 18 tests) : envoi au lancement, au
+retour au premier plan, à la connexion du parent, à l'actualisation et après
+chaque résultat. Reste : écran « Suivi de mes enfants », texte « À propos ». Elle remplace la
 piste technique ci-dessous, écrite avant D21 (`profil_id` devient
 `enfant_id`).
 

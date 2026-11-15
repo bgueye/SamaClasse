@@ -104,6 +104,10 @@ class _SerieExercicesState extends State<_SerieExercices> {
   /// Pour les exercices corrigés par l'élève lui-même : « j'avais juste ».
   final _autoEvaluations = <int, bool>{};
 
+  /// Exercices déjà notés pour le suivi pendant cette tentative : un retour
+  /// en arrière (« Précédent ») ne note pas deux fois le même exercice.
+  final _notes = <int>{};
+
   final _defilement = ScrollController();
 
   List<Exercice> get _exercices => widget.lecon.exercices;
@@ -111,8 +115,32 @@ class _SerieExercicesState extends State<_SerieExercices> {
 
   @override
   void dispose() {
+    // Quitter l'écran après « Avais-tu juste ? » sans passer à la suite :
+    // le résultat est quand même noté.
+    if (!_termine) _noter(_courant);
     _defilement.dispose();
     super.dispose();
+  }
+
+  /// Note le résultat de [e] pour le suivi des parents (phase 3, D24), une
+  /// seule fois par tentative. Le service ne note rien sans profil enfant ni
+  /// parent connecté, et rien du tout s'il n'y a pas encore de résultat
+  /// (exercice à comparer sans réponse à « Avais-tu juste ? »).
+  void _noter(Exercice e) {
+    final correction = _corrections[e.id];
+    if (correction == null || _notes.contains(e.id)) return;
+    if (correction is! CorrectionAuto && _autoEvaluations[e.id] == null) return;
+    _notes.add(e.id);
+    _suivi.noterResultat(exerciceId: e.id, correction: correction, autoEvaluation: _autoEvaluations[e.id]).ignore();
+  }
+
+  late SuiviResultats _suivi;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Gardé ici : `dispose` ne peut plus lire AppScope.
+    _suivi = AppScope.of(context).suivi;
   }
 
   Object? _reponse(Exercice e) => _reponses.putIfAbsent(e.id, () => reponseInitiale(e));
@@ -120,9 +148,13 @@ class _SerieExercicesState extends State<_SerieExercices> {
   void _valider() {
     final e = _courant;
     setState(() => _corrections[e.id] = corriger(e, _reponse(e)));
+    // Exercice corrigé par l'application : le résultat est connu tout de suite.
+    _noter(e);
   }
 
   void _aller(int index) {
+    // En quittant un exercice à comparer, « Avais-tu juste ? » est répondu.
+    _noter(_courant);
     setState(() {
       if (index >= _exercices.length) {
         _termine = true;
@@ -141,6 +173,7 @@ class _SerieExercicesState extends State<_SerieExercices> {
       _reponses.clear();
       _corrections.clear();
       _autoEvaluations.clear();
+      _notes.clear(); // nouvelle tentative : nouveaux résultats
     });
   }
 

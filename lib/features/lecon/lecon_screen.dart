@@ -42,6 +42,9 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
     final scope = AppScope.of(context);
     final lecon = await scope.repository.lecon(widget.leconId);
     final contexte = lecon?.contexte;
+    // Leçon lue par l'enfant de ce téléphone (phase 3) : sans attendre, et
+    // rien n'est noté sans profil enfant ni parent connecté.
+    if (lecon != null) scope.suivi.noterLecture(lecon.id).ignore();
     if (lecon != null && contexte != null) {
       await scope.preferences.memoriserLecon(DerniereLecon(
         id: lecon.id,

@@ -279,6 +279,51 @@ class FauxCompte extends Compte {
   }
 }
 
+/// Envoi du suivi sans réseau : garde ce qui a été « reçu ». Peut simuler
+/// une coupure ([enPanne]) ou un refus de la base pour certaines lignes
+/// ([refuses], comme une règle RLS).
+class FauxEnvoi implements EnvoiSuivi {
+  final resultatsRecus = <ResultatEnAttente>[];
+  final lecturesRecues = <LectureEnAttente>[];
+  bool enPanne = false;
+
+  /// Identifiants d'exercices que la base refuse (code 42501).
+  final refuses = <int>{};
+
+  int appels = 0;
+
+  @override
+  Future<void> envoyerResultats(List<ResultatEnAttente> resultats) async {
+    appels++;
+    if (enPanne) throw const SocketException('Pas de connexion (test)');
+    if (resultats.any((r) => refuses.contains(r.exerciceId))) {
+      throw const PostgrestException(message: 'new row violates row-level security policy', code: '42501');
+    }
+    // Comme `on conflict (id) do nothing` : un résultat déjà reçu est ignoré.
+    for (final r in resultats) {
+      if (!resultatsRecus.any((x) => x.id == r.id)) resultatsRecus.add(r);
+    }
+  }
+
+  @override
+  Future<void> envoyerLectures(List<LectureEnAttente> lectures) async {
+    appels++;
+    if (enPanne) throw const SocketException('Pas de connexion (test)');
+    lecturesRecues.addAll(lectures);
+  }
+}
+
+/// File d'envoi en mémoire (le vrai stockage demande une plateforme).
+class FauxStockageFile implements StockageFile {
+  String? texte;
+
+  @override
+  Future<String?> lire() async => texte;
+
+  @override
+  Future<void> ecrire(String t) async => texte = t;
+}
+
 /// Taille d'un téléphone courant (390 × 844, comme dans CLAUDE.md).
 const tailleTelephone = Size(390, 844);
 
@@ -295,6 +340,7 @@ Future<void> lancerApp(
   required SamaClasseRepository depot,
   Preferences? preferences,
   Compte? compte,
+  FauxEnvoi? envoi,
   String chemin = '/',
   Size taille = tailleTelephone,
   double echelleTexte = 1,
@@ -305,13 +351,24 @@ Future<void> lancerApp(
   addTearDown(tester.view.reset);
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
 
+  final prefs = preferences ?? FaussesPreferences();
+  final leCompte = compte ?? FauxCompte();
+  final suivi = SuiviResultats(
+    compte: leCompte,
+    preferences: prefs,
+    envoi: envoi ?? FauxEnvoi(),
+    stockage: FauxStockageFile(),
+  );
+  addTearDown(suivi.arreter);
+
   await tester.pumpWidget(AppScope(
     // Clé unique : si un test relance l'application, Flutter repart de zéro
     // au lieu de réutiliser l'ancien état (et l'ancien routeur).
     key: UniqueKey(),
     repository: depot,
-    preferences: preferences ?? FaussesPreferences(),
-    compte: compte ?? FauxCompte(),
+    preferences: prefs,
+    compte: leCompte,
+    suivi: suivi,
     child: SamaClasseApp(emplacementInitial: chemin),
   ));
 }

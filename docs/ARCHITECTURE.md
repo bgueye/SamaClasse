@@ -50,7 +50,7 @@ lib/
   core/
     config.dart                 SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY (dart-define)
     version.dart                version affichée, à garder égale à pubspec.yaml (testé)
-    app_scope.dart              InheritedWidget : repository + preferences + compte
+    app_scope.dart              InheritedWidget : repository + preferences + compte + suivi
     services/preferences.dart   SharedPreferencesAsync : classe choisie, dernière leçon,
                                 profil enfant de ce téléphone (EnfantActif)
     theme/couleurs.dart         palette (voir DESIGN.md)
@@ -73,6 +73,8 @@ lib/
     correction.dart             corriger(), estAutoCorrigeable(), normaliser()…
     compte.dart                 Enfant, Compte (contrat, ChangeNotifier), CompteSupabase :
                                 connexion par code e-mail (D22), table enfants (D21)
+    suivi.dart                  SuiviResultats : lectures et résultats de l'enfant de ce
+                                téléphone, file d'attente locale, envoi au retour du réseau (D24)
     data.dart                   export groupé
   features/
     a_propos/a_propos_screen.dart     présentation, version, licences, crédit (D18)
@@ -96,8 +98,10 @@ test/
   features/puces_test.dart      lisibilité des puces de choix
   features/compte_test.dart     espace parents : saisies, erreurs, écrans, 200 %
   data/contenu_hors_ligne_test.dart synchronisation, copie locale, erreurs réseau
+  data/suivi_test.dart          file d'attente du suivi : hors connexion, doublons, refus, écrans
   core/seyes_test.dart          alignement du texte sur les lignes Seyès (vraies polices)
-  outils/faux_depot.dart        FauxDepot, FaussesPreferences, FauxCompte, lancerApp(),
+  outils/faux_depot.dart        FauxDepot, FaussesPreferences, FauxCompte, FauxEnvoi,
+                                FauxStockageFile, lancerApp(),
                                 FausseSource, FauxStockage, instantaneReel()
   outils/polices.dart           chargement des vraies polices dans un test
   fixtures/supabase.json        réponses Supabase réelles (rôle anon, sans artefact_url)
