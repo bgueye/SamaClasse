@@ -6,6 +6,13 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D24. Résultats hors connexion : gardés et envoyés au retour du réseau
+*Bocar, 15/11/2026.*
+Un exercice fait sans réseau n'est pas perdu : le résultat est gardé sur le
+téléphone et envoyé dès que la connexion revient. Seuls les enfants qui ont
+un profil, avec le parent connecté sur ce téléphone, envoient des résultats.
+Rien que « réussi ou non », le score et la date : jamais le texte saisi.
+
 ### D23. Rôle rédacteur : plusieurs rédacteurs, attribués à la main
 *Bocar, 14/11/2026.*
 D'autres rédacteurs que Bocar sont prévus. Le rôle se donne à la main, par le

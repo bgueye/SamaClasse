@@ -41,6 +41,8 @@ sources ─┘       │  (source_id, facultatif)
 
 auth.users ─< enfants >── classes        (phase 2, D21)
 auth.users ─── redacteurs                (phase 2, D23)
+enfants ─< lectures >── lecons           (phase 3, D24)
+enfants ─< resultats >── exercices       (phase 3, D24)
 ```
 
 ### `classes`
@@ -115,6 +117,18 @@ par compte (déclencheur `limiter_enfants`). Aucune autre donnée sur l'enfant.
 `id` (compte), `ajoute_le`. Ajout à la main seulement :
 `insert into public.redacteurs (id) select id from auth.users where email = '…';`
 
+### `lectures` (phase 3, D24)
+Clé (`enfant_id`, `lecon_id`), `lue_le` (heure du téléphone, dernière
+ouverture). Envoyée en « upsert » : relire une leçon met la date à jour.
+
+### `resultats` (phase 3, D24)
+`id` (UUID fabriqué par le téléphone : un envoi répété est sans effet avec
+`on conflict (id) do nothing`), `enfant_id`, `exercice_id`, `reussi`,
+`bonnes` et `total` (exercice corrigé par l'application) ou
+`auto_evaluation = true` sans score (« Avais-tu juste ? »), `fait_le` (heure
+du téléphone), `recu_le`. Contraintes : score cohérent, `reussi` égal à
+`bonnes = total`. **Aucun texte saisi par l'élève.**
+
 ### Vue `matieres_par_classe` (security_invoker)
 `classe_id`, `matiere_id`, `slug`, `nom`, `nb_chapitres`, `nb_lecons`
 (leçons **publiées**). Comme elle applique les RLS de la personne qui lit, les
@@ -146,10 +160,16 @@ RLS activée sur toutes les tables. Contenu en lecture seule pour `anon` et
 | `exercices`, `lecon_sources` | seulement ceux d'une leçon publiée |
 | `enfants` | `authenticated` : ses propres enfants seulement (lecture, ajout, modification, suppression) ; `anon` : rien |
 | `redacteurs` | `authenticated` : sa propre ligne (savoir s'il est rédacteur) ; aucune écriture ; `anon` : rien |
+| `lectures` | `authenticated` : celles de ses enfants (lecture, ajout, mise à jour), leçons publiées seulement ; pas de suppression ; `anon` : rien |
+| `resultats` | `authenticated` : ceux de ses enfants (lecture, ajout), exercices publiés seulement ; ni modification ni suppression ; `anon` : rien |
 
 Tests du 14/11/2026 (deux comptes simulés) : un parent ne voit, ne modifie
 ni ne supprime les enfants d'un autre, ne peut pas lui en donner un, ne peut
 pas se déclarer rédacteur ; le 11e profil est refusé.
+Tests du 15/11/2026 (phase 3) : un parent n'écrit ni ne lit les résultats et
+lectures d'un autre ; exercice ou leçon non publiés refusés ; score
+incohérent refusé ; un résultat ne se modifie ni ne se supprime ; un envoi
+répété n'ajoute rien ; supprimer un profil supprime ses données.
 
 Aucune politique d'écriture sur le contenu : la saisie se fait aujourd'hui par le tableau de
 bord ou une connexion d'administration, jamais depuis l'application.

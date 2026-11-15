@@ -158,6 +158,13 @@ Critères d'acceptation :
 
 ## Phase 3 : réponses et suivi parent
 
+Décision 6 tranchée par Bocar le 15/11/2026 (D24) : résultats gardés hors
+connexion et envoyés au retour du réseau. Migration appliquée le 15/11/2026 :
+`supabase/migrations/20261115110503_lectures_resultats.sql`. Reste : file
+d'attente sur le téléphone, écran « Suivi de mes enfants », texte « À propos ». Elle remplace la
+piste technique ci-dessous, écrite avant D21 (`profil_id` devient
+`enfant_id`).
+
 Objectif : enregistrer les résultats des exercices et donner aux parents
 l'écran `Parent` des maquettes (« Suivi de mes enfants »).
 
@@ -259,7 +266,7 @@ Critères d'acceptation :
 | 3 | ~~Lecture à voix haute (dépendance)~~ : reportée (D20) | plus tard |
 | 4 | ~~Connexion des élèves mineurs~~ : tranché (D21, compte parent et profils enfants) | 2 |
 | 5 | ~~Méthode de connexion~~ : tranché (D22, code par e-mail) ; rôle rédacteur : D23 | 2 |
-| 6 | Enregistrement hors connexion des résultats | 3 |
+| 6 | ~~Enregistrement hors connexion des résultats~~ : tranché (D24, gardés puis envoyés) | 3 |
 | 7 | Historique des points levés | 4 |
 | 8 | Identifiant Android, hébergement web | 5 |
 | 9 | `ordre` des séries d'une même année (Seconde S / L) | à l'ajout de nouvelles classes |
