@@ -38,13 +38,15 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
 
 - **Phases 0 à 4 terminées côté code**, chacune essayée avec succès sur le
   téléphone (Galaxy S23 Ultra, Android 17). Détail, décisions et état dans
-  `docs/FEUILLE_DE_ROUTE.md` et `docs/DECISIONS.md` (D14 à D26).
+  `docs/FEUILLE_DE_ROUTE.md` et `docs/DECISIONS.md` (D14 à D30).
   - Phase 1, lecture : hors connexion (D16), catégories des tableaux (D14),
     polices de secours (D17), « À propos » (D18), icône et écran de
     lancement (D19), schémas des leçons dans l'espace public `schemas` (D15).
   - Phase 2, comptes : seul le parent a un compte, connexion par code reçu
     par e-mail (D22), profils enfants sans identifiants (D21), rédacteurs
-    attribués à la main (D23). E-mails envoyés par Gmail pour les essais.
+    attribués à la main (D23). E-mails envoyés par Resend depuis
+    `noreply@samaclasse.app` ; les modèles « Confirm signup » et « Magic
+    Link » de Supabase contiennent tous deux `{{ .Token }}`.
   - Phase 3, suivi : leçons lues et résultats des exercices, gardés hors
     connexion puis envoyés (`lib/data/suivi.dart`, D24) ; écran « Suivi de mes
     enfants ». Jamais le texte saisi par l'élève.
@@ -52,13 +54,18 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
     un point demande une réponse si c'est une question ; historique dans
     `points_leves` (D25) ; publication par la fonction `publier_lecon` ;
     lien vers l'artefact par `url_launcher` (D26). Bocar est rédacteur.
-- Prochaine étape : la phase 5, diffusion. Déjà notés : bouton « Supprimer
-  mon compte » (exigé par Google Play), service d'envoi d'e-mails dédié à la
-  place de Gmail (D22), identifiant Android et hébergement web à décider.
+- **Phase 5, diffusion, en cours** (D27 à D30) :
+  - fait : identifiant `sn.samaclasse.app` (D28), « Supprimer mon compte »
+    (fonction `supprimer_mon_compte`), site https://samaclasse.app sur
+    Cloudflare Pages publié par `.github/workflows/site.yml` après les
+    tests (D29), `contact@samaclasse.app` (D30), envoi des e-mails par
+    Resend (D22) ;
+  - reste : signature Android, fiche Play Store et test fermé ; réinstaller
+    l'application sous le nouvel identifiant sur le téléphone.
 - Reste à faire par Bocar : déposer un vrai schéma dans `schemas`,
   compléter les libellés des tableaux 17 et 31, vérifier et publier les
   leçons 2, 6 et 10 depuis l'application.
-- `flutter analyze` : aucun problème ; `flutter test` : 208/208, sans réseau
+- `flutter analyze` : aucun problème ; `flutter test` : 210/210, sans réseau
   (vraie application avec `test/outils/faux_depot.dart` : `FauxDepot`,
   `FauxCompte`, `FauxEnvoi`, `FausseRedaction`).
 - Pour un nouvel écran : ses quatre états et 200 % dans un test d'écran
@@ -68,10 +75,10 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   demande jamais de compte.
 - 10 leçons sur 13 sont publiées en base : c'est normal que les autres
   affichent « Leçon pas encore disponible ».
-- Base : 6 migrations, de `schema_programme_lecons` à `validation_redacteurs`.
-  Conseiller de sécurité : un avertissement attendu sur `publier_lecon`
-  (`security definer` appelable par `authenticated`, contrôles faits dans la
-  fonction).
+- Base : 7 migrations, de `schema_programme_lecons` à `suppression_compte`.
+  Conseiller de sécurité : deux avertissements attendus, sur `publier_lecon`
+  et `supprimer_mon_compte` (`security definer` appelables par
+  `authenticated`, contrôles faits dans les fonctions).
 - Dépôt distant : `origin` = https://github.com/bgueye/SamaClasse (branche
   `main`). Toujours demander avant de pousser.
 

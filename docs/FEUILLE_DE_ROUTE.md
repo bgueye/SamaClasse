@@ -264,17 +264,21 @@ compte Google Play déjà ouvert. Suppression du compte : migration
 
 - Android : identifiant `sn.samaclasse.app` (D28, fait le 15/11/2026),
   signature, nom d'éditeur sur le Play Store, fiche, test fermé.
-- Web : Cloudflare Pages (D29), `samaclasse.app` (D27). Préparé le
-  15/11/2026 : pages « Politique de confidentialité » et « Supprimer votre
-  compte » (contact@samaclasse.app, D30), validées par Bocar ; publication
-  automatique par GitHub Actions. Reste à faire par Bocar : DNS du domaine
-  chez Cloudflare, projet Pages, secrets GitHub, routage de contact@.
+- ~~Web~~ : **en ligne le 15/11/2026** sur https://samaclasse.app
+  (Cloudflare Pages, D29 ; domaine D27). Pages « Politique de
+  confidentialité » (`/confidentialite/`) et « Supprimer votre compte »
+  (`/suppression-compte/`), validées par Bocar ; publication automatique
+  par GitHub Actions après les tests. `contact@samaclasse.app` redirigée
+  vers Bocar (D30).
 - iOS : seulement si un Mac et un compte Apple Developer sont disponibles.
 - ~~**Suppression du compte**~~ : fait le 15/11/2026 (fonction
   `supprimer_mon_compte`, bouton « Supprimer mon compte » dans l'espace
-  parents, confirmation par l'adresse e-mail). Reste : la page web de demande
-  de suppression, exigée elle aussi par Google Play, avec le site.
-- Service d'envoi d'e-mails dédié avec un domaine, à la place de Gmail (D22).
+  parents, confirmation par l'adresse e-mail) ; page web de demande de
+  suppression en ligne avec le site.
+- ~~Service d'envoi d'e-mails dédié~~ : fait le 15/11/2026, Resend avec
+  `noreply@samaclasse.app` (D22) ; essai de connexion réussi.
+- Facultatif : enregistrement DMARC (`_dmarc`, `p=none`) dans Cloudflare ;
+  redirection de `www.samaclasse.app` vers `samaclasse.app`.
 - Passage à `supabase_flutter` v3, une fois sortie en version stable (préversion
   `3.0.0-dev` seulement au 13/11/2026) : suivre le guide de migration
   officiel ; le code utilise déjà `publishableKey`.

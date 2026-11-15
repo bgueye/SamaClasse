@@ -14,14 +14,22 @@ permettre une demande sans l'application). Redirigée vers la boîte Gmail de
 Bocar par le routage des e-mails de Cloudflare : l'adresse personnelle n'est
 jamais affichée. La décision D18 (« pas de contact ») vaut pour la page « À
 propos » de l'application. Le domaine, acheté ailleurs, est confié au DNS de
-Cloudflare.
+Cloudflare. En service le 15/11/2026 (essai de réception réussi) : MX, SPF
+et DKIM de Cloudflare sur `samaclasse.app`.
 
 ### D29. Version web hébergée sur Cloudflare Pages
 *Bocar, 15/11/2026.*
 Gratuit, rapide en Afrique de l'Ouest (point de présence à Dakar), HTTPS et
 domaine personnalisé inclus. Les adresses de l'application (`/lecon/12`)
-sont renvoyées vers `index.html` par une règle de redirection. Écartés :
-Firebase Hosting (un projet Firebase en plus de Supabase).
+sont renvoyées vers `index.html` par Cloudflare lui-même (pas de fichier de
+redirection). Écartés : Firebase Hosting (un projet Firebase en plus de
+Supabase).
+En ligne le 15/11/2026 sur https://samaclasse.app (et `www`,
+`samaclasse.pages.dev`) : projet Pages `samaclasse` en envoi direct, publié
+par `.github/workflows/site.yml` après les tests à chaque envoi sur `main`
+(secrets GitHub `CLOUDFLARE_API_TOKEN` et `CLOUDFLARE_ACCOUNT_ID`). L'adresse
+du site (« Site URL ») de l'authentification Supabase est
+`https://samaclasse.app`.
 
 ### D28. Identifiant de l'application : `sn.samaclasse.app`
 *Bocar, 15/11/2026.*
@@ -83,6 +91,18 @@ Précisions du 14-15/11/2026 :
   d'application (`smtp.gmail.com`, port 465). Avant la diffusion : un service
   dédié avec un domaine (Resend ou Brevo), pour ne pas exposer une adresse
   personnelle et dépasser la limite de Gmail (environ 500 par jour).
+- **Depuis le 15/11/2026 : Resend** (région Irlande, offre gratuite : 3 000
+  e-mails par mois, 100 par jour). Expéditeur `SamaClasse
+  <noreply@samaclasse.app>`, SMTP `smtp.resend.com`, port 465, utilisateur
+  `resend`, mot de passe = clé d'API Resend limitée à l'envoi sur
+  `samaclasse.app` (saisie par Bocar dans Supabase, jamais dans le dépôt).
+  DNS : DKIM `resend._domainkey` et alias `send` (CNAME vers Resend). Gmail
+  n'est plus utilisé.
+- **Les deux modèles doivent contenir `{{ .Token }}`** : « Confirm signup »
+  sert à la toute première connexion d'une adresse, « Magic Link » à toutes
+  les suivantes. Oublier le second envoie un lien au lieu du code (piège
+  rencontré le 15/11/2026) ; et Gmail ouvre lui-même les liens pour les
+  inspecter, ce qui les consomme.
 - Longueur du code : réglage « Email OTP Length » de Supabase (8 au
   15/11/2026). L'application accepte de 6 à 10 chiffres.
 
