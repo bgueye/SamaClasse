@@ -24,11 +24,17 @@ void main() {
     expect(find.text('Le programme scolaire du Sénégal, leçon par leçon.'), findsOneWidget);
     expect(find.text('D’où viennent les leçons ?'), findsOneWidget);
     expect(find.text('Tes données'), findsOneWidget);
-    // Texte validé par Bocar le 15/11/2026 (version B) : la lecture reste
-    // sans compte, et la partie parents dit exactement ce qui est enregistré.
+    // Texte validé par Bocar le 15/11/2026 (phase 3) : la lecture reste sans
+    // compte, le texte saisi n'est jamais envoyé, le suivi est décrit tel
+    // qu'il est enregistré.
     expect(find.textContaining('Pas besoin de compte pour lire les leçons'), findsOneWidget);
+    expect(find.textContaining('ce n’est jamais envoyé'), findsOneWidget);
+    expect(find.textContaining('les leçons que tu ouvres et tes résultats aux exercices'), findsOneWidget);
     expect(find.text('Pour les parents'), findsOneWidget);
-    expect(find.textContaining('votre adresse e-mail, ainsi que le prénom et la classe'), findsOneWidget);
+    expect(find.textContaining('Jamais ce qu’il écrit.'), findsOneWidget);
+    expect(find.textContaining('Supprimer un profil efface aussi son suivi.'), findsOneWidget);
+    // Ancienne promesse, devenue fausse avec le suivi (phase 3).
+    expect(find.textContaining('rien n’est envoyé'), findsNothing);
     expect(find.textContaining('Pas de compte à créer'), findsNothing);
     expect(find.text('Conçue par Bocar Gueye'), findsOneWidget);
     expect(find.text('Version $versionApplication'), findsOneWidget);

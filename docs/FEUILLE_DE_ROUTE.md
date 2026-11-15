@@ -164,8 +164,8 @@ connexion et envoyés au retour du réseau. Migration appliquée le 15/11/2026 :
 faite le 15/11/2026 (`lib/data/suivi.dart`, 18 tests) : envoi au lancement, au
 retour au premier plan, à la connexion du parent, à l'actualisation et après
 chaque résultat. Écran « Suivi de mes enfants » fait le 15/11/2026 (`/suivi`,
-18 tests). Reste : texte « À propos » à soumettre à Bocar, essai sur le
-téléphone. Elle remplace la
+18 tests). Texte « À propos » mis à jour et validé par Bocar le 15/11/2026.
+Essai réel réussi sur le téléphone le 15/11/2026 : phase 3 terminée côté code. Elle remplace la
 piste technique ci-dessous, écrite avant D21 (`profil_id` devient
 `enfant_id`).
 
@@ -198,8 +198,8 @@ create table public.resultats (     -- une ligne par exercice validé
 ```
 
 Règles :
-- **Mettre à jour la page « À propos »** (« Tes données » dit « rien n’est
-  envoyé ») et la faire valider par Bocar avant de livrer cette phase.
+- ~~**Mettre à jour la page « À propos »**~~ : fait, texte validé par Bocar
+  le 15/11/2026.
 - **Ne pas enregistrer le texte libre des élèves** : l'écran promet que le
   brouillon « reste sur ton téléphone ». Seuls le résultat et le score partent.
 - Données minimales sur les enfants (prénom, classe), rien d'autre.

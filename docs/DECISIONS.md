@@ -65,7 +65,10 @@ avec « Sc » blanc.
 Mise à jour du 15/11/2026 (phase 2) : « Tes données » ne dit plus « Pas de
 compte à créer » ; nouvelle partie « Pour les parents » (vouvoiement) sur le
 compte facultatif et les seules données enregistrées. Version B choisie par
-Bocar. À revoir en phase 3, quand des résultats seront enregistrés.
+Bocar. Mise à jour du 15/11/2026 (phase 3), texte validé par Bocar : le
+texte saisi n'est jamais envoyé ; avec un profil choisi sur le téléphone,
+leçons ouvertes et résultats partent vers le compte parent, seul à les voir ;
+supprimer un profil efface son suivi.
 Présentation, version, licences des polices, contact. La version est écrite
 dans le code à chaque publication (pas de `package_info_plus`). Aucune adresse
 de contact affichée sans l'accord explicite de Bocar.

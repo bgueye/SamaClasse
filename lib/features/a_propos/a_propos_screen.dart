@@ -50,22 +50,31 @@ class AProposScreen extends StatelessWidget {
                       'vérifiée avant d’être mise en ligne. Le programme s’appuie sur les documents '
                       'officiels et sur les cahiers. De nouvelles leçons arrivent au fil de l’année.',
                     ),
+                    // Texte validé par Bocar le 15/11/2026 (phase 3). Chaque
+                    // phrase correspond à ce que fait l'application : rien
+                    // n'est envoyé sans profil choisi sur le téléphone et
+                    // parent connecté (D24), jamais le texte saisi (testé
+                    // dans test/data/suivi_test.dart), suivi visible du seul
+                    // compte parent (RLS) et effacé avec le profil.
                     const _Titre('Tes données'),
-                    // À revoir en phase 3 : quand les résultats seront
-                    // enregistrés pour les enfants qui ont un profil,
-                    // « rien n’est envoyé » ne sera plus vrai pour eux.
                     const _Paragraphe(
-                      'Pas besoin de compte pour lire les leçons et faire les exercices. Tes '
-                      'réponses restent sur ton téléphone : rien n’est envoyé. Les leçons sont '
-                      'gardées sur le téléphone pour être lues même sans connexion.',
+                      'Pas besoin de compte pour lire les leçons et faire les exercices. Ce que tu '
+                      'écris dans les exercices reste sur ton téléphone : ce n’est jamais envoyé. '
+                      'Si tes parents ont créé ton profil sur ce téléphone, les leçons que tu ouvres '
+                      'et tes résultats aux exercices (réussi ou non, ton score) leur sont envoyés, '
+                      'pour qu’ils suivent ton travail. Les leçons sont gardées sur le téléphone '
+                      'pour être lues même sans connexion.',
                     ),
                     // Seule partie vouvoyée de la page : elle s'adresse aux
                     // parents, comme l'espace parents (phase 2, D21).
                     const _Titre('Pour les parents'),
                     const _Paragraphe(
-                      'Un compte facultatif permet de créer le profil de vos enfants. Nous '
-                      'enregistrons seulement votre adresse e-mail, ainsi que le prénom et la '
-                      'classe de chaque enfant. Vous pouvez supprimer un profil à tout moment.',
+                      'Un compte facultatif permet de créer le profil de vos enfants et de suivre '
+                      'leur travail. Nous enregistrons votre adresse e-mail, le prénom et la classe '
+                      'de chaque enfant et, quand un enfant utilise son profil sur un téléphone, les '
+                      'leçons qu’il ouvre et ses résultats aux exercices (réussi ou non, score, '
+                      'date). Jamais ce qu’il écrit. Ces informations ne sont visibles que depuis '
+                      'votre compte. Supprimer un profil efface aussi son suivi.',
                     ),
                     const SizedBox(height: 28),
                     const Divider(),
