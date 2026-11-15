@@ -87,6 +87,9 @@ class _SuiviConnecteState extends State<_SuiviConnecte> {
   /// Enfant affiché ; au départ, celui de ce téléphone s'il y en a un.
   int? _enfantId;
 
+  /// Compte rédacteur : le crayon « Leçons à vérifier » s'affiche (phase 4).
+  bool _redacteur = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -107,6 +110,8 @@ class _SuiviConnecteState extends State<_SuiviConnecte> {
       _scope.repository.lecons(),
       _scope.preferences.enfantActif(),
     ).wait;
+    // Sans réseau ou en cas d'erreur, pas de crayon : rien de grave.
+    _redacteur = await _scope.redaction.estRedacteur().catchError((Object _) => false);
     if (_enfantId == null || !enfants.any((e) => e.id == _enfantId)) {
       _enfantId = enfants.any((e) => e.id == actif?.id) ? actif!.id : enfants.firstOrNull?.id;
     }
@@ -130,12 +135,25 @@ class _SuiviConnecteState extends State<_SuiviConnecte> {
           const LienRetour(libelle: 'Espace parents', repli: '/compte'),
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 16, 0, 0),
-            child: Semantics(
-              header: true,
-              child: const Text(
-                'Suivi de mes enfants',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: Couleurs.texte),
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Semantics(
+                    header: true,
+                    child: const Text(
+                      'Suivi de mes enfants',
+                      style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: Couleurs.texte),
+                    ),
+                  ),
+                ),
+                // Rédacteurs seulement (maquette `Parent`).
+                if (_redacteur)
+                  IconButton.outlined(
+                    onPressed: () => context.push('/validation'),
+                    tooltip: 'Leçons à vérifier',
+                    icon: const Icon(Icons.edit_outlined),
+                  ),
+              ],
             ),
           ),
         ];

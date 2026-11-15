@@ -57,6 +57,8 @@ Future<void> main() async {
     preferences: preferences,
     compte: compte,
     suivi: suivi,
+    // Validation des leçons (phase 4) : réservée aux rédacteurs par la base.
+    redaction: RedactionSupabase(Supabase.instance.client),
     child: const SamaClasseApp(),
   ));
 }

@@ -6,6 +6,13 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D26. `url_launcher` pour ouvrir l'artefact d'une leçon
+*Bocar, 15/11/2026.*
+Nouvelle dépendance de l'application, acceptée par Bocar : le lien « Ouvrir la
+leçon pour la corriger » de l'écran « Validation » ouvre l'artefact dans le
+navigateur. Paquet officiel de l'équipe Flutter. Écarté : copier le lien
+dans le presse-papiers (sans dépendance, mais moins pratique).
+
 ### D25. Points levés : gardés dans une table d'historique
 *Bocar, 15/11/2026.*
 Chaque point à vérifier levé par un rédacteur est enregistré : le texte du

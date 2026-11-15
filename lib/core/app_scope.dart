@@ -14,6 +14,7 @@ class AppScope extends InheritedWidget {
     required this.preferences,
     required this.compte,
     required this.suivi,
+    required this.redaction,
     required super.child,
   });
 
@@ -29,6 +30,9 @@ class AppScope extends InheritedWidget {
   /// écrans l'appellent sans attendre : il ne doit jamais gêner l'élève.
   final SuiviResultats suivi;
 
+  /// Validation et publication des leçons (phase 4), pour les rédacteurs.
+  final Redaction redaction;
+
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
     assert(scope != null, 'AppScope introuvable au-dessus de ce widget.');
@@ -40,5 +44,6 @@ class AppScope extends InheritedWidget {
       repository != oldWidget.repository ||
       preferences != oldWidget.preferences ||
       compte != oldWidget.compte ||
-      suivi != oldWidget.suivi;
+      suivi != oldWidget.suivi ||
+      redaction != oldWidget.redaction;
 }

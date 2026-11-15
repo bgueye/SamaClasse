@@ -10,7 +10,7 @@ https://claude.ai/artifact/3Ci5BP3dorfEx2apfePJhE
 | `Lecon` | Leçon, onglets « La leçon » / « À retenir » | fait (sans bouton « Écouter la leçon ») |
 | `Exercice` | Exercice et bilan | fait, avec un écart : un exercice par écran avec toutes ses questions, au lieu d'une affirmation par écran |
 | `Parent` | Suivi de mes enfants | fait (phase 3), avec deux écarts : « exercices réussis » au lieu de « bonnes réponses » (c'est ce qui est mesuré), pas de bouton vers la validation (phase 4) |
-| `Validation` | Leçons à vérifier, publication | à faire (phase 4) |
+| `Validation` | Leçons à vérifier, publication | fait (phase 4), avec un écart de texte : « les élèves la verront à la prochaine mise à jour de leur application » au lieu de « la voient maintenant » ; confirmation avant de publier |
 
 L'idée : l'application ressemble au cahier que l'élève connaît. Encre bleue,
 marge rouge, lignes Seyès sur la page de leçon, titres écrits à la main, et une

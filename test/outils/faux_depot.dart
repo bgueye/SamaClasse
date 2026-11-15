@@ -353,6 +353,87 @@ class FauxStockageFile implements StockageFile {
   Future<void> ecrire(String t) async => texte = t;
 }
 
+/// Rédaction sans réseau : reproduit les règles de la base (rôle, point
+/// réellement à vérifier, publication seulement si tout est levé).
+class FausseRedaction implements Redaction {
+  FausseRedaction({this.redacteur = false, List<LeconAVerifier>? lecons, List<PointLeve>? leves})
+      : lecons = [...?lecons],
+        leves = [...?leves];
+
+  bool redacteur;
+  final List<LeconAVerifier> lecons;
+  final List<PointLeve> leves;
+  final publiees = <int>[];
+  var _prochainId = 1000;
+
+  /// Échecs à simuler par opération, comme `FauxDepot.pannes`.
+  final pannes = <String, int>{};
+
+  Future<void> _avant(String operation) async {
+    final restantes = pannes[operation] ?? 0;
+    if (restantes > 0) {
+      pannes[operation] = restantes - 1;
+      throw const SocketException('Pas de connexion (test)');
+    }
+  }
+
+  void _exigerRedacteur() {
+    if (!redacteur) throw const PostgrestException(message: 'permission denied', code: '42501');
+  }
+
+  @override
+  Future<bool> estRedacteur() async {
+    await _avant('estRedacteur');
+    return redacteur;
+  }
+
+  @override
+  Future<List<LeconAVerifier>> leconsAVerifier() async {
+    await _avant('lecons');
+    _exigerRedacteur();
+    return [for (final l in lecons) if (!publiees.contains(l.id)) l];
+  }
+
+  @override
+  Future<List<PointLeve>> pointsLeves() async {
+    await _avant('points');
+    _exigerRedacteur();
+    return List.of(leves);
+  }
+
+  @override
+  Future<PointLeve> leverPoint({required int leconId, required String point}) async {
+    await _avant('lever');
+    _exigerRedacteur();
+    final lecon = lecons.firstWhere((l) => l.id == leconId);
+    if (!lecon.points.contains(point) || publiees.contains(leconId)) {
+      throw const PostgrestException(message: 'new row violates row-level security policy', code: '42501');
+    }
+    final p = PointLeve(id: _prochainId++, leconId: leconId, point: point, leveLe: DateTime.now());
+    leves.add(p);
+    return p;
+  }
+
+  @override
+  Future<void> annulerPoint(int id) async {
+    await _avant('annuler');
+    _exigerRedacteur();
+    leves.removeWhere((p) => p.id == id);
+  }
+
+  @override
+  Future<void> publier(int leconId) async {
+    await _avant('publier');
+    _exigerRedacteur();
+    final lecon = lecons.firstWhere((l) => l.id == leconId);
+    final restants = lecon.points.where((p) => !leves.any((x) => x.leconId == leconId && x.point == p)).length;
+    if (restants > 0) {
+      throw PostgrestException(message: 'Il reste $restants point(s) à vérifier.', code: 'P0001');
+    }
+    publiees.add(leconId);
+  }
+}
+
 /// Taille d'un téléphone courant (390 × 844, comme dans CLAUDE.md).
 const tailleTelephone = Size(390, 844);
 
@@ -370,6 +451,7 @@ Future<void> lancerApp(
   Preferences? preferences,
   Compte? compte,
   FauxEnvoi? envoi,
+  Redaction? redaction,
   String chemin = '/',
   Size taille = tailleTelephone,
   double echelleTexte = 1,
@@ -398,6 +480,7 @@ Future<void> lancerApp(
     preferences: prefs,
     compte: leCompte,
     suivi: suivi,
+    redaction: redaction ?? FausseRedaction(),
     child: SamaClasseApp(emplacementInitial: chemin),
   ));
 }

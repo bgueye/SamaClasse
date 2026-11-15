@@ -51,6 +51,7 @@ lib/
     config.dart                 SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY (dart-define)
     version.dart                version affichée, à garder égale à pubspec.yaml (testé)
     app_scope.dart              InheritedWidget : repository + preferences + compte + suivi
+                                + redaction
     services/preferences.dart   SharedPreferencesAsync : classe choisie, dernière leçon,
                                 profil enfant de ce téléphone (EnfantActif)
     theme/couleurs.dart         palette (voir DESIGN.md)
@@ -73,6 +74,8 @@ lib/
     correction.dart             corriger(), estAutoCorrigeable(), normaliser()…
     compte.dart                 Enfant, Compte (contrat, ChangeNotifier), CompteSupabase :
                                 connexion par code e-mail (D22), table enfants (D21)
+    redaction.dart              Redaction, RedactionSupabase : leçons à vérifier, points
+                                levés (D25), publication par publier_lecon (phase 4)
     suivi.dart                  SuiviResultats : lectures et résultats de l'enfant de ce
                                 téléphone, file d'attente locale, envoi au retour du réseau (D24)
     data.dart                   export groupé
@@ -86,6 +89,8 @@ lib/
     compte/outils_compte.dart         validation des saisies, messageErreurCompte()
     suivi/suivi_screen.dart           « Suivi de mes enfants » (maquette Parent, phase 3)
     suivi/statistiques.dart           debutSemaine(), bilanSemaine(), derniersExercices()…
+    validation/validation_screen.dart « Leçons à vérifier » (maquette Validation, rédacteurs)
+    validation/outils_validation.dart pointsRestants(), resumeValidation(), messages d'erreur
     matiere/matiere_screen.dart       chapitres par partie, filtre
     matiere/regroupement.dart         regrouperParPartie(), etatChapitre()
     lecon/lecon_screen.dart           onglets « La leçon » / « À retenir »
@@ -100,10 +105,11 @@ test/
   features/puces_test.dart      lisibilité des puces de choix
   features/compte_test.dart     espace parents : saisies, erreurs, écrans, 200 %
   features/suivi_test.dart      suivi des enfants : semaine, derniers exercices, écran, 200 %
+  features/validation_test.dart validation : points, publication, rôle, écran, 200 %
   data/contenu_hors_ligne_test.dart synchronisation, copie locale, erreurs réseau
   data/suivi_test.dart          file d'attente du suivi : hors connexion, doublons, refus, écrans
   core/seyes_test.dart          alignement du texte sur les lignes Seyès (vraies polices)
-  outils/faux_depot.dart        FauxDepot, FaussesPreferences, FauxCompte, FauxEnvoi,
+  outils/faux_depot.dart        FauxDepot, FaussesPreferences, FauxCompte, FauxEnvoi, FausseRedaction,
                                 FauxStockageFile, lancerApp(),
                                 FausseSource, FauxStockage, instantaneReel()
   outils/polices.dart           chargement des vraies polices dans un test
@@ -132,6 +138,7 @@ assets/fonts/                   polices embarquées (dont les polices de secours
 | `/lecon/:leconId/exercices` | `ExercicesScreen` | la `Lecon` passée en `extra`, sinon `lecon(id)` |
 | `/a-propos` | `AProposScreen` | aucune (page fixe : présentation, version, licences, D18) |
 | `/compte` | `CompteScreen` | connexion si pas de compte ; sinon `compte.enfants()` et `classes()` |
+| `/validation` | `ValidationScreen` | `redaction.estRedacteur()`, puis `leconsAVerifier()` et `pointsLeves()` |
 | `/suivi` | `SuiviScreen` | envoie d'abord la file du suivi, puis `compte.enfants()`, `lectures()`, `resultats()`, `classes()`, `lecons()` |
 
 Règles :

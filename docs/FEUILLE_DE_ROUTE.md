@@ -220,7 +220,10 @@ Décision 7 tranchée par Bocar le 15/11/2026 (D25) : table d'historique des
 points levés. Migration :
 `supabase/migrations/20261115115025_validation_redacteurs.sql` (appliquée le 15/11/2026). À livrer avec
 elle : le téléchargement du contenu filtre `statut = 'publiee'` lui-même, sinon
-un rédacteur connecté verrait les leçons non publiées comme si elles l'étaient.
+un rédacteur connecté verrait les leçons non publiées comme si elles l'étaient
+(fait le 15/11/2026). Bocar ajouté comme rédacteur le 15/11/2026. Écran
+« Leçons à vérifier » fait le 15/11/2026 (`/validation`, `url_launcher` pour
+l'artefact, D26, 16 tests). Reste : essai sur le téléphone.
 
 Objectif : l'écran `Validation` des maquettes, réservé au rôle `redacteur`.
 

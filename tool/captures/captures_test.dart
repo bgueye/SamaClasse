@@ -53,6 +53,46 @@ FauxCompte _compteAvecSuivi() {
   );
 }
 
+/// Trois leçons à vérifier (textes inspirés des vraies), un point levé.
+FausseRedaction _redactionCapture() {
+  LeconAVerifier l(int id, String titre, String classe, int ordre, String matiere, String slug, List<String> points) =>
+      LeconAVerifier(
+        id: id,
+        titre: titre,
+        classe: classe,
+        ordreClasse: ordre,
+        matiere: matiere,
+        matiereSlug: slug,
+        points: points,
+        artefactUrl: 'https://claude.ai/artifact/exemple',
+      );
+  return FausseRedaction(
+    redacteur: true,
+    lecons: [
+      l(2, 'La digestion et l’absorption', '4ème', 9, 'SVT', 'svt', [
+        'Le III ne détaille que l’étape buccale : les étapes gastrique et intestinale figurent-elles dans le cahier ?',
+        'Les exercices de la fiche viennent-ils du cahier ou ont-ils été ajoutés ?',
+      ]),
+      l(6, 'L’Afrique de l’Ouest : étude de situation', '4ème', 9, 'Géographie', 'geographie', [
+        'Latitudes : le cahier ne donne pas les valeurs.',
+        '6 000 km d’ouest en est : chiffre qui paraît trop élevé.',
+        'Climat guinéen complété.',
+      ]),
+      l(10, 'La structure d’un écosystème', 'Seconde L', 11, 'SVT', 'svt', [
+        'La partie sur le peuplement animal reste à rédiger.',
+      ]),
+    ],
+    leves: [
+      PointLeve(
+        id: 1,
+        leconId: 2,
+        point: 'Les exercices de la fiche viennent-ils du cahier ou ont-ils été ajoutés ?',
+        leveLe: DateTime(2026, 11, 15),
+      ),
+    ],
+  );
+}
+
 /// Profils de l'espace parents pour les captures.
 const _enfants = [
   Enfant(id: 1, prenom: 'Awa', classeId: 1),
@@ -155,6 +195,19 @@ void main() {
         echelleTexte: echelle,
       );
       await _capturer(tester, 'tel${suffixe}_12_suivi');
+
+      // Leçons à vérifier (phase 4), une leçon dépliée avec un point levé.
+      await lancerApp(
+        tester,
+        depot: FauxDepot(),
+        compte: FauxCompte(connecte: 'redacteur@exemple.sn'),
+        redaction: _redactionCapture(),
+        chemin: '/validation',
+        echelleTexte: echelle,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('La digestion et l’absorption'));
+      await _capturer(tester, 'tel${suffixe}_13_validation');
     });
   }
 
@@ -214,5 +267,16 @@ void main() {
       taille: tailleWeb,
     );
     await _capturer(tester, 'web_12_suivi');
+    await lancerApp(
+      tester,
+      depot: FauxDepot(),
+      compte: FauxCompte(connecte: 'redacteur@exemple.sn'),
+      redaction: _redactionCapture(),
+      chemin: '/validation',
+      taille: tailleWeb,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('La digestion et l’absorption'));
+    await _capturer(tester, 'web_13_validation');
   });
 }

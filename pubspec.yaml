@@ -18,6 +18,9 @@ dependencies:
   go_router: ^17.0.0
   flutter_markdown_plus: ^1.0.7
   shared_preferences: ^2.5.3
+  # Ouvre l'artefact d'une leçon dans le navigateur (écran « Validation »,
+  # décision D26). Paquet officiel de l'équipe Flutter.
+  url_launcher: ^6.3.3
 
 dev_dependencies:
   flutter_test:

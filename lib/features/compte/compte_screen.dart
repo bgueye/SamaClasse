@@ -311,6 +311,9 @@ class _MesEnfantsState extends State<MesEnfants> {
   /// pour éviter un double envoi.
   bool _occupe = false;
 
+  /// Compte rédacteur : bouton « Leçons à vérifier » (phase 4).
+  bool _redacteur = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -320,6 +323,9 @@ class _MesEnfantsState extends State<MesEnfants> {
       _scope.preferences.enfantActif().then((e) {
         if (mounted) setState(() => _actif = e);
       });
+      _scope.redaction.estRedacteur().then((r) {
+        if (mounted) setState(() => _redacteur = r);
+      }, onError: (Object _) {});
     }
   }
 
@@ -448,6 +454,17 @@ class _MesEnfantsState extends State<MesEnfants> {
           padding: const EdgeInsets.fromLTRB(12, 8, 24, 32),
           children: [
             _Entete(texte: 'Connecté avec ${_scope.compte.email}.'),
+            // Rédacteurs (phase 4) : toujours visible, même sans profil enfant.
+            if (_redacteur)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 16, 0, 0),
+                child: OutlinedButton.icon(
+                  onPressed: () => context.push('/validation'),
+                  icon: const Icon(Icons.edit_outlined),
+                  label: const Text('Leçons à vérifier'),
+                  style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+                ),
+              ),
             const SizedBox(height: 20),
             corps,
             const SizedBox(height: 28),

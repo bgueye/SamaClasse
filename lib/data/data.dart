@@ -5,6 +5,7 @@ export 'copie_locale.dart';
 export 'correction.dart';
 export 'instantane.dart';
 export 'models.dart';
+export 'redaction.dart';
 export 'samaclasse_repository.dart';
 export 'suivi.dart';
 export 'telechargement_supabase.dart';
