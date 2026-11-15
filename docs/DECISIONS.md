@@ -19,6 +19,11 @@ Chaque point à vérifier levé par un rédacteur est enregistré : le texte du
 point, qui l'a levé, quand, et un commentaire facultatif. La publication note
 aussi qui a publié et quand (D23). Un point coché par erreur peut être annulé
 tant que la leçon n'est pas publiée ; ensuite, l'historique est figé.
+Précision du 15/11/2026 (Bocar, après essai) : beaucoup de points sont des
+questions. Lever un point se fait avec une réponse (champ `commentaire`),
+obligatoire si le point se termine par « ? », facultative pour un simple
+constat. Si la réponse montre qu'il faut corriger la leçon, on corrige
+d'abord l'artefact, puis on lève le point (« Corrigé : … »).
 
 ### D24. Résultats hors connexion : gardés et envoyés au retour du réseau
 *Bocar, 15/11/2026.*

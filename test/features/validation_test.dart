@@ -31,7 +31,35 @@ final _digestion = _lecon(2, 'La digestion et l’absorption', ['Étapes gastriq
 final _ecosysteme = _lecon(10, 'La structure d’un écosystème', ['Peuplement animal à rédiger.'],
     classe: 'Seconde L', ordre: 11);
 
+/// Touche le point [texte], écrit [reponse] dans la fenêtre « Lever ce
+/// point » et valide.
+Future<void> _lever(WidgetTester tester, String texte, {String reponse = ''}) async {
+  await tester.tap(find.text(texte));
+  await tester.pumpAndSettle();
+  expect(find.text('Lever ce point'), findsOneWidget);
+  if (reponse.isNotEmpty) await tester.enterText(find.byType(TextField), reponse);
+  await tester.tap(find.text('Lever le point'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
+  group('Réponses aux points', () {
+    test('une question finit par « ? »', () {
+      expect(estQuestion('Les exercices viennent-ils du cahier ?'), isTrue);
+      expect(estQuestion('Les exercices viennent-ils du cahier ?  '), isTrue);
+      expect(estQuestion('Climat guinéen complété.'), isFalse);
+    });
+
+    test('réponse obligatoire pour une question, facultative sinon', () {
+      expect(erreurReponse('Viennent-ils du cahier ?', '  '), isNotNull);
+      expect(erreurReponse('Viennent-ils du cahier ?', 'Oui, page 12.'), isNull);
+      expect(erreurReponse('Climat complété.', ''), isNull);
+      expect(erreurReponse('Climat complété.', 'x' * 501), isNotNull);
+      expect(nettoyerReponse('  Oui.  '), 'Oui.');
+      expect(nettoyerReponse('   '), isNull);
+    });
+  });
+
   group('Logique pure', () {
     test('points restants : comparés au texte, leçon par leçon', () {
       final leves = [_leve(1, 2, 'Origine des exercices ?'), _leve(2, 10, 'Origine des exercices ?')];
@@ -117,12 +145,12 @@ void main() {
       // Bouton inactif tant qu'il reste des points.
       expect(tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Coche tous les points pour publier')).onPressed, isNull);
 
-      await tester.tap(find.text('Étapes gastrique et intestinale ?'));
-      await tester.pumpAndSettle();
+      await _lever(tester, 'Étapes gastrique et intestinale ?', reponse: 'Non : III raccourci dans l’artefact.');
       expect(find.text('1 point'), findsNWidgets(2), reason: 'cette leçon et l’autre');
-      await tester.tap(find.text('Origine des exercices ?'));
-      await tester.pumpAndSettle();
+      expect(find.text('Ta réponse : Non : III raccourci dans l’artefact.'), findsOneWidget);
+      await _lever(tester, 'Origine des exercices ?', reponse: 'Ils viennent du cahier.');
       expect(redaction.leves.map((p) => p.point), ['Étapes gastrique et intestinale ?', 'Origine des exercices ?']);
+      expect(redaction.leves.map((p) => p.commentaire), ['Non : III raccourci dans l’artefact.', 'Ils viennent du cahier.']);
       expect(find.text('Prête'), findsOneWidget);
 
       await tester.tap(find.text('Publier la leçon'));
@@ -162,11 +190,64 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('La structure d’un écosystème'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Peuplement animal à rédiger.'));
-      await tester.pumpAndSettle();
+      await _lever(tester, 'Peuplement animal à rédiger.');
       expect(find.textContaining('Pas de connexion'), findsOneWidget);
       expect(redaction.leves, isEmpty);
       expect(tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value, isFalse);
+    });
+
+    testWidgets('question sans réponse : refusée, la fenêtre reste ouverte', (tester) async {
+      final redaction = FausseRedaction(redacteur: true, lecons: [_digestion]);
+      await lancerApp(tester, depot: FauxDepot(), compte: connecte(), redaction: redaction, chemin: '/validation');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('La digestion et l’absorption'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Origine des exercices ?'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Lever le point'));
+      await tester.pumpAndSettle();
+      expect(find.text('Écris ta réponse à cette question pour lever le point.'), findsOneWidget);
+      expect(redaction.leves, isEmpty);
+
+      // « Annuler » ferme sans rien lever.
+      await tester.tap(find.text('Annuler'));
+      await tester.pumpAndSettle();
+      expect(find.text('Lever ce point'), findsNothing);
+      expect(redaction.leves, isEmpty);
+    });
+
+    testWidgets('annuler un point qui a une réponse demande confirmation', (tester) async {
+      final redaction = FausseRedaction(
+        redacteur: true,
+        lecons: [_ecosysteme],
+        leves: [
+          PointLeve(
+            id: 7,
+            leconId: 10,
+            point: 'Peuplement animal à rédiger.',
+            leveLe: DateTime(2026, 11, 15),
+            commentaire: 'Partie rédigée à partir du cahier.',
+          ),
+        ],
+      );
+      await lancerApp(tester, depot: FauxDepot(), compte: connecte(), redaction: redaction, chemin: '/validation');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('La structure d’un écosystème'));
+      await tester.pumpAndSettle();
+      expect(find.text('Ta réponse : Partie rédigée à partir du cahier.'), findsOneWidget);
+
+      await tester.tap(find.text('Peuplement animal à rédiger.'));
+      await tester.pumpAndSettle();
+      expect(find.text('Annuler ce point ?'), findsOneWidget);
+      await tester.tap(find.text('Garder'));
+      await tester.pumpAndSettle();
+      expect(redaction.leves, hasLength(1));
+
+      await tester.tap(find.text('Peuplement animal à rédiger.'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Annuler le point'));
+      await tester.pumpAndSettle();
+      expect(redaction.leves, isEmpty);
     });
 
     testWidgets('chargement en erreur, puis « Réessayer »', (tester) async {

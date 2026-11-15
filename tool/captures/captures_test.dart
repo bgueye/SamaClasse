@@ -208,6 +208,14 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('La digestion et l’absorption'));
       await _capturer(tester, 'tel${suffixe}_13_validation');
+      // Fenêtre « Lever ce point » sur une question, réponse en cours.
+      final question = find.textContaining('Le III ne détaille');
+      await tester.ensureVisible(question);
+      await tester.pumpAndSettle();
+      await tester.tap(question);
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextField), 'Non : le cahier ne traite que l’étape buccale. III raccourci.');
+      await _capturer(tester, 'tel${suffixe}_14_lever_point');
     });
   }
 

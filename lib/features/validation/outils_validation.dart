@@ -21,6 +21,28 @@ PointLeve? pointLeve(List<PointLeve> leves, int leconId, String point) {
 List<String> pointsRestants(LeconAVerifier lecon, List<PointLeve> leves) =>
     [for (final p in lecon.points) if (pointLeve(leves, lecon.id, p) == null) p];
 
+/// Longueur maximale d'une réponse (contrainte de `points_leves.commentaire`).
+const longueurMaxReponse = 500;
+
+/// Le point est-il une question (« … figurent-elles dans le cahier ? ») ?
+/// Une question appelle une réponse écrite pour être levée (décision de
+/// Bocar du 15/11/2026) ; un simple constat se lève d'une coche.
+bool estQuestion(String point) => point.trimRight().endsWith('?');
+
+/// Réponse sans espaces superflus ; `null` si elle est vide.
+String? nettoyerReponse(String saisie) {
+  final r = saisie.trim();
+  return r.isEmpty ? null : r;
+}
+
+/// Message d'erreur du champ « Ta réponse », ou `null` s'il est valable.
+String? erreurReponse(String point, String saisie) {
+  final r = saisie.trim();
+  if (r.isEmpty && estQuestion(point)) return 'Écris ta réponse à cette question pour lever le point.';
+  if (r.runes.length > longueurMaxReponse) return 'Ta réponse ne doit pas dépasser $longueurMaxReponse caractères.';
+  return null;
+}
+
 /// Pastille d'une leçon : « 2 points », « 1 point », ou « Prête » quand tout
 /// est levé.
 String libellePastille(int restants) => switch (restants) {

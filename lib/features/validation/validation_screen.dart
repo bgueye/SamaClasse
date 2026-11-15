@@ -9,6 +9,7 @@ import '../../core/theme/theme.dart';
 import '../../core/widgets/composants.dart';
 import '../../core/widgets/etats.dart';
 import '../../data/data.dart';
+import 'fiche_lever.dart';
 import 'outils_validation.dart';
 
 /// « Leçons à vérifier » (phase 4, maquette `Validation`), à l'adresse
@@ -140,17 +141,39 @@ class _ValidationState extends State<_Validation> {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  /// Coche (lève) ou décoche (annule) un point. Chaque case cochée laisse une
-  /// trace dans l'historique (D25) ; décocher n'est possible qu'avant la
-  /// publication.
+  /// Lève un point (fenêtre « Lever ce point », avec la réponse) ou annule
+  /// un point levé. Chaque point levé laisse une trace dans l'historique
+  /// (D25) ; l'annuler n'est possible qu'avant la publication.
   Future<void> _basculer(LeconAVerifier lecon, String point) async {
     final cle = '${lecon.id}|$point';
     if (_enCours.contains(cle)) return;
+    final existant = pointLeve(_leves, lecon.id, point);
+
+    String? reponse;
+    if (existant == null) {
+      final saisie = await afficherFicheLever(context, point: point);
+      if (saisie == null || !mounted) return; // annulé
+      reponse = nettoyerReponse(saisie);
+    } else if (existant.commentaire != null) {
+      // Annuler effacerait la réponse écrite : on demande d'abord.
+      final confirme = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Annuler ce point ?'),
+          content: const Text('Ta réponse sera effacée et le point redeviendra à vérifier.'),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Garder')),
+            TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Annuler le point')),
+          ],
+        ),
+      );
+      if (confirme != true || !mounted) return;
+    }
+
     setState(() => _enCours.add(cle));
     try {
-      final existant = pointLeve(_leves, lecon.id, point);
       if (existant == null) {
-        final leve = await _scope.redaction.leverPoint(leconId: lecon.id, point: point);
+        final leve = await _scope.redaction.leverPoint(leconId: lecon.id, point: point, commentaire: reponse);
         if (mounted) setState(() => _leves = [..._leves, leve]);
       } else {
         await _scope.redaction.annulerPoint(existant.id);
@@ -399,6 +422,7 @@ class _CarteLecon extends StatelessWidget {
                   for (final p in lecon.points) _CasePoint(
                     texte: p,
                     coche: pointLeve(leves, lecon.id, p) != null,
+                    reponse: pointLeve(leves, lecon.id, p)?.commentaire,
                     // Après publication, l'historique est figé (D25).
                     actif: !publiee && !enCours.contains('${lecon.id}|$p'),
                     onChanged: () => onPoint(p),
@@ -462,12 +486,20 @@ class _Pastille extends StatelessWidget {
   }
 }
 
-/// Un point à vérifier, avec sa case à cocher (cible tactile ≥ 48 px).
+/// Un point à vérifier, avec sa case à cocher (cible tactile ≥ 48 px) et,
+/// une fois levé, la réponse du rédacteur.
 class _CasePoint extends StatelessWidget {
-  const _CasePoint({required this.texte, required this.coche, required this.actif, required this.onChanged});
+  const _CasePoint({
+    required this.texte,
+    required this.coche,
+    required this.reponse,
+    required this.actif,
+    required this.onChanged,
+  });
 
   final String texte;
   final bool coche;
+  final String? reponse;
   final bool actif;
   final VoidCallback onChanged;
 
@@ -489,6 +521,15 @@ class _CasePoint extends StatelessWidget {
           activeColor: Couleurs.encre,
           contentPadding: const EdgeInsets.symmetric(horizontal: 8),
           title: Text(texte, style: const TextStyle(fontSize: 14, height: 1.45, color: Couleurs.texte)),
+          subtitle: reponse == null
+              ? null
+              : Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text(
+                    'Ta réponse : $reponse',
+                    style: const TextStyle(fontSize: 14, height: 1.4, color: Couleurs.texteDoux, fontStyle: FontStyle.italic),
+                  ),
+                ),
         ),
       ),
     );

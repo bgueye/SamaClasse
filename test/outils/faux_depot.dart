@@ -402,14 +402,14 @@ class FausseRedaction implements Redaction {
   }
 
   @override
-  Future<PointLeve> leverPoint({required int leconId, required String point}) async {
+  Future<PointLeve> leverPoint({required int leconId, required String point, String? commentaire}) async {
     await _avant('lever');
     _exigerRedacteur();
     final lecon = lecons.firstWhere((l) => l.id == leconId);
     if (!lecon.points.contains(point) || publiees.contains(leconId)) {
       throw const PostgrestException(message: 'new row violates row-level security policy', code: '42501');
     }
-    final p = PointLeve(id: _prochainId++, leconId: leconId, point: point, leveLe: DateTime.now());
+    final p = PointLeve(id: _prochainId++, leconId: leconId, point: point, leveLe: DateTime.now(), commentaire: commentaire);
     leves.add(p);
     return p;
   }

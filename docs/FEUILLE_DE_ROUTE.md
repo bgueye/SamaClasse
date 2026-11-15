@@ -223,7 +223,9 @@ elle : le téléchargement du contenu filtre `statut = 'publiee'` lui-même, sin
 un rédacteur connecté verrait les leçons non publiées comme si elles l'étaient
 (fait le 15/11/2026). Bocar ajouté comme rédacteur le 15/11/2026. Écran
 « Leçons à vérifier » fait le 15/11/2026 (`/validation`, `url_launcher` pour
-l'artefact, D26, 16 tests). Reste : essai sur le téléphone.
+l'artefact, D26). Après le premier essai de Bocar : lever un point se fait
+avec une réponse écrite, obligatoire pour une question (fenêtre « Lever ce
+point », 20 tests). Reste : nouvel essai sur le téléphone.
 
 Objectif : l'écran `Validation` des maquettes, réservé au rôle `redacteur`.
 

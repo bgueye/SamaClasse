@@ -61,18 +61,29 @@ class LeconAVerifier {
 /// Point levé par un rédacteur (ligne de `points_leves`).
 @immutable
 class PointLeve {
-  const PointLeve({required this.id, required this.leconId, required this.point, required this.leveLe});
+  const PointLeve({
+    required this.id,
+    required this.leconId,
+    required this.point,
+    required this.leveLe,
+    this.commentaire,
+  });
 
   final int id;
   final int leconId;
   final String point;
   final DateTime leveLe;
 
+  /// Réponse du rédacteur : ce qu'il a vérifié ou trouvé dans le cahier
+  /// (obligatoire quand le point est une question).
+  final String? commentaire;
+
   factory PointLeve.fromJson(Map<String, dynamic> json) => PointLeve(
         id: (json['id'] as num).toInt(),
         leconId: (json['lecon_id'] as num).toInt(),
         point: json['point'] as String,
         leveLe: DateTime.parse(json['leve_le'] as String),
+        commentaire: json['commentaire'] as String?,
       );
 }
 
@@ -88,8 +99,9 @@ abstract class Redaction {
   /// des autres, inutile ici mais sans gêne).
   Future<List<PointLeve>> pointsLeves();
 
-  /// Lève [point] de la leçon [leconId], au nom du compte connecté.
-  Future<PointLeve> leverPoint({required int leconId, required String point});
+  /// Lève [point] de la leçon [leconId], au nom du compte connecté, avec la
+  /// réponse du rédacteur ([commentaire], facultatif pour un simple constat).
+  Future<PointLeve> leverPoint({required int leconId, required String point, String? commentaire});
 
   /// Annule un point levé par erreur (possible tant que la leçon n'est pas
   /// publiée).
@@ -125,17 +137,18 @@ class RedactionSupabase implements Redaction {
 
   @override
   Future<List<PointLeve>> pointsLeves() async {
-    final lignes = await _client.from('points_leves').select('id, lecon_id, point, leve_le').order('leve_le');
+    final lignes =
+        await _client.from('points_leves').select('id, lecon_id, point, leve_le, commentaire').order('leve_le');
     return lignes.map(PointLeve.fromJson).toList();
   }
 
   @override
-  Future<PointLeve> leverPoint({required int leconId, required String point}) async {
+  Future<PointLeve> leverPoint({required int leconId, required String point, String? commentaire}) async {
     // `leve_par` est rempli par la base avec le compte connecté.
     final ligne = await _client
         .from('points_leves')
-        .insert({'lecon_id': leconId, 'point': point})
-        .select('id, lecon_id, point, leve_le')
+        .insert({'lecon_id': leconId, 'point': point, 'commentaire': commentaire})
+        .select('id, lecon_id, point, leve_le, commentaire')
         .single();
     return PointLeve.fromJson(ligne);
   }
