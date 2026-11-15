@@ -1,7 +1,7 @@
 // Compte parent et profils enfants (phase 2, décisions D21 et D22).
 //
 // Seul le parent a un compte Supabase : il se connecte avec un code à
-// 6 chiffres reçu par e-mail, sans mot de passe. Ses enfants sont de simples
+// chiffres reçu par e-mail, sans mot de passe. Ses enfants sont de simples
 // profils (prénom, classe) de la table `enfants`, protégée par les règles RLS :
 // chaque parent ne voit et ne modifie que les siens.
 //

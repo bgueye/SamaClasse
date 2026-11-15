@@ -7,9 +7,12 @@
 
 import 'package:supabase_flutter/supabase_flutter.dart' show AuthException, AuthRetryableFetchException, PostgrestException;
 
-/// Longueur du code reçu par e-mail (réglage « Email OTP Length » de
-/// Supabase, D22).
-const longueurCode = 6;
+/// Longueurs possibles du code reçu par e-mail : le réglage « Email OTP
+/// Length » de Supabase va de 6 à 10 chiffres (8 sur le projet au
+/// 15/11/2026). L'application accepte toute la plage pour ne pas dépendre de
+/// ce réglage : c'est le serveur qui juge si le code est le bon.
+const longueurCodeMin = 6;
+const longueurCodeMax = 10;
 
 /// Longueur maximale d'un prénom (contrainte de la table `enfants`).
 const longueurMaxPrenom = 40;
@@ -27,7 +30,10 @@ bool emailValide(String saisie) =>
 /// contenir des espaces (« 123 456 »).
 String nettoyerCode(String saisie) => saisie.replaceAll(RegExp(r'\D'), '');
 
-bool codeComplet(String saisie) => nettoyerCode(saisie).length == longueurCode;
+bool codeComplet(String saisie) {
+  final n = nettoyerCode(saisie).length;
+  return n >= longueurCodeMin && n <= longueurCodeMax;
+}
 
 /// Prénom sans espaces superflus (« Awa  Diop » → « Awa Diop »).
 String nettoyerPrenom(String saisie) => saisie.trim().replaceAll(RegExp(r'\s+'), ' ');
@@ -44,7 +50,14 @@ String? erreurPrenom(String saisie) {
 /// `enfants`). Le détail technique n'est jamais montré : il ne parlerait pas
 /// à un parent.
 String messageErreurCompte(Object erreur) {
-  if (erreur is AuthRetryableFetchException) return _messageReseau;
+  if (erreur is AuthRetryableFetchException) {
+    // La bibliothèque range sous ce type les coupures réseau (pas de code
+    // HTTP) ET toute réponse 5xx du serveur (code présent), par exemple un
+    // e-mail que le serveur d'envoi refuse (vu le 14/11/2026 : mot de passe
+    // SMTP Gmail refusé). Ne pas accuser le réseau du parent à tort.
+    final statut = int.tryParse(erreur.statusCode ?? '');
+    return statut != null && statut >= 500 ? _messageServeur : _messageReseau;
+  }
   if (erreur is AuthException) {
     switch (erreur.code) {
       // Supabase renvoie le même code pour un code faux et un code expiré.
@@ -88,3 +101,5 @@ String messageErreurCompte(Object erreur) {
 
 const _messageReseau = 'Pas de connexion internet. Vérifiez le réseau, puis réessayez.';
 const _messageSession = 'Votre session a expiré. Reconnectez-vous.';
+const _messageServeur =
+    'Le service de connexion rencontre un problème. Réessayez un peu plus tard.';

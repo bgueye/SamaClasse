@@ -13,13 +13,20 @@ tableau de bord (table `redacteurs`), jamais depuis l'application. Un
 rédacteur peut aussi être parent. La phase 4 gardera la trace de qui a publié
 quoi.
 
-### D22. Connexion : code à 6 chiffres reçu par e-mail
+### D22. Connexion : code chiffré reçu par e-mail
 *Bocar, 14/11/2026.*
 Pas de mot de passe : le parent saisit son e-mail, reçoit un code et le tape
 dans l'application. Gratuit, et fonctionne même si l'e-mail est lu sur un
-autre appareil (contrairement au lien magique). Avant la diffusion, brancher
-un service d'envoi d'e-mails (SMTP) : l'envoi intégré de Supabase est limité
-à quelques messages par heure. SMS écarté (coût).
+autre appareil (contrairement au lien magique). SMS écarté (coût).
+Précisions du 14-15/11/2026 :
+- Un service d'envoi d'e-mails (SMTP) est nécessaire **dès les essais** :
+  sans lui, Supabase interdit de modifier les modèles d'e-mail, et ceux par
+  défaut envoient un lien, pas de code. Essais : Gmail avec un mot de passe
+  d'application (`smtp.gmail.com`, port 465). Avant la diffusion : un service
+  dédié avec un domaine (Resend ou Brevo), pour ne pas exposer une adresse
+  personnelle et dépasser la limite de Gmail (environ 500 par jour).
+- Longueur du code : réglage « Email OTP Length » de Supabase (8 au
+  15/11/2026). L'application accepte de 6 à 10 chiffres.
 
 ### D21. Élèves : compte parent et profils enfants sans identifiants
 *Bocar, 14/11/2026.*

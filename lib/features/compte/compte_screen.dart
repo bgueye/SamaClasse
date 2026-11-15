@@ -13,8 +13,8 @@ import 'outils_compte.dart';
 
 /// « Espace parents » (phase 2, D21 et D22), à l'adresse `/compte`.
 ///
-/// Sans connexion : connexion en deux étapes (e-mail, puis code à 6 chiffres
-/// reçu par e-mail). Connecté : la liste des profils enfants.
+/// Sans connexion : connexion en deux étapes (e-mail, puis code chiffré reçu
+/// par e-mail). Connecté : la liste des profils enfants.
 /// L'écran suit le compte (`ListenableBuilder`) : il bascule tout seul d'une
 /// vue à l'autre à la connexion et à la déconnexion.
 class CompteScreen extends StatelessWidget {
@@ -171,8 +171,8 @@ class _ConnexionParentState extends State<ConnexionParent> {
   Future<void> _verifierCode() async {
     if (_enCours) return;
     final code = nettoyerCode(_champCode.text);
-    if (code.length != longueurCode) {
-      setState(() => _erreur = 'Le code compte $longueurCode chiffres.');
+    if (!codeComplet(code)) {
+      setState(() => _erreur = 'Saisissez tous les chiffres du code reçu par e-mail.');
       return;
     }
     // En cas de succès, le compte prévient CompteScreen, qui affiche la liste.
@@ -196,7 +196,7 @@ class _ConnexionParentState extends State<ConnexionParent> {
       children: [
         _Entete(
           texte: etapeCode
-              ? 'Nous avons envoyé un code à $longueurCode chiffres à $_emailEnvoye. '
+              ? 'Nous avons envoyé un code à $_emailEnvoye. '
                   'S’il n’arrive pas, regardez dans les courriers indésirables.'
               : 'Connectez-vous pour créer les profils de vos enfants. Pas de mot de passe : '
                   'vous recevez un code par e-mail. Sans compte, toutes les leçons restent accessibles.',

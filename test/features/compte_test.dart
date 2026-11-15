@@ -28,12 +28,15 @@ void main() {
       }
     });
 
-    test('code : chiffres seulement, 6 attendus', () {
+    test('code : chiffres seulement, de 6 à 10', () {
       expect(nettoyerCode('123 456'), '123456');
       expect(nettoyerCode(' 12-34-56 '), '123456');
       expect(codeComplet('123 456'), isTrue);
+      // Cas réel du 15/11/2026 : le projet envoie des codes à 8 chiffres.
+      expect(codeComplet('1234 5678'), isTrue);
+      expect(codeComplet('1234567890'), isTrue);
       expect(codeComplet('12345'), isFalse);
-      expect(codeComplet('1234567'), isFalse);
+      expect(codeComplet('12345678901'), isFalse);
     });
 
     test('prénom : espaces nettoyés, 1 à 40 caractères', () {
@@ -61,7 +64,17 @@ void main() {
 
     test('réseau', () {
       expect(messageErreurCompte(AuthRetryableFetchException()), contains('Pas de connexion'));
+      expect(messageErreurCompte(AuthRetryableFetchException(message: 'SocketException')), contains('Pas de connexion'));
       expect(messageErreurCompte(TimeoutException('lent')), contains('Pas de connexion'));
+    });
+
+    test('erreur du serveur (5xx) : pas « pas de connexion »', () {
+      // Cas réel du 14/11/2026 : l'envoi de l'e-mail échoue côté serveur,
+      // Supabase répond 500 et la bibliothèque lève la même exception qu'une
+      // coupure réseau, mais avec un code HTTP.
+      final m = messageErreurCompte(AuthRetryableFetchException(message: 'Error sending confirmation email', statusCode: '500'));
+      expect(m, contains('service de connexion'));
+      expect(m, isNot(contains('Pas de connexion')));
     });
 
     test('limite de 10 profils et prénom refusé par la base', () {

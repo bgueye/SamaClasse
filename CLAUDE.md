@@ -55,18 +55,19 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
 - Prochaine étape : la phase 2 (comptes et rôles), qui attend les décisions
   de Bocar sur la connexion des élèves mineurs et la méthode de connexion
   (« Décisions ouvertes » 4 et 5).
-- `flutter analyze` : aucun problème ; `flutter test` : 120/120, sans réseau
-  (tests d'écrans sur la vraie application avec `test/outils/faux_depot.dart`,
-  alignement Seyès, puces, hors connexion, schémas).
+- `flutter analyze` : aucun problème ; `flutter test` : 147/147, sans réseau
+  (tests d'écrans sur la vraie application avec `test/outils/faux_depot.dart`
+  et `FauxCompte`, alignement Seyès, puces, hors connexion, schémas, compte).
 - Pour un nouvel écran : ajouter ses cas à `test/features/ecrans_test.dart`
   (quatre états, 200 %) et le regarder avec `tool/captures/captures_test.dart`.
-- Écrans livrés : accueil, matière, leçon, exercices, « À propos ». Lecture
-  seule, sans compte.
+- Écrans livrés : accueil, matière, leçon, exercices, « À propos », « Espace
+  parents ». La lecture ne demande jamais de compte.
 - 10 leçons sur 13 sont publiées en base (14/11/2026) : c'est normal que les
   autres affichent « Leçon pas encore disponible ».
-- Phase 2 en cours : tables `enfants` et `redacteurs` créées (migration
-  `comptes_parents_enfants`, D21 à D23) ; écrans de connexion et de profils
-  enfants à faire.
+- Phase 2 en cours : tables `enfants` et `redacteurs` (migration
+  `comptes_parents_enfants`, D21 à D23) et « Espace parents » (`/compte` :
+  connexion par code e-mail, profils enfants), essayé avec succès sur le
+  téléphone le 15/11/2026. E-mails envoyés par Gmail pour les essais (D22).
 - Dépôt distant : `origin` = https://github.com/bgueye/SamaClasse (branche
   `main`). Toujours demander avant de pousser.
 
