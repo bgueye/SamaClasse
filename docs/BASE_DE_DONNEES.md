@@ -142,6 +142,14 @@ rédacteur, leçon « à vérifier », chaque point de `points_a_verifier` prés
 dans `points_leves` ; passe la leçon à `publiee`, vide la liste, note qui et
 quand. Fonction `est_redacteur()` (security invoker), utilisée par les règles.
 
+### Suppression du compte (phase 5)
+Fonction `supprimer_mon_compte()` (`security definer`, sans paramètre) :
+supprime le compte de la session. En cascade : profils enfants, leurs
+lectures et résultats, rôle rédacteur. Anonymisés (`set null`) :
+`points_leves.leve_par`, `lecons.publiee_par`. Testée le 15/11/2026 (compte
+fictif annulé) : un autre parent n'est pas touché. Avertissement attendu du
+conseiller de sécurité, comme pour `publier_lecon`.
+
 **Le téléchargement de l'application filtre `statut = 'publiee'` lui-même**
 (requête, puis `Instantane.seulementPublie`) : un rédacteur connecté lit
 aussi les leçons non publiées.

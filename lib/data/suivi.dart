@@ -331,6 +331,10 @@ class SuiviResultats {
     return texte == null ? const FileEnvoi() : decoderFile(texte);
   }
 
+  /// Oublie tout ce qui attend sur le téléphone (compte supprimé : ces
+  /// lignes seraient refusées par la base de toute façon).
+  Future<void> viderFile() => _enSerie(() => stockage.ecrire(encoderFile(const FileEnvoi())));
+
   /// Nombre de lignes qui attendent d'être envoyées.
   Future<int> enAttente() async => (await _lireFile()).taille;
 

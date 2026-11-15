@@ -37,6 +37,7 @@ Sans le paramètre `--dart-define-from-file`, l'application affiche un écran
 
 ```powershell
 flutter create . --project-name samaclasse --org sn.samaclasse --platforms android,ios,web --no-pub
+# Puis remettre l’identifiant sn.samaclasse.app (D28) dans android/app/build.gradle.kts.
 flutter pub get
 flutter test
 ```

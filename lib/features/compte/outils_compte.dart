@@ -35,6 +35,12 @@ bool codeComplet(String saisie) {
   return n >= longueurCodeMin && n <= longueurCodeMax;
 }
 
+/// Confirmation de la suppression du compte : l'adresse tapée doit être
+/// celle du compte (sans tenir compte des majuscules ni des espaces). Un
+/// geste volontaire, pour qu'on ne supprime pas son compte par erreur.
+bool confirmationSuppression(String saisie, String? emailDuCompte) =>
+    emailDuCompte != null && nettoyerEmail(saisie) == nettoyerEmail(emailDuCompte);
+
 /// Prénom sans espaces superflus (« Awa  Diop » → « Awa Diop »).
 String nettoyerPrenom(String saisie) => saisie.trim().replaceAll(RegExp(r'\s+'), ' ');
 

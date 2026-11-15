@@ -6,6 +6,28 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D29. Version web hébergée sur Cloudflare Pages
+*Bocar, 15/11/2026.*
+Gratuit, rapide en Afrique de l'Ouest (point de présence à Dakar), HTTPS et
+domaine personnalisé inclus. Les adresses de l'application (`/lecon/12`)
+sont renvoyées vers `index.html` par une règle de redirection. Écartés :
+Firebase Hosting (un projet Firebase en plus de Supabase).
+
+### D28. Identifiant de l'application : `sn.samaclasse.app`
+*Bocar, 15/11/2026.*
+Remplace `sn.samaclasse.samaclasse` (généré par défaut) sur Android et iOS.
+Définitif une fois l'application publiée sur Google Play. Il n'a pas besoin
+de correspondre au nom de domaine (convention seulement). Conséquence : le
+téléphone voit une nouvelle application ; l'ancienne version installée pour
+les essais est à désinstaller.
+
+### D27. Nom de domaine : `samaclasse.app`
+*Bocar, 15/11/2026.*
+Pour l'adresse du site web (Cloudflare Pages, D29) et l'envoi des e-mails de
+connexion (service dédié à la place de Gmail, D22). L'extension `.app`
+impose le HTTPS partout, ce que Cloudflare fournit. Bocar a déjà un compte
+développeur Google Play.
+
 ### D26. `url_launcher` pour ouvrir l'artefact d'une leçon
 *Bocar, 15/11/2026.*
 Nouvelle dépendance de l'application, acceptée par Bocar : le lien « Ouvrir la

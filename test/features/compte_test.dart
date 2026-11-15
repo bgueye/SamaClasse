@@ -50,6 +50,14 @@ void main() {
     });
   });
 
+  test('suppression : il faut taper l’adresse du compte', () {
+    expect(confirmationSuppression('parent@exemple.sn', 'parent@exemple.sn'), isTrue);
+    expect(confirmationSuppression('  Parent@Exemple.SN ', 'parent@exemple.sn'), isTrue);
+    expect(confirmationSuppression('parent@exemple', 'parent@exemple.sn'), isFalse);
+    expect(confirmationSuppression('', 'parent@exemple.sn'), isFalse);
+    expect(confirmationSuppression('x@y.sn', null), isFalse);
+  });
+
   group('Messages d’erreur', () {
     test('code faux ou expiré', () {
       final m = messageErreurCompte(const AuthApiException('Token has expired or is invalid', code: 'otp_expired'));
@@ -291,6 +299,48 @@ void main() {
       expect(compte.estConnecte, isFalse);
       expect(prefs.enfant, isNull);
       expect(find.text('Recevoir un code'), findsOneWidget);
+    });
+
+    testWidgets('supprimer mon compte : confirmation par l’adresse, puis retour à la connexion', (tester) async {
+      final compte = connecte([const Enfant(id: 1, prenom: 'Awa', classeId: _quatrieme)]);
+      final prefs = FaussesPreferences(enfant: const EnfantActif(id: 1, prenom: 'Awa'));
+      await lancerApp(tester, depot: FauxDepot(), compte: compte, preferences: prefs, chemin: '/compte');
+      await tester.pumpAndSettle();
+
+      Future<void> ouvrir() async {
+        final bouton = find.text('Supprimer mon compte');
+        await tester.ensureVisible(bouton);
+        await tester.pumpAndSettle();
+        await tester.tap(bouton);
+        await tester.pumpAndSettle();
+      }
+
+      FilledButton boutonFinal() =>
+          tester.widget<FilledButton>(find.widgetWithText(FilledButton, 'Supprimer définitivement'));
+
+      // « Annuler » ne supprime rien.
+      await ouvrir();
+      expect(find.text('Supprimer votre compte ?'), findsOneWidget);
+      await tester.tap(find.text('Annuler'));
+      await tester.pumpAndSettle();
+      expect(compte.supprime, isFalse);
+
+      // Bouton inactif tant que l'adresse tapée n'est pas la bonne.
+      await ouvrir();
+      expect(boutonFinal().onPressed, isNull);
+      await tester.enterText(find.widgetWithText(TextField, 'Adresse e-mail'), 'autre@exemple.sn');
+      await tester.pump();
+      expect(boutonFinal().onPressed, isNull);
+      await tester.enterText(find.widgetWithText(TextField, 'Adresse e-mail'), 'Parent@Exemple.sn');
+      await tester.pump();
+      expect(boutonFinal().onPressed, isNotNull);
+
+      await tester.tap(find.text('Supprimer définitivement'));
+      await tester.pumpAndSettle();
+      expect(compte.supprime, isTrue);
+      expect(prefs.enfant, isNull, reason: 'le profil de ce téléphone est oublié');
+      expect(find.text('Recevoir un code'), findsOneWidget);
+      expect(find.text('Votre compte a été supprimé.'), findsOneWidget);
     });
 
     testWidgets('10 profils : plus de bouton d’ajout', (tester) async {

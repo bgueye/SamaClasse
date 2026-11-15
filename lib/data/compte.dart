@@ -59,6 +59,10 @@ abstract class Compte extends ChangeNotifier {
 
   Future<void> deconnecter();
 
+  /// Supprime définitivement le compte connecté (exigence de Google Play),
+  /// avec ses profils enfants et leur suivi ; puis le compte est déconnecté.
+  Future<void> supprimerCompte();
+
   /// Profils enfants du compte connecté, par ordre de création.
   Future<List<Enfant>> enfants();
 
@@ -111,6 +115,17 @@ class CompteSupabase extends Compte {
 
   @override
   Future<void> deconnecter() => _client.auth.signOut();
+
+  @override
+  Future<void> supprimerCompte() async {
+    // La fonction ne vise que le compte de la session (aucun paramètre).
+    await _client.rpc<void>('supprimer_mon_compte');
+    // Le compte n'existe plus : on efface la session locale. Le serveur peut
+    // refuser la déconnexion d'un compte disparu, sans gravité.
+    try {
+      await _client.auth.signOut(scope: SignOutScope.local);
+    } catch (_) {}
+  }
 
   @override
   Future<List<Enfant>> enfants() async {

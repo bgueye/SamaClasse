@@ -1,4 +1,4 @@
-package sn.samaclasse.samaclasse
+package sn.samaclasse.app
 
 import io.flutter.embedding.android.FlutterActivity
 

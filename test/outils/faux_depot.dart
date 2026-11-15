@@ -262,6 +262,20 @@ class FauxCompte extends Compte {
     notifyListeners();
   }
 
+  /// Vrai après `supprimerCompte()`.
+  bool supprime = false;
+
+  @override
+  Future<void> supprimerCompte() async {
+    await _avant('supprimerCompte');
+    supprime = true;
+    _enfants.clear();
+    lecturesEnBase.clear();
+    resultatsEnBase.clear();
+    _email = null;
+    notifyListeners();
+  }
+
   @override
   Future<List<Enfant>> enfants() async {
     await _avant('enfants');

@@ -257,15 +257,20 @@ Critères d'acceptation :
 
 ## Phase 5 : diffusion
 
-- Android : identifiant d'application (`sn.samaclasse.samaclasse` généré par
-  défaut, à confirmer), signature, nom d'éditeur sur le Play Store, fiche,
-  test fermé.
+Décisions de Bocar du 15/11/2026 : identifiant `sn.samaclasse.app` (D28,
+fait), hébergement web Cloudflare Pages (D29), domaine `samaclasse.app` (D27),
+compte Google Play déjà ouvert. Suppression du compte : migration
+`suppression_compte` appliquée le 15/11/2026.
+
+- Android : identifiant `sn.samaclasse.app` (D28, fait le 15/11/2026),
+  signature, nom d'éditeur sur le Play Store, fiche, test fermé.
 - Web : hébergement à choisir, URL, `web/index.html` (titre, langue,
   description).
 - iOS : seulement si un Mac et un compte Apple Developer sont disponibles.
-- **Suppression du compte** depuis l'application (exigée par Google Play pour
-  toute application qui permet d'en créer un) : bouton « Supprimer mon compte »
-  dans l'espace parents, fonction côté serveur à proposer à Bocar.
+- ~~**Suppression du compte**~~ : fait le 15/11/2026 (fonction
+  `supprimer_mon_compte`, bouton « Supprimer mon compte » dans l'espace
+  parents, confirmation par l'adresse e-mail). Reste : la page web de demande
+  de suppression, exigée elle aussi par Google Play, avec le site.
 - Service d'envoi d'e-mails dédié avec un domaine, à la place de Gmail (D22).
 - Passage à `supabase_flutter` v3, une fois sortie en version stable (préversion
   `3.0.0-dev` seulement au 13/11/2026) : suivre le guide de migration
@@ -284,6 +289,6 @@ Critères d'acceptation :
 | 5 | ~~Méthode de connexion~~ : tranché (D22, code par e-mail) ; rôle rédacteur : D23 | 2 |
 | 6 | ~~Enregistrement hors connexion des résultats~~ : tranché (D24, gardés puis envoyés) | 3 |
 | 7 | ~~Historique des points levés~~ : tranché (D25, table d'historique) | 4 |
-| 8 | Identifiant Android, hébergement web | 5 |
+| 8 | ~~Identifiant Android, hébergement web~~ : tranché (D28 `sn.samaclasse.app`, D29 Cloudflare Pages) ; domaine `samaclasse.app` (D27) | 5 |
 | 9 | `ordre` des séries d'une même année (Seconde S / L) | à l'ajout de nouvelles classes |
 | 10 | ~~Police de secours pour les symboles absents d'Atkinson et de Playwrite (→, ℝ)~~ : tranché (D17) | 1 |

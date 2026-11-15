@@ -422,6 +422,30 @@ class _MesEnfantsState extends State<MesEnfants> {
     if (annoncer) _annoncer('${enfant.prenom} utilise maintenant ce téléphone.');
   }
 
+  /// Suppression définitive du compte (exigence de Google Play), après une
+  /// confirmation où l'on tape son adresse e-mail.
+  Future<void> _supprimerCompte() async {
+    final confirme = await showDialog<bool>(
+      context: context,
+      builder: (context) => _ConfirmationSuppression(email: _scope.compte.email),
+    );
+    if (confirme != true || !mounted) return;
+    setState(() => _occupe = true);
+    try {
+      await _scope.compte.supprimerCompte();
+      // Rien de ce compte ne doit rester sur le téléphone.
+      await _scope.preferences.choisirEnfant(null);
+      await _scope.suivi.viderFile();
+      if (mounted) _annoncer('Votre compte a été supprimé.');
+    } catch (e) {
+      if (mounted) {
+        _annoncer(messageErreurCompte(e));
+        setState(() => _occupe = false);
+      }
+    }
+    // En cas de succès, CompteScreen remplace cette vue par la connexion.
+  }
+
   Future<void> _deconnecter() async {
     setState(() => _occupe = true);
     try {
@@ -475,6 +499,15 @@ class _MesEnfantsState extends State<MesEnfants> {
                 onPressed: _occupe ? null : _deconnecter,
                 icon: const Icon(Icons.logout_rounded),
                 label: const Text('Se déconnecter'),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: _occupe ? null : _supprimerCompte,
+                style: TextButton.styleFrom(foregroundColor: Couleurs.faux),
+                icon: const Icon(Icons.delete_forever_outlined),
+                label: const Text('Supprimer mon compte'),
               ),
             ),
           ],
@@ -532,6 +565,65 @@ class _MesEnfantsState extends State<MesEnfants> {
           if (donnees.enfants.length < 10) ...[const SizedBox(height: 6), ajouter],
         ],
       ),
+    );
+  }
+}
+
+/// Confirmation de la suppression du compte : on explique ce qui disparaît,
+/// puis on fait taper l'adresse e-mail du compte.
+class _ConfirmationSuppression extends StatefulWidget {
+  const _ConfirmationSuppression({required this.email});
+
+  final String? email;
+
+  @override
+  State<_ConfirmationSuppression> createState() => _ConfirmationSuppressionState();
+}
+
+class _ConfirmationSuppressionState extends State<_ConfirmationSuppression> {
+  final _champ = TextEditingController();
+
+  @override
+  void dispose() {
+    _champ.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final valide = confirmationSuppression(_champ.text, widget.email);
+    return AlertDialog(
+      title: const Text('Supprimer votre compte ?'),
+      scrollable: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Votre compte, les profils de vos enfants et tout leur suivi (leçons lues, résultats) '
+            'seront supprimés définitivement. Les leçons restent accessibles sans compte.',
+            style: TextStyle(fontSize: 15, height: 1.45),
+          ),
+          const SizedBox(height: 16),
+          Text('Pour confirmer, tapez votre adresse : ${widget.email ?? ''}', style: const TextStyle(fontSize: 14, height: 1.4)),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _champ,
+            keyboardType: TextInputType.emailAddress,
+            autocorrect: false,
+            onChanged: (_) => setState(() {}),
+            decoration: const InputDecoration(labelText: 'Adresse e-mail', border: OutlineInputBorder()),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
+        FilledButton(
+          onPressed: valide ? () => Navigator.pop(context, true) : null,
+          style: FilledButton.styleFrom(backgroundColor: Couleurs.faux),
+          child: const Text('Supprimer définitivement'),
+        ),
+      ],
     );
   }
 }
