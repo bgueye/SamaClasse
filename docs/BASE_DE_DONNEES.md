@@ -43,6 +43,7 @@ auth.users ─< enfants >── classes        (phase 2, D21)
 auth.users ─── redacteurs                (phase 2, D23)
 enfants ─< lectures >── lecons           (phase 3, D24)
 enfants ─< resultats >── exercices       (phase 3, D24)
+lecons ─< points_leves                   (phase 4, D25)
 ```
 
 ### `classes`
@@ -129,6 +130,22 @@ ouverture). Envoyée en « upsert » : relire une leçon met la date à jour.
 du téléphone), `recu_le`. Contraintes : score cohérent, `reussi` égal à
 `bonnes = total`. **Aucun texte saisi par l'élève.**
 
+### `points_leves` (phase 4, D25)
+`id`, `lecon_id`, `point` (copie du texte du point), `leve_par`, `leve_le`,
+`commentaire` (facultatif, 500 caractères au plus). Historique figé une fois
+la leçon publiée.
+
+### Publication (phase 4)
+Colonnes `lecons.publiee_le` et `lecons.publiee_par`. Fonction
+`publier_lecon(id)` (`security definer`, `search_path = ''`) : appelant
+rédacteur, leçon « à vérifier », chaque point de `points_a_verifier` présent
+dans `points_leves` ; passe la leçon à `publiee`, vide la liste, note qui et
+quand. Fonction `est_redacteur()` (security invoker), utilisée par les règles.
+
+**Le téléchargement de l'application filtre `statut = 'publiee'` lui-même**
+(requête, puis `Instantane.seulementPublie`) : un rédacteur connecté lit
+aussi les leçons non publiées.
+
 ### Vue `matieres_par_classe` (security_invoker)
 `classe_id`, `matiere_id`, `slug`, `nom`, `nb_chapitres`, `nb_lecons`
 (leçons **publiées**). Comme elle applique les RLS de la personne qui lit, les
@@ -162,6 +179,8 @@ RLS activée sur toutes les tables. Contenu en lecture seule pour `anon` et
 | `redacteurs` | `authenticated` : sa propre ligne (savoir s'il est rédacteur) ; aucune écriture ; `anon` : rien |
 | `lectures` | `authenticated` : celles de ses enfants (lecture, ajout, mise à jour), leçons publiées seulement ; pas de suppression ; `anon` : rien |
 | `resultats` | `authenticated` : ceux de ses enfants (lecture, ajout), exercices publiés seulement ; ni modification ni suppression ; `anon` : rien |
+| `lecons`, `exercices`, `lecon_sources` (en plus) | rédacteur : tout, quel que soit le statut |
+| `points_leves` | rédacteur : lecture, ajout (point réellement à vérifier, en son nom), suppression avant publication ; `anon` et non-rédacteurs : rien |
 
 Tests du 14/11/2026 (deux comptes simulés) : un parent ne voit, ne modifie
 ni ne supprime les enfants d'un autre, ne peut pas lui en donner un, ne peut
@@ -170,6 +189,13 @@ Tests du 15/11/2026 (phase 3) : un parent n'écrit ni ne lit les résultats et
 lectures d'un autre ; exercice ou leçon non publiés refusés ; score
 incohérent refusé ; un résultat ne se modifie ni ne se supprime ; un envoi
 répété n'ajoute rien ; supprimer un profil supprime ses données.
+Tests du 15/11/2026 (phase 4, leçons fictives annulées) : un parent ou `anon`
+ne voit que les leçons publiées, ne lève aucun point, ne publie pas ; un
+rédacteur voit tout, ne lève qu'un point réel en son nom, ne publie qu'une
+leçon « à vérifier » dont tous les points sont levés, une seule fois.
+Conseiller de sécurité : avertissement attendu sur `publier_lecon`
+(`security definer` exécutable par `authenticated`), voulu, contrôles faits
+dans la fonction.
 
 Aucune politique d'écriture sur le contenu : la saisie se fait aujourd'hui par le tableau de
 bord ou une connexion d'administration, jamais depuis l'application.

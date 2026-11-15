@@ -26,6 +26,53 @@ ContenuHorsLigne _contenu(FausseSource source, FauxStockage stockage, {DateTime?
     ContenuHorsLigne(source: source, stockage: stockage, horloge: () => maintenant ?? _mardi);
 
 void main() {
+  group('seulement les leçons publiées (phase 4)', () {
+    // Un rédacteur connecté peut lire les leçons « à vérifier » : elles ne
+    // doivent jamais entrer dans la copie locale.
+    Instantane avecUneLeconAVerifier() {
+      final i = instantaneReel();
+      final chapitre = Map<String, dynamic>.from(i.chapitresBruts.first);
+      chapitre['lecons'] = [
+        ...((chapitre['lecons'] as List?) ?? const []),
+        {'id': 500, 'numero': 9, 'titre': 'Leçon à vérifier', 'statut': 'a_verifier', 'exercices': [{'count': 2}]},
+      ];
+      return Instantane(
+        classesBrutes: i.classesBrutes,
+        matieresBrutes: i.matieresBrutes,
+        chapitresBruts: [chapitre, ...i.chapitresBruts.skip(1)],
+        leconsBrutes: [
+          ...i.leconsBrutes,
+          {...i.leconsBrutes.first, 'id': 500, 'titre': 'Leçon à vérifier', 'statut': 'a_verifier'},
+        ],
+      );
+    }
+
+    test('les leçons non publiées sont écartées partout', () {
+      final filtre = avecUneLeconAVerifier().seulementPublie();
+      expect(filtre.lecon(500), isNull);
+      expect(filtre.lecons().map((l) => l.id), isNot(contains(500)));
+      final titres = [
+        for (final c in filtre.chapitresBruts)
+          for (final l in (c['lecons'] as List? ?? const [])) (l as Map)['titre'],
+      ];
+      expect(titres, isNot(contains('Leçon à vérifier')));
+    });
+
+    test('les leçons publiées et les anciennes copies (sans statut) restent', () {
+      final reel = instantaneReel();
+      final filtre = reel.seulementPublie();
+      expect(filtre.lecons().map((l) => l.id), reel.lecons().map((l) => l.id));
+      final sansStatut = Instantane(
+        classesBrutes: reel.classesBrutes,
+        matieresBrutes: reel.matieresBrutes,
+        chapitresBruts: reel.chapitresBruts,
+        leconsBrutes: [for (final l in reel.leconsBrutes) {...l}..remove('statut')],
+      ).seulementPublie();
+      // Lignes brutes : le filtre ne doit pas jeter une ligne sans statut.
+      expect(sansStatut.leconsBrutes, hasLength(reel.leconsBrutes.length));
+    });
+  });
+
   group('premier lancement, sans copie', () {
     test('télécharge, affiche et enregistre la copie', () async {
       final source = FausseSource();

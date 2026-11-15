@@ -6,6 +6,13 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D25. Points levés : gardés dans une table d'historique
+*Bocar, 15/11/2026.*
+Chaque point à vérifier levé par un rédacteur est enregistré : le texte du
+point, qui l'a levé, quand, et un commentaire facultatif. La publication note
+aussi qui a publié et quand (D23). Un point coché par erreur peut être annulé
+tant que la leçon n'est pas publiée ; ensuite, l'historique est figé.
+
 ### D24. Résultats hors connexion : gardés et envoyés au retour du réseau
 *Bocar, 15/11/2026.*
 Un exercice fait sans réseau n'est pas perdu : le résultat est gardé sur le

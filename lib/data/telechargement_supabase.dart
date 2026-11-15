@@ -40,23 +40,29 @@ class TelechargementSupabase implements SourceContenu {
       _db
           .from('chapitres')
           .select('id, classe_id, matiere_id, numero, titre, partie, statut, '
-              'lecons(id, numero, titre, exercices(count))')
+              'lecons(id, numero, titre, statut, exercices(count))')
+          // Leçons publiées seulement, même pour un rédacteur connecté (qui
+          // peut lire les autres depuis la phase 4).
+          .eq('lecons.statut', 'publiee')
           .order('numero')
           .order('numero', referencedTable: 'lecons'),
-      // Les règles RLS ne renvoient que les leçons publiées.
+      // Filtre explicite : les règles RLS laissent un rédacteur connecté
+      // lire aussi les leçons non publiées (phase 4).
       _db
           .from('lecons')
           .select('id, chapitre_id, numero, titre, date_cours, objectifs, introduction, corps, '
               'a_retenir, statut, exercices($_colonnesExercice), '
               'chapitres(titre, partie, classes(libelle), matieres(nom, slug))')
+          .eq('statut', 'publiee')
           .order('ordre', referencedTable: 'exercices'),
     ]);
 
+    // Second garde-fou côté téléphone (voir Instantane.seulementPublie).
     return Instantane(
       classesBrutes: resultats[0],
       matieresBrutes: resultats[1],
       chapitresBruts: resultats[2],
       leconsBrutes: resultats[3],
-    );
+    ).seulementPublie();
   }
 }

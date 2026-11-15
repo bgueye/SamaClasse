@@ -216,6 +216,12 @@ Critères d'acceptation :
 
 ## Phase 4 : validation et publication (rédacteur)
 
+Décision 7 tranchée par Bocar le 15/11/2026 (D25) : table d'historique des
+points levés. Migration :
+`supabase/migrations/20261115115025_validation_redacteurs.sql` (appliquée le 15/11/2026). À livrer avec
+elle : le téléchargement du contenu filtre `statut = 'publiee'` lui-même, sinon
+un rédacteur connecté verrait les leçons non publiées comme si elles l'étaient.
+
 Objectif : l'écran `Validation` des maquettes, réservé au rôle `redacteur`.
 
 Maquette : liste des leçons non publiées avec le nombre de points à vérifier,
@@ -271,7 +277,7 @@ Critères d'acceptation :
 | 4 | ~~Connexion des élèves mineurs~~ : tranché (D21, compte parent et profils enfants) | 2 |
 | 5 | ~~Méthode de connexion~~ : tranché (D22, code par e-mail) ; rôle rédacteur : D23 | 2 |
 | 6 | ~~Enregistrement hors connexion des résultats~~ : tranché (D24, gardés puis envoyés) | 3 |
-| 7 | Historique des points levés | 4 |
+| 7 | ~~Historique des points levés~~ : tranché (D25, table d'historique) | 4 |
 | 8 | Identifiant Android, hébergement web | 5 |
 | 9 | `ordre` des séries d'une même année (Seconde S / L) | à l'ajout de nouvelles classes |
 | 10 | ~~Police de secours pour les symboles absents d'Atkinson et de Playwrite (→, ℝ)~~ : tranché (D17) | 1 |

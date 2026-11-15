@@ -29,6 +29,35 @@ class Instantane {
   /// Toutes les leçons publiées, complètes (exercices, contexte).
   final List<Map<String, dynamic>> leconsBrutes;
 
+  /// Copie sans aucune leçon non publiée.
+  ///
+  /// Depuis la phase 4, un rédacteur connecté peut lire les leçons « à
+  /// vérifier » (règle RLS). Le téléchargement demande déjà `statut =
+  /// 'publiee'` au serveur ; ce filtre est le second garde-fou, côté
+  /// téléphone : une leçon non publiée ne doit jamais entrer dans la copie
+  /// locale, d'où elle s'afficherait aux élèves comme si elle l'était.
+  /// Une ligne sans `statut` est gardée : les anciennes copies ne
+  /// contenaient que des leçons publiées.
+  Instantane seulementPublie() {
+    bool publiee(Object? ligne) {
+      final statut = (ligne as Map)['statut'];
+      return statut == null || statut == 'publiee';
+    }
+
+    return Instantane(
+      classesBrutes: classesBrutes,
+      matieresBrutes: matieresBrutes,
+      chapitresBruts: [
+        for (final c in chapitresBruts)
+          {
+            ...c,
+            if (c['lecons'] is List) 'lecons': [for (final l in c['lecons'] as List) if (publiee(l)) l],
+          },
+      ],
+      leconsBrutes: [for (final l in leconsBrutes) if (publiee(l)) l],
+    );
+  }
+
   List<Classe> classes() => classesBrutes.map(Classe.fromJson).toList();
 
   List<MatiereDeClasse> matieres(int classeId) => matieresBrutes
