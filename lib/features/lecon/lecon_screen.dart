@@ -11,6 +11,7 @@ import '../../core/widgets/etats.dart';
 import '../../core/widgets/markdown_cahier.dart';
 import '../../core/widgets/page_seyes.dart';
 import '../../data/data.dart';
+import 'outils_lecon.dart';
 
 enum _Onglet { lecon, retenir }
 
@@ -101,6 +102,18 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
 
   Widget _contenu(Lecon lecon) {
     final c = lecon.contexte;
+    final retour = LienRetour(libelle: c == null ? 'Retour' : '${c.matiere}, ${c.classe}');
+    final onglets = ControleSegmente<_Onglet>(
+      libelleGroupe: 'Contenu de la leçon',
+      options: const [(_Onglet.lecon, 'La leçon'), (_Onglet.retenir, 'À retenir')],
+      valeur: _onglet,
+      onChanged: (o) => setState(() => _onglet = o),
+    );
+    // Téléphone en paysage : la hauteur est rare, l'en-tête tient sur une
+    // ligne (retour à gauche, onglets à droite) pour laisser la page à la
+    // leçon. Les cibles gardent leurs 44 px : seul l'empilement disparaît.
+    final compact = enteteCompacte(MediaQuery.sizeOf(context));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -110,25 +123,30 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
             border: Border(bottom: BorderSide(color: Couleurs.bordure)),
           ),
           child: LargeurLecture(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 16, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  LienRetour(libelle: c == null ? 'Retour' : '${c.matiere}, ${c.classe}'),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4),
-                    child: ControleSegmente<_Onglet>(
-                      libelleGroupe: 'Contenu de la leçon',
-                      options: const [(_Onglet.lecon, 'La leçon'), (_Onglet.retenir, 'À retenir')],
-                      valeur: _onglet,
-                      onChanged: (o) => setState(() => _onglet = o),
+            child: compact
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 4, 16, 4),
+                    child: Row(
+                      children: [
+                        // Le lien se tronque (« … ») avant que les onglets
+                        // ne rétrécissent.
+                        Expanded(child: retour),
+                        const SizedBox(width: 12),
+                        SizedBox(width: 300, child: onglets),
+                      ],
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 16, 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        retour,
+                        const SizedBox(height: 8),
+                        Padding(padding: const EdgeInsets.only(left: 4), child: onglets),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
           ),
         ),
         Expanded(

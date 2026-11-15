@@ -202,6 +202,18 @@ void main() {
       expect(find.text(_premiereNotion), findsOneWidget);
     });
 
+    testWidgets('téléphone en paysage : en-tête sur une seule ligne', (tester) async {
+      await lancerApp(tester, depot: FauxDepot(), chemin: '/lecon/1', taille: const Size(844, 390));
+      await _attendre(tester);
+      final retour = tester.getRect(find.text('Sciences physiques, 4ème'));
+      final onglet = tester.getRect(find.text('La leçon'));
+      // Retour et onglets côte à côte, sur la même ligne.
+      expect((retour.center.dy - onglet.center.dy).abs(), lessThan(4));
+      expect(onglet.left, greaterThan(retour.right));
+      // L'en-tête laisse l'essentiel de la hauteur à la page.
+      expect(onglet.bottom, lessThan(80));
+    });
+
     testWidgets('leçon non publiée : « Leçon pas encore disponible »', (tester) async {
       await lancerApp(tester, depot: FauxDepot(), chemin: '/lecon/999');
       await _attendre(tester);
@@ -303,6 +315,11 @@ void main() {
       await lancerApp(tester, depot: depot, echelleTexte: 2);
       await _attendre(tester);
       expect(find.text('Réessayer'), findsOneWidget);
+    });
+
+    testWidgets('téléphone en paysage : /lecon/1', (tester) async {
+      await lancerApp(tester, depot: FauxDepot(), chemin: '/lecon/1', taille: const Size(844, 390), echelleTexte: 2);
+      await _attendre(tester);
     });
 
     for (final chemin in ['/', '/classe/1/matiere/2', '/lecon/1', '/lecon/1/exercices']) {

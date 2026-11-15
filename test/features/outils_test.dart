@@ -1,7 +1,10 @@
+import 'dart:ui' show Size;
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:samaclasse/data/data.dart';
 import 'package:samaclasse/features/accueil/accueil_screen.dart' show detailMatiere;
 import 'package:samaclasse/features/exercices/outils_exercices.dart';
+import 'package:samaclasse/features/lecon/outils_lecon.dart';
 import 'package:samaclasse/features/matiere/regroupement.dart';
 
 Exercice exo(String type, Object? reponse) => Exercice.fromJson({
@@ -36,6 +39,21 @@ Chapitre chap(int numero, String? partie, {int lecons = 0}) => Chapitre.fromJson
     });
 
 void main() {
+  group('en-tête compact de la leçon (paysage)', () {
+    test('téléphone en paysage : une seule ligne', () {
+      expect(enteteCompacte(const Size(844, 390)), isTrue);
+      expect(enteteCompacte(const Size(915, 412)), isTrue);
+    });
+    test('téléphone en portrait, tablette, web : en-tête habituel', () {
+      expect(enteteCompacte(const Size(390, 844)), isFalse);
+      expect(enteteCompacte(const Size(1280, 800)), isFalse);
+      expect(enteteCompacte(const Size(1024, 600)), isFalse);
+    });
+    test('écran bas mais étroit (écran partagé) : deux lignes', () {
+      expect(enteteCompacte(const Size(420, 390)), isFalse);
+    });
+  });
+
   group('reponseVide', () {
     test('rien de rempli, quelle que soit la forme', () {
       for (final vide in <Object?>[

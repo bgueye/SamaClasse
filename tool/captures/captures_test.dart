@@ -246,6 +246,14 @@ void main() {
     await _capturer(tester, 'symboles');
   });
 
+  // Téléphone en paysage : en-tête de la leçon sur une seule ligne.
+  testWidgets('paysage', (tester) async {
+    for (final (echelle, nom) in [(1.0, 'paysage_03_lecon'), (2.0, 'paysage_200_03_lecon')]) {
+      await lancerApp(tester, depot: FauxDepot(), chemin: '/lecon/1', taille: const Size(844, 390), echelleTexte: echelle);
+      await _capturer(tester, nom);
+    }
+  });
+
   testWidgets('web large', (tester) async {
     for (final (chemin, nom) in [
       ('/', 'web_01_accueil'),
