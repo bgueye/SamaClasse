@@ -225,7 +225,8 @@ un rédacteur connecté verrait les leçons non publiées comme si elles l'étai
 « Leçons à vérifier » fait le 15/11/2026 (`/validation`, `url_launcher` pour
 l'artefact, D26). Après le premier essai de Bocar : lever un point se fait
 avec une réponse écrite, obligatoire pour une question (fenêtre « Lever ce
-point », 20 tests). Reste : nouvel essai sur le téléphone.
+point », 20 tests). Essai réussi sur le téléphone le 15/11/2026 : phase 4
+terminée côté code.
 
 Objectif : l'écran `Validation` des maquettes, réservé au rôle `redacteur`.
 

@@ -34,45 +34,44 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
    en rôle `anon` (et `authenticated` si concerné), puis conseillers de sécurité
    Supabase sans alerte.
 
-## État du code (14/11/2026)
+## État du code (15/11/2026)
 
-- **Phase 0 terminée** (13/11/2026) : le squelette compile, vérifié à la main
-  sur Android (Galaxy S23 Ultra, Android 17) et sur Chrome.
-- **Phase 1 terminée côté code** (14/11/2026), détail et état dans
-  `docs/FEUILLE_DE_ROUTE.md` :
-  - hors connexion : copie locale du contenu publié (D16), vérifiée en mode avion ;
-  - libellés des catégories des tableaux (D14) ;
-  - polices de secours pour les symboles absents (D17) ;
-  - page « À propos » (D18) ;
-  - icône et écran de lancement, variante « Couverture » (D19), générés depuis
-    `assets/icone/` (marche à suivre dans `docs/ARCHITECTURE.md`) ;
-  - schémas des leçons (D15) : espace de stockage public `schemas` (migration
-    `stockage_schemas`) et affichage par `SchemaCahier` ; seules les images de
-    cet espace sont chargées, sinon la description s'affiche.
-- Reste à vérifier par Bocar : l'icône et l'écran de lancement sur le
-  téléphone, un schéma réel déposé dans `schemas`, les libellés des tableaux
-  17 et 31 à compléter en base.
-- Prochaine étape : la phase 2 (comptes et rôles), qui attend les décisions
-  de Bocar sur la connexion des élèves mineurs et la méthode de connexion
-  (« Décisions ouvertes » 4 et 5).
-- `flutter analyze` : aucun problème ; `flutter test` : 186/186, sans réseau
-  (tests d'écrans sur la vraie application avec `test/outils/faux_depot.dart`
-  et `FauxCompte`, alignement Seyès, puces, hors connexion, schémas, compte,
-  suivi).
-- Pour un nouvel écran : ajouter ses cas à `test/features/ecrans_test.dart`
-  (quatre états, 200 %) et le regarder avec `tool/captures/captures_test.dart`.
+- **Phases 0 à 4 terminées côté code**, chacune essayée avec succès sur le
+  téléphone (Galaxy S23 Ultra, Android 17). Détail, décisions et état dans
+  `docs/FEUILLE_DE_ROUTE.md` et `docs/DECISIONS.md` (D14 à D26).
+  - Phase 1, lecture : hors connexion (D16), catégories des tableaux (D14),
+    polices de secours (D17), « À propos » (D18), icône et écran de
+    lancement (D19), schémas des leçons dans l'espace public `schemas` (D15).
+  - Phase 2, comptes : seul le parent a un compte, connexion par code reçu
+    par e-mail (D22), profils enfants sans identifiants (D21), rédacteurs
+    attribués à la main (D23). E-mails envoyés par Gmail pour les essais.
+  - Phase 3, suivi : leçons lues et résultats des exercices, gardés hors
+    connexion puis envoyés (`lib/data/suivi.dart`, D24) ; écran « Suivi de mes
+    enfants ». Jamais le texte saisi par l'élève.
+  - Phase 4, validation : écran « Leçons à vérifier » (rédacteurs) ; lever
+    un point demande une réponse si c'est une question ; historique dans
+    `points_leves` (D25) ; publication par la fonction `publier_lecon` ;
+    lien vers l'artefact par `url_launcher` (D26). Bocar est rédacteur.
+- Prochaine étape : la phase 5, diffusion. Déjà notés : bouton « Supprimer
+  mon compte » (exigé par Google Play), service d'envoi d'e-mails dédié à la
+  place de Gmail (D22), identifiant Android et hébergement web à décider.
+- Reste à faire par Bocar : déposer un vrai schéma dans `schemas`,
+  compléter les libellés des tableaux 17 et 31, vérifier et publier les
+  leçons 2, 6 et 10 depuis l'application.
+- `flutter analyze` : aucun problème ; `flutter test` : 208/208, sans réseau
+  (vraie application avec `test/outils/faux_depot.dart` : `FauxDepot`,
+  `FauxCompte`, `FauxEnvoi`, `FausseRedaction`).
+- Pour un nouvel écran : ses quatre états et 200 % dans un test d'écran
+  (`test/features/`), et un coup d'œil avec `tool/captures/captures_test.dart`.
 - Écrans livrés : accueil, matière, leçon, exercices, « À propos », « Espace
-  parents », « Suivi de mes enfants ». La lecture ne demande jamais de compte.
-- 10 leçons sur 13 sont publiées en base (14/11/2026) : c'est normal que les
-  autres affichent « Leçon pas encore disponible ».
-- Phase 2 en cours : tables `enfants` et `redacteurs` (migration
-  `comptes_parents_enfants`, D21 à D23) et « Espace parents » (`/compte` :
-  connexion par code e-mail, profils enfants), essayé avec succès sur le
-  téléphone le 15/11/2026. E-mails envoyés par Gmail pour les essais (D22).
-- Phase 3 terminée côté code (15/11/2026) : tables `lectures` et `resultats`
-  (migration `lectures_resultats`), file d'attente hors connexion
-  (`lib/data/suivi.dart`, D24) et écran « Suivi de mes enfants » (`/suivi`),
-  essayés avec succès sur le téléphone.
+  parents », « Suivi de mes enfants », « Leçons à vérifier ». La lecture ne
+  demande jamais de compte.
+- 10 leçons sur 13 sont publiées en base : c'est normal que les autres
+  affichent « Leçon pas encore disponible ».
+- Base : 6 migrations, de `schema_programme_lecons` à `validation_redacteurs`.
+  Conseiller de sécurité : un avertissement attendu sur `publier_lecon`
+  (`security definer` appelable par `authenticated`, contrôles faits dans la
+  fonction).
 - Dépôt distant : `origin` = https://github.com/bgueye/SamaClasse (branche
   `main`). Toujours demander avant de pousser.
 
@@ -91,7 +90,13 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   d'architecture (Riverpod, Bloc, génération de code…) sans en discuter. Les
   évolutions lourdes vont dans une version ultérieure.
 - Ne pas mettre de notes de travail visibles des élèves dans les textes
-  affichés (« à vérifier », « Note : »…).
+  affichés (« à vérifier », « Note : »…). `points_a_verifier`,
+  `artefact_url` et `points_leves` ne s'affichent que dans l'écran des
+  rédacteurs.
+- **Le contenu des élèves filtre lui-même `statut = 'publiee'`**
+  (`TelechargementSupabase`, puis `Instantane.seulementPublie`) : depuis la
+  phase 4, un rédacteur connecté lit aussi les leçons non publiées. Ne jamais
+  retirer ce filtre en comptant sur les seules règles RLS.
 - Respecter `docs/DESIGN.md` : couleurs via `Couleurs`, styles via `Styles`,
   jamais de couleur en dur dans un écran ; cibles tactiles ≥ 44 px ; contraste
   ≥ 4,5:1 ; l'état juste/faux jamais signalé par la couleur seule.
@@ -139,5 +144,10 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   Sinon : Supabase CLI (`supabase migration new <nom>`, `supabase db push`).
 - Tester une règle RLS en se mettant à la place du client :
   `begin; set local role anon; select …; rollback;`
+- Pour un test qui écrit (comptes ou leçons fictifs) : tout mettre dans un
+  bloc `do $$ … $$` qui se termine par `raise exception` avec le journal des
+  résultats. L'erreur annule forcément toute la transaction ; vérifier
+  ensuite qu'il ne reste rien. Ne jamais publier une vraie leçon pour un
+  test : en créer une fictive dans le bloc.
 - Après une migration, recopier le fichier SQL dans `supabase/migrations/`
   (même horodatage que dans la base) pour que le dépôt reste la référence.
