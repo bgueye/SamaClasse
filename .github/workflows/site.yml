@@ -1,0 +1,59 @@
+# Publie la version web de SamaClasse et les pages fixes du site
+# (confidentialité, suppression du compte) sur Cloudflare Pages (D29), à
+# chaque envoi sur `main`.
+#
+# Les tests passent d'abord : un code qui casse un test n'est jamais publié.
+#
+# Secrets à ajouter par Bocar dans GitHub (Settings › Secrets and variables ›
+# Actions) :
+#   CLOUDFLARE_API_TOKEN   jeton Cloudflare avec le droit « Cloudflare Pages : Edit »
+#   CLOUDFLARE_ACCOUNT_ID  identifiant du compte Cloudflare
+# La clé Supabase lue dans config/supabase.json est la clé publishable,
+# publique par nature (CLAUDE.md) : ce n'est pas un secret.
+
+name: Site samaclasse.app
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Une seule publication à la fois ; une nouvelle annule celle en attente.
+concurrency:
+  group: site
+  cancel-in-progress: true
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    # Au niveau de la tâche : la condition `if` d'une étape ne voit pas les
+    # variables déclarées dans l'étape elle-même.
+    env:
+      JETON_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.44.8
+          cache: true
+
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+      # Les pages fixes (web/confidentialite, web/suppression-compte, web/site)
+      # sont copiées telles quelles dans build/web avec l'application.
+      - run: flutter build web --release --dart-define-from-file=config/supabase.json
+
+      # Cloudflare Pages renvoie lui-même les adresses inconnues (/lecon/12)
+      # vers index.html : pas de fichier de redirection à écrire.
+      # Sautée tant que le secret n'est pas configuré : les tests tournent
+      # quand même, sans faire échouer chaque envoi.
+      - uses: cloudflare/wrangler-action@v3
+        if: env.JETON_CLOUDFLARE != ''
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy build/web --project-name=samaclasse --branch=main

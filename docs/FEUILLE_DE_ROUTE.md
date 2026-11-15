@@ -264,8 +264,11 @@ compte Google Play déjà ouvert. Suppression du compte : migration
 
 - Android : identifiant `sn.samaclasse.app` (D28, fait le 15/11/2026),
   signature, nom d'éditeur sur le Play Store, fiche, test fermé.
-- Web : hébergement à choisir, URL, `web/index.html` (titre, langue,
-  description).
+- Web : Cloudflare Pages (D29), `samaclasse.app` (D27). Préparé le
+  15/11/2026 : pages « Politique de confidentialité » et « Supprimer votre
+  compte » (contact@samaclasse.app, D30), validées par Bocar ; publication
+  automatique par GitHub Actions. Reste à faire par Bocar : DNS du domaine
+  chez Cloudflare, projet Pages, secrets GitHub, routage de contact@.
 - iOS : seulement si un Mac et un compte Apple Developer sont disponibles.
 - ~~**Suppression du compte**~~ : fait le 15/11/2026 (fonction
   `supprimer_mon_compte`, bouton « Supprimer mon compte » dans l'espace

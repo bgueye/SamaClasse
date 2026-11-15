@@ -123,6 +123,10 @@ tool/icone/icone_test.dart      dessine l'icône (D19) → assets/icone/, puis
 assets/icone/                   images sources de l'icône et de l'écran de lancement
 flutter_launcher_icons.yaml,
 flutter_native_splash.yaml      réglages des deux générateurs (dépendances de développement)
+web/confidentialite/, web/suppression-compte/
+                                pages fixes du site samaclasse.app (D29, D30), copiées dans
+                                build/web avec l'application ; style et police dans web/site/
+.github/workflows/site.yml      tests, puis publication sur Cloudflare Pages à chaque envoi sur main
 supabase/migrations/            SQL du schéma, identique à la base
 config/supabase.json            URL + clé publishable (publique par nature)
 assets/fonts/                   polices embarquées (dont les polices de secours, D17) + licences OFL

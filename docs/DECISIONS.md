@@ -6,6 +6,16 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D30. Contact du site : `contact@samaclasse.app`
+*Bocar, 15/11/2026.*
+Adresse affichée sur la politique de confidentialité et la page de
+suppression du compte, toutes deux exigées par Google Play (la seconde doit
+permettre une demande sans l'application). Redirigée vers la boîte Gmail de
+Bocar par le routage des e-mails de Cloudflare : l'adresse personnelle n'est
+jamais affichée. La décision D18 (« pas de contact ») vaut pour la page « À
+propos » de l'application. Le domaine, acheté ailleurs, est confié au DNS de
+Cloudflare.
+
 ### D29. Version web hébergée sur Cloudflare Pages
 *Bocar, 15/11/2026.*
 Gratuit, rapide en Afrique de l'Ouest (point de présence à Dakar), HTTPS et
