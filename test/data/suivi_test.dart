@@ -240,7 +240,8 @@ void main() {
       await tester.pumpAndSettle();
 
       // Leçon 1 du jeu enregistré : 5 exercices, dont 2 questions de cours
-      // (comparées au corrigé). Réponses laissées vides pour les autres.
+      // (comparées au corrigé). Les 3 autres sont validés sans rien remplir :
+      // ils ne doivent pas être notés (décision du 15/11/2026).
       for (var i = 1; i <= 5; i++) {
         final valider = find.text('Valider');
         await tester.tap(valider.evaluate().isNotEmpty ? valider : find.text('Voir le corrigé'));
@@ -258,6 +259,8 @@ void main() {
 
       final autos = envoi.resultatsRecus.where((r) => r.autoEvaluation).toList();
       expect(autos.map((r) => r.exerciceId).toSet(), {20, 24});
+      expect(envoi.resultatsRecus.where((r) => !r.autoEvaluation), isEmpty,
+          reason: 'exercices laissés vides : rien de noté');
       expect(autos.every((r) => r.reussi && r.enfantId == 1), isTrue);
       // Chaque exercice n'est noté qu'une fois.
       final ids = envoi.resultatsRecus.map((r) => r.exerciceId).toList();

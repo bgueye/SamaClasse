@@ -130,6 +130,10 @@ class _SerieExercicesState extends State<_SerieExercices> {
     final correction = _corrections[e.id];
     if (correction == null || _notes.contains(e.id)) return;
     if (correction is! CorrectionAuto && _autoEvaluations[e.id] == null) return;
+    // Validé sans rien remplir : rien à apprendre au parent, on ne note pas
+    // (décision de Bocar du 15/11/2026). Les questions de cours, elles, ne
+    // comptent que par « Avais-tu juste ? » (réponse possible sur le cahier).
+    if (correction is CorrectionAuto && reponseVide(_reponse(e))) return;
     _notes.add(e.id);
     _suivi.noterResultat(exerciceId: e.id, correction: correction, autoEvaluation: _autoEvaluations[e.id]).ignore();
   }

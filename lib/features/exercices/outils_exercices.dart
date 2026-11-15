@@ -23,6 +23,21 @@ Object? reponseInitiale(Exercice exercice) {
   }
 }
 
+/// Vrai si l'élève n'a rien rempli : aucune case cochée, aucune paire
+/// reliée, aucun champ saisi (espaces seuls compris).
+///
+/// Sert au suivi des parents (phase 3) : un exercice validé sans réponse ne
+/// dit rien du niveau de l'enfant, il n'est donc pas noté (décision de Bocar
+/// du 15/11/2026). Parcourt la réponse quelle que soit sa forme (liste,
+/// dictionnaire, texte), comme la produit [reponseInitiale] puis la saisie.
+bool reponseVide(Object? reponse) => switch (reponse) {
+      null => true,
+      final String s => s.trim().isEmpty,
+      final List l => l.every(reponseVide),
+      final Map m => m.values.every(reponseVide),
+      _ => false, // un nombre, un booléen : une réponse a été donnée
+    };
+
 /// « aire_minimale_m2 » → « Aire minimale m2 ».
 String libelleCle(String cle) {
   final texte = cle.replaceAll(RegExp(r'[_-]+'), ' ').trim();

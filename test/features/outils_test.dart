@@ -36,6 +36,52 @@ Chapitre chap(int numero, String? partie, {int lecons = 0}) => Chapitre.fromJson
     });
 
 void main() {
+  group('reponseVide', () {
+    test('rien de rempli, quelle que soit la forme', () {
+      for (final vide in <Object?>[
+        null,
+        '',
+        '   ',
+        <int?>[null, null],
+        <bool?>[null, null, null],
+        <String, String>{},
+        <String>['', ' '],
+        {'homogene': <String>[], 'heterogene': <String>[]},
+        <String, Object>{},
+      ]) {
+        expect(reponseVide(vide), isTrue, reason: '$vide');
+      }
+    });
+
+    test('au moins une réponse donnée', () {
+      for (final rempli in <Object?>[
+        'eau',
+        <int?>[null, 2],
+        <bool?>[null, false],
+        {'a': '1'},
+        <String>['', 'fer'],
+        {'homogene': <String>['eau salée'], 'heterogene': <String>[]},
+        {'totaux.0': 12},
+      ]) {
+        expect(reponseVide(rempli), isFalse, reason: '$rempli');
+      }
+    });
+
+    test('la réponse initiale de chaque type d’exercice est vide', () {
+      for (final e in [
+        exo('qcm', [1, 0]),
+        exo('vrai_faux', [true, false]),
+        exo('relier', {'a': '1', 'b': '2'}),
+        exo('tableau', ['fer', 'cuivre']),
+        exo('tableau', {'homogene': ['eau salée'], 'heterogene': ['sable']}),
+        exo('calcul', {'aire': 12}),
+        exo('question_cours', null),
+      ]) {
+        expect(reponseVide(reponseInitiale(e)), isTrue, reason: e.type.name);
+      }
+    });
+  });
+
   group('reponseInitiale', () {
     test('QCM : un null par question', () {
       expect(reponseInitiale(exo('qcm', [2, 1, 2])), [null, null, null]);
