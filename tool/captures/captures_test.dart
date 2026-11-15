@@ -26,6 +26,33 @@ import '../../test/outils/polices.dart';
 
 const _dossier = 'build/captures';
 
+/// Compte avec une semaine de travail pour Awa (leçon 1, exercices 20 à 24).
+FauxCompte _compteAvecSuivi() {
+  final maintenant = DateTime.now();
+  ResultatExercice r(int exercice, int minutes, {bool reussi = true, int? bonnes, int? total}) => ResultatExercice(
+        id: 'capture-$exercice-$minutes',
+        enfantId: 1,
+        exerciceId: exercice,
+        reussi: reussi,
+        bonnes: bonnes,
+        total: total,
+        autoEvaluation: bonnes == null,
+        faitLe: maintenant.subtract(Duration(minutes: minutes)),
+      );
+  return FauxCompte(
+    connecte: 'parent@exemple.sn',
+    enfants: _enfants,
+    lectures: [LectureLecon(enfantId: 1, leconId: 1, lueLe: maintenant)],
+    resultats: [
+      r(20, 9),
+      r(21, 8, reussi: false, bonnes: 4, total: 6),
+      r(22, 6, bonnes: 6, total: 6),
+      r(23, 4, reussi: false, bonnes: 3, total: 5),
+      r(24, 2, reussi: false),
+    ],
+  );
+}
+
 /// Profils de l'espace parents pour les captures.
 const _enfants = [
   Enfant(id: 1, prenom: 'Awa', classeId: 1),
@@ -117,6 +144,17 @@ void main() {
         echelleTexte: echelle,
       );
       await _capturer(tester, 'tel${suffixe}_11_accueil_profil');
+
+      // Suivi de mes enfants (phase 3).
+      await lancerApp(
+        tester,
+        depot: FauxDepot(),
+        compte: _compteAvecSuivi(),
+        preferences: FaussesPreferences(enfant: const EnfantActif(id: 1, prenom: 'Awa')),
+        chemin: '/suivi',
+        echelleTexte: echelle,
+      );
+      await _capturer(tester, 'tel${suffixe}_12_suivi');
     });
   }
 
@@ -167,5 +205,14 @@ void main() {
       taille: tailleWeb,
     );
     await _capturer(tester, 'web_09_mes_enfants');
+    await lancerApp(
+      tester,
+      depot: FauxDepot(),
+      compte: _compteAvecSuivi(),
+      preferences: FaussesPreferences(enfant: const EnfantActif(id: 1, prenom: 'Awa')),
+      chemin: '/suivi',
+      taille: tailleWeb,
+    );
+    await _capturer(tester, 'web_12_suivi');
   });
 }

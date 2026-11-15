@@ -141,4 +141,7 @@ class ContenuHorsLigne implements SamaClasseRepository {
 
   @override
   Future<Lecon?> lecon(int id) async => (await _contenu()).lecon(id);
+
+  @override
+  Future<List<Lecon>> lecons() async => (await _contenu()).lecons();
 }

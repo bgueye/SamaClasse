@@ -28,6 +28,12 @@ abstract interface class SamaClasseRepository {
   /// ou n'est pas encore publiée.
   Future<Lecon?> lecon(int id);
 
+  /// Toutes les leçons publiées, complètes (contexte et exercices). Sert au
+  /// suivi des parents : retrouver la leçon et le type d'un exercice fait,
+  /// lister les leçons disponibles d'une classe. Lu dans la copie locale :
+  /// une dizaine de leçons aujourd'hui, à revoir si le contenu grossit beaucoup.
+  Future<List<Lecon>> lecons();
+
   /// État de la synchronisation : sert au bandeau « Hors connexion » et à
   /// recharger les écrans quand du contenu nouveau arrive.
   ValueListenable<EtatContenu> get etat;

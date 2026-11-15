@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/app_scope.dart';
 import '../../core/services/preferences.dart';
@@ -489,6 +490,14 @@ class _MesEnfantsState extends State<MesEnfants> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Suivi du travail des enfants (phase 3).
+          FilledButton.icon(
+            onPressed: () => context.push('/suivi'),
+            icon: const Icon(Icons.insights_rounded),
+            label: const Text('Voir le suivi de mes enfants'),
+            style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(52)),
+          ),
+          const SizedBox(height: 24),
           Semantics(header: true, child: const Text('Mes enfants', style: Styles.sectionTitre)),
           const SizedBox(height: 10),
           for (final e in donnees.enfants)

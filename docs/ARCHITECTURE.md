@@ -84,6 +84,8 @@ lib/
                                       « Mes enfants » (vouvoiement : public parents)
     compte/fiche_enfant.dart          fiche prénom + classe (boîte de dialogue)
     compte/outils_compte.dart         validation des saisies, messageErreurCompte()
+    suivi/suivi_screen.dart           « Suivi de mes enfants » (maquette Parent, phase 3)
+    suivi/statistiques.dart           debutSemaine(), bilanSemaine(), derniersExercices()…
     matiere/matiere_screen.dart       chapitres par partie, filtre
     matiere/regroupement.dart         regrouperParPartie(), etatChapitre()
     lecon/lecon_screen.dart           onglets « La leçon » / « À retenir »
@@ -97,6 +99,7 @@ test/
   features/hors_connexion_test.dart bandeau, mode avion, mise à jour automatique des écrans
   features/puces_test.dart      lisibilité des puces de choix
   features/compte_test.dart     espace parents : saisies, erreurs, écrans, 200 %
+  features/suivi_test.dart      suivi des enfants : semaine, derniers exercices, écran, 200 %
   data/contenu_hors_ligne_test.dart synchronisation, copie locale, erreurs réseau
   data/suivi_test.dart          file d'attente du suivi : hors connexion, doublons, refus, écrans
   core/seyes_test.dart          alignement du texte sur les lignes Seyès (vraies polices)
@@ -129,6 +132,7 @@ assets/fonts/                   polices embarquées (dont les polices de secours
 | `/lecon/:leconId/exercices` | `ExercicesScreen` | la `Lecon` passée en `extra`, sinon `lecon(id)` |
 | `/a-propos` | `AProposScreen` | aucune (page fixe : présentation, version, licences, D18) |
 | `/compte` | `CompteScreen` | connexion si pas de compte ; sinon `compte.enfants()` et `classes()` |
+| `/suivi` | `SuiviScreen` | envoie d'abord la file du suivi, puis `compte.enfants()`, `lectures()`, `resultats()`, `classes()`, `lecons()` |
 
 Règles :
 - Les identifiants viennent de l'URL ; un identifiant non numérique affiche

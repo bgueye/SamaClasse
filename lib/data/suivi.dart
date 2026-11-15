@@ -29,10 +29,11 @@ import 'correction.dart';
 // Lignes en attente
 // ---------------------------------------------------------------------------
 
-/// Résultat d'un exercice, tel qu'il sera inséré dans la table `resultats`.
+/// Résultat d'un exercice : ligne de la table `resultats`, en attente
+/// d'envoi sur le téléphone ou relue depuis la base (écran de suivi).
 @immutable
-class ResultatEnAttente {
-  const ResultatEnAttente({
+class ResultatExercice {
+  const ResultatExercice({
     required this.id,
     required this.enfantId,
     required this.exerciceId,
@@ -65,7 +66,7 @@ class ResultatEnAttente {
         'fait_le': faitLe.toUtc().toIso8601String(),
       };
 
-  factory ResultatEnAttente.fromJson(Map<String, dynamic> json) => ResultatEnAttente(
+  factory ResultatExercice.fromJson(Map<String, dynamic> json) => ResultatExercice(
         id: json['id'] as String,
         enfantId: (json['enfant_id'] as num).toInt(),
         exerciceId: (json['exercice_id'] as num).toInt(),
@@ -77,10 +78,11 @@ class ResultatEnAttente {
       );
 }
 
-/// Ouverture d'une leçon, telle qu'elle sera envoyée dans `lectures`.
+/// Ouverture d'une leçon : ligne de la table `lectures`, en attente d'envoi
+/// ou relue depuis la base.
 @immutable
-class LectureEnAttente {
-  const LectureEnAttente({required this.enfantId, required this.leconId, required this.lueLe});
+class LectureLecon {
+  const LectureLecon({required this.enfantId, required this.leconId, required this.lueLe});
 
   final int enfantId;
   final int leconId;
@@ -92,7 +94,7 @@ class LectureEnAttente {
         'lue_le': lueLe.toUtc().toIso8601String(),
       };
 
-  factory LectureEnAttente.fromJson(Map<String, dynamic> json) => LectureEnAttente(
+  factory LectureLecon.fromJson(Map<String, dynamic> json) => LectureLecon(
         enfantId: (json['enfant_id'] as num).toInt(),
         leconId: (json['lecon_id'] as num).toInt(),
         lueLe: DateTime.parse(json['lue_le'] as String),
@@ -104,15 +106,15 @@ class LectureEnAttente {
 class FileEnvoi {
   const FileEnvoi({this.resultats = const [], this.lectures = const []});
 
-  final List<ResultatEnAttente> resultats;
-  final List<LectureEnAttente> lectures;
+  final List<ResultatExercice> resultats;
+  final List<LectureLecon> lectures;
 
   bool get estVide => resultats.isEmpty && lectures.isEmpty;
   int get taille => resultats.length + lectures.length;
 
   /// Ajoute une lecture : une seule par enfant et par leçon, la plus récente
   /// (la table n'en garde qu'une de toute façon).
-  FileEnvoi avecLecture(LectureEnAttente l) => FileEnvoi(
+  FileEnvoi avecLecture(LectureLecon l) => FileEnvoi(
         resultats: resultats,
         lectures: [
           for (final x in lectures)
@@ -121,7 +123,7 @@ class FileEnvoi {
         ],
       );
 
-  FileEnvoi avecResultat(ResultatEnAttente r) =>
+  FileEnvoi avecResultat(ResultatExercice r) =>
       FileEnvoi(resultats: [...resultats, r], lectures: lectures);
 
   /// Retire ce qui a été envoyé (ou abandonné), en gardant ce qui a pu être
@@ -150,10 +152,10 @@ FileEnvoi decoderFile(String texte) {
     if (json['version'] != 1) return const FileEnvoi();
     return FileEnvoi(
       resultats: [
-        for (final r in (json['resultats'] as List).cast<Map<String, dynamic>>()) ResultatEnAttente.fromJson(r),
+        for (final r in (json['resultats'] as List).cast<Map<String, dynamic>>()) ResultatExercice.fromJson(r),
       ],
       lectures: [
-        for (final l in (json['lectures'] as List).cast<Map<String, dynamic>>()) LectureEnAttente.fromJson(l),
+        for (final l in (json['lectures'] as List).cast<Map<String, dynamic>>()) LectureLecon.fromJson(l),
       ],
     );
   } catch (_) {
@@ -183,7 +185,7 @@ String genererUuid([Random? hasard]) {
 ///
 /// [autoEvaluation] : la réponse de l'enfant à « Avais-tu juste ? » pour un
 /// exercice qu'il compare lui-même au corrigé.
-ResultatEnAttente? resultatDepuis({
+ResultatExercice? resultatDepuis({
   required Correction correction,
   required bool? autoEvaluation,
   required int enfantId,
@@ -192,7 +194,7 @@ ResultatEnAttente? resultatDepuis({
   String Function() nouvelId = genererUuid,
 }) {
   return switch (correction) {
-    CorrectionAuto(:final bonnes, :final total) when total > 0 => ResultatEnAttente(
+    CorrectionAuto(:final bonnes, :final total) when total > 0 => ResultatExercice(
         id: nouvelId(),
         enfantId: enfantId,
         exerciceId: exerciceId,
@@ -202,7 +204,7 @@ ResultatEnAttente? resultatDepuis({
         autoEvaluation: false,
         faitLe: maintenant,
       ),
-    CorrectionManuelle() when autoEvaluation != null => ResultatEnAttente(
+    CorrectionManuelle() when autoEvaluation != null => ResultatExercice(
         id: nouvelId(),
         enfantId: enfantId,
         exerciceId: exerciceId,
@@ -229,8 +231,8 @@ bool estRefusDefinitif(Object erreur) =>
 
 /// Envoi vers Supabase.
 abstract class EnvoiSuivi {
-  Future<void> envoyerResultats(List<ResultatEnAttente> resultats);
-  Future<void> envoyerLectures(List<LectureEnAttente> lectures);
+  Future<void> envoyerResultats(List<ResultatExercice> resultats);
+  Future<void> envoyerLectures(List<LectureLecon> lectures);
 }
 
 class EnvoiSupabase implements EnvoiSuivi {
@@ -241,13 +243,13 @@ class EnvoiSupabase implements EnvoiSuivi {
   /// `ignoreDuplicates` : `on conflict (id) do nothing`. Un résultat déjà
   /// reçu (envoi précédent coupé avant la réponse) est simplement ignoré.
   @override
-  Future<void> envoyerResultats(List<ResultatEnAttente> resultats) => _client
+  Future<void> envoyerResultats(List<ResultatExercice> resultats) => _client
       .from('resultats')
       .upsert([for (final r in resultats) r.toJson()], onConflict: 'id', ignoreDuplicates: true);
 
   /// Relire une leçon met sa date à jour (une ligne par enfant et leçon).
   @override
-  Future<void> envoyerLectures(List<LectureEnAttente> lectures) => _client
+  Future<void> envoyerLectures(List<LectureLecon> lectures) => _client
       .from('lectures')
       .upsert([for (final l in lectures) l.toJson()], onConflict: 'enfant_id,lecon_id');
 }
@@ -338,7 +340,7 @@ class SuiviResultats {
         if (enfant == null) return;
         final file = await _lireFile();
         await stockage.ecrire(encoderFile(
-          file.avecLecture(LectureEnAttente(enfantId: enfant, leconId: leconId, lueLe: _horloge())),
+          file.avecLecture(LectureLecon(enfantId: enfant, leconId: leconId, lueLe: _horloge())),
         ));
       }).then((_) => envoyer());
 

@@ -13,6 +13,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'suivi.dart';
+
 /// Profil d'un enfant, tel que stocké dans la table `enfants`.
 @immutable
 class Enfant {
@@ -65,6 +67,15 @@ abstract class Compte extends ChangeNotifier {
   Future<Enfant> modifierEnfant(Enfant enfant);
 
   Future<void> supprimerEnfant(int id);
+
+  /// Leçons lues par les enfants du compte (phase 3). Une ligne par enfant et
+  /// par leçon : la dernière ouverture.
+  Future<List<LectureLecon>> lectures();
+
+  /// Résultats des enfants du compte, du plus récent au plus ancien, limités
+  /// aux [limite] derniers (assez pour « Cette semaine » et « Derniers
+  /// exercices »).
+  Future<List<ResultatExercice>> resultats({int limite = 500});
 }
 
 /// Compte réel, adossé à Supabase Auth et à la table `enfants`.
@@ -131,6 +142,23 @@ class CompteSupabase extends Compte {
 
   @override
   Future<void> supprimerEnfant(int id) => _client.from('enfants').delete().eq('id', id);
+
+  // Les règles RLS ne renvoient que les lignes des enfants du parent connecté.
+  @override
+  Future<List<LectureLecon>> lectures() async {
+    final lignes = await _client.from('lectures').select('enfant_id, lecon_id, lue_le');
+    return lignes.map(LectureLecon.fromJson).toList();
+  }
+
+  @override
+  Future<List<ResultatExercice>> resultats({int limite = 500}) async {
+    final lignes = await _client
+        .from('resultats')
+        .select('id, enfant_id, exercice_id, reussi, bonnes, total, auto_evaluation, fait_le')
+        .order('fait_le', ascending: false)
+        .limit(limite);
+    return lignes.map(ResultatExercice.fromJson).toList();
+  }
 
   @override
   void dispose() {

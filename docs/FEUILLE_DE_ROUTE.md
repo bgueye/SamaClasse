@@ -163,7 +163,9 @@ connexion et envoyés au retour du réseau. Migration appliquée le 15/11/2026 :
 `supabase/migrations/20261115110503_lectures_resultats.sql`. File d'attente
 faite le 15/11/2026 (`lib/data/suivi.dart`, 18 tests) : envoi au lancement, au
 retour au premier plan, à la connexion du parent, à l'actualisation et après
-chaque résultat. Reste : écran « Suivi de mes enfants », texte « À propos ». Elle remplace la
+chaque résultat. Écran « Suivi de mes enfants » fait le 15/11/2026 (`/suivi`,
+18 tests). Reste : texte « À propos » à soumettre à Bocar, essai sur le
+téléphone. Elle remplace la
 piste technique ci-dessous, écrite avant D21 (`profil_id` devient
 `enfant_id`).
 

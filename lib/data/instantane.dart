@@ -41,6 +41,8 @@ class Instantane {
       .map(Chapitre.fromJson)
       .toList();
 
+  List<Lecon> lecons() => leconsBrutes.map(Lecon.fromJson).toList();
+
   Lecon? lecon(int id) {
     for (final l in leconsBrutes) {
       if (_entier(l['id']) == id) return Lecon.fromJson(l);

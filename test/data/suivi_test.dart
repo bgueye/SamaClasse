@@ -42,7 +42,7 @@ class _ReponsePerdue extends FauxEnvoi {
   bool perdre = true;
 
   @override
-  Future<void> envoyerResultats(List<ResultatEnAttente> resultats) async {
+  Future<void> envoyerResultats(List<ResultatExercice> resultats) async {
     await super.envoyerResultats(resultats);
     if (perdre) {
       perdre = false;
@@ -62,7 +62,7 @@ void main() {
       expect(genererUuid(Random(1)), genererUuid(Random(1)));
     });
 
-    ResultatEnAttente? depuis(Correction c, {bool? auto}) => resultatDepuis(
+    ResultatExercice? depuis(Correction c, {bool? auto}) => resultatDepuis(
           correction: c,
           autoEvaluation: auto,
           enfantId: 1,
@@ -99,7 +99,7 @@ void main() {
     test('file : aller-retour, et contenu illisible ignoré', () {
       final file = const FileEnvoi()
           .avecResultat(depuis(_juste)!)
-          .avecLecture(LectureEnAttente(enfantId: 1, leconId: 3, lueLe: _midi));
+          .avecLecture(LectureLecon(enfantId: 1, leconId: 3, lueLe: _midi));
       final relue = decoderFile(encoderFile(file));
       expect(relue.resultats.single.toJson(), file.resultats.single.toJson());
       expect(relue.lectures.single.toJson(), file.lectures.single.toJson());
@@ -110,9 +110,9 @@ void main() {
     test('file : une seule lecture par enfant et par leçon, la plus récente', () {
       final plusTard = _midi.add(const Duration(hours: 1));
       final file = const FileEnvoi()
-          .avecLecture(LectureEnAttente(enfantId: 1, leconId: 3, lueLe: _midi))
-          .avecLecture(LectureEnAttente(enfantId: 1, leconId: 3, lueLe: plusTard))
-          .avecLecture(LectureEnAttente(enfantId: 2, leconId: 3, lueLe: _midi));
+          .avecLecture(LectureLecon(enfantId: 1, leconId: 3, lueLe: _midi))
+          .avecLecture(LectureLecon(enfantId: 1, leconId: 3, lueLe: plusTard))
+          .avecLecture(LectureLecon(enfantId: 2, leconId: 3, lueLe: _midi));
       expect(file.lectures, hasLength(2));
       expect(file.lectures.firstWhere((l) => l.enfantId == 1).lueLe, plusTard);
     });

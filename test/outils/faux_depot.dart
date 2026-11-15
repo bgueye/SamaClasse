@@ -74,6 +74,12 @@ class FauxDepot implements SamaClasseRepository {
         () => _lignes((_donnees['chapitres'] as Map?)?['$classeId-$matiereId']).map(Chapitre.fromJson).toList(),
       );
 
+  @override
+  Future<List<Lecon>> lecons() => _repondre(
+        'lecons',
+        () => [for (final l in ((_donnees['lecons'] as Map?) ?? const {}).values) Lecon.fromJson(l as Map<String, dynamic>)],
+      );
+
   /// Comme la vraie requête (`maybeSingle`) : `null` pour une leçon absente
   /// ou non publiée.
   @override
@@ -189,9 +195,19 @@ class FaussesPreferences implements Preferences {
 /// Compte parent sans réseau : un seul code accepté ([codeValable]), profils
 /// en mémoire. Reproduit les refus de la base (10 profils au plus).
 class FauxCompte extends Compte {
-  FauxCompte({String? connecte, List<Enfant>? enfants})
-      : _email = connecte,
-        _enfants = [...?enfants];
+  FauxCompte({
+    String? connecte,
+    List<Enfant>? enfants,
+    List<LectureLecon>? lectures,
+    List<ResultatExercice>? resultats,
+  })  : _email = connecte,
+        _enfants = [...?enfants],
+        lecturesEnBase = [...?lectures],
+        resultatsEnBase = [...?resultats];
+
+  /// Ce que la base renverrait au parent connecté (déjà filtré par les RLS).
+  final List<LectureLecon> lecturesEnBase;
+  final List<ResultatExercice> resultatsEnBase;
 
   static const codeValable = '123456';
 
@@ -277,14 +293,27 @@ class FauxCompte extends Compte {
     await _avant('supprimerEnfant');
     _enfants.removeWhere((e) => e.id == id);
   }
+
+  @override
+  Future<List<LectureLecon>> lectures() async {
+    await _avant('lectures');
+    return List.of(lecturesEnBase);
+  }
+
+  @override
+  Future<List<ResultatExercice>> resultats({int limite = 500}) async {
+    await _avant('resultats');
+    final tries = [...resultatsEnBase]..sort((a, b) => b.faitLe.compareTo(a.faitLe));
+    return tries.take(limite).toList();
+  }
 }
 
 /// Envoi du suivi sans réseau : garde ce qui a été « reçu ». Peut simuler
 /// une coupure ([enPanne]) ou un refus de la base pour certaines lignes
 /// ([refuses], comme une règle RLS).
 class FauxEnvoi implements EnvoiSuivi {
-  final resultatsRecus = <ResultatEnAttente>[];
-  final lecturesRecues = <LectureEnAttente>[];
+  final resultatsRecus = <ResultatExercice>[];
+  final lecturesRecues = <LectureLecon>[];
   bool enPanne = false;
 
   /// Identifiants d'exercices que la base refuse (code 42501).
@@ -293,7 +322,7 @@ class FauxEnvoi implements EnvoiSuivi {
   int appels = 0;
 
   @override
-  Future<void> envoyerResultats(List<ResultatEnAttente> resultats) async {
+  Future<void> envoyerResultats(List<ResultatExercice> resultats) async {
     appels++;
     if (enPanne) throw const SocketException('Pas de connexion (test)');
     if (resultats.any((r) => refuses.contains(r.exerciceId))) {
@@ -306,7 +335,7 @@ class FauxEnvoi implements EnvoiSuivi {
   }
 
   @override
-  Future<void> envoyerLectures(List<LectureEnAttente> lectures) async {
+  Future<void> envoyerLectures(List<LectureLecon> lectures) async {
     appels++;
     if (enPanne) throw const SocketException('Pas de connexion (test)');
     lecturesRecues.addAll(lectures);
