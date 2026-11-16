@@ -413,12 +413,14 @@ void main() {
     testWidgets('accès : bouton sur la leçon pour un rédacteur seulement', (tester) async {
       await lancerApp(tester, depot: FauxDepot(), compte: _connecte(), chemin: '/lecon/1');
       await tester.pumpAndSettle();
-      expect(find.byTooltip('Schémas de la leçon'), findsNothing);
+      expect(find.byTooltip('Outils du rédacteur'), findsNothing);
 
       final redaction = FausseRedaction(redacteur: true, textes: {1: _texte()});
       await lancerApp(tester, depot: FauxDepot(), compte: _connecte(), redaction: redaction, chemin: '/lecon/1');
       await tester.pumpAndSettle();
-      await tester.tap(find.byTooltip('Schémas de la leçon'));
+      await tester.tap(find.byTooltip('Outils du rédacteur'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Schémas de la leçon'));
       await tester.pumpAndSettle();
       expect(find.text('Schémas de la leçon'), findsOneWidget);
       // Retour à la leçon.

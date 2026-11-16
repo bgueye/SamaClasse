@@ -6,6 +6,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart' show PostgrestException, StorageException;
 
 import '../../core/services/reduction_image.dart';
+import '../../data/data.dart';
 import '../validation/outils_validation.dart' show messageErreurRedaction;
 
 /// Séparateur de paragraphes : une ligne vide (éventuellement faite
@@ -119,14 +120,36 @@ String messageErreurSchema(Object erreur) {
   return messageErreurRedaction(erreur);
 }
 
+/// Le compte peut-il ajouter un schéma à cette leçon (mêmes règles
+/// qu'`ajouter_schema`, D33) ? Leçon pas encore publiée ou correction en
+/// cours : tout rédacteur ; leçon publiée sans correction : validateur.
+bool peutAjouterSchema(TexteLecon texte, {required bool validateur}) =>
+    !texte.publiee || texte.dansCorrection || validateur;
+
+/// Le compte peut-il retirer ce schéma (mêmes règles que `retirer_schema`) ?
+/// Ajouté dans la correction en cours, ou leçon pas encore publiée : tout
+/// rédacteur ; schéma en ligne d'une leçon publiée : validateur, et pas
+/// pendant une correction.
+bool peutRetirerSchema(SchemaLecon schema, TexteLecon texte, {required bool validateur}) {
+  if (schema.correctionId != null && schema.correctionId == texte.correctionId) return true;
+  if (!texte.publiee) return true;
+  return validateur && !texte.dansCorrection;
+}
+
 /// Phrase sous le titre de l'écran.
-String resumeSchemas(int nombre, {required bool publiee}) {
+String resumeSchemas(int nombre, {required bool publiee, bool dansCorrection = false, bool validateur = true}) {
   final combien = switch (nombre) {
     0 => 'Aucun schéma ajouté depuis l’application pour l’instant.',
     1 => '1 schéma ajouté depuis l’application.',
     _ => '$nombre schémas ajoutés depuis l’application.',
   };
-  return publiee
+  if (dansCorrection) {
+    return '$combien Correction en cours : un schéma ajouté va dans le texte corrigé, et passera en ligne avec '
+        'la correction.';
+  }
+  if (!publiee) return '$combien Leçon pas encore publiée : les élèves verront ses schémas une fois publiée.';
+  return validateur
       ? '$combien Leçon publiée : un schéma ajouté apparaît chez les élèves à leur prochaine mise à jour.'
-      : '$combien Leçon pas encore publiée : les élèves verront ses schémas une fois publiée.';
+      : '$combien Leçon publiée : pour y ajouter un schéma, demande d’abord une correction (menu « Outils du '
+          'rédacteur » de la leçon).';
 }

@@ -451,17 +451,31 @@ class FauxStockageFile implements StockageFile {
 class FausseRedaction implements Redaction {
   FausseRedaction({
     this.redacteur = false,
+    bool? validateur,
     List<LeconAVerifier>? lecons,
     List<PointLeve>? leves,
     Map<int, TexteLecon>? textes,
     List<SchemaLecon>? schemas,
-  })  : lecons = [...?lecons],
+    List<CorrectionLecon>? corrections,
+    List<VersionLecon>? versions,
+  })  : validateur = validateur ?? redacteur,
+        lecons = [...?lecons],
         leves = [...?leves],
         textes = {...?textes},
         schemas = [...?schemas],
+        corrections = [...?corrections],
+        versionsEnBase = [...?versions],
         fichiers = {for (final s in [...?schemas]) s.chemin};
 
   bool redacteur;
+
+  /// Validateur (D33) : par défaut, un rédacteur des tests l'est aussi.
+  bool validateur;
+
+  /// Corrections ouvertes « en base » (D33) et versions publiées.
+  final List<CorrectionLecon> corrections;
+  final List<VersionLecon> versionsEnBase;
+  final correctionsFermees = <int, String>{}; // id → « publiee » ou « abandonnee »
   final List<LeconAVerifier> lecons;
   final List<PointLeve> leves;
   final publiees = <int>[];
@@ -503,14 +517,25 @@ class FausseRedaction implements Redaction {
   }
 
   @override
-  Future<PointLeve> leverPoint({required int leconId, required String point, String? commentaire}) async {
+  Future<PointLeve> leverPoint({required int leconId, required String point, String? commentaire, int? correctionId}) async {
     await _avant('lever');
     _exigerRedacteur();
-    final lecon = lecons.firstWhere((l) => l.id == leconId);
-    if (!lecon.points.contains(point) || publiees.contains(leconId)) {
-      throw const PostgrestException(message: 'new row violates row-level security policy', code: '42501');
+    const refus = PostgrestException(message: 'new row violates row-level security policy', code: '42501');
+    if (correctionId != null) {
+      final c = corrections.where((c) => c.id == correctionId).firstOrNull;
+      if (c == null || !c.points.contains(point)) throw refus;
+    } else {
+      final lecon = lecons.firstWhere((l) => l.id == leconId);
+      if (!lecon.points.contains(point) || publiees.contains(leconId)) throw refus;
     }
-    final p = PointLeve(id: _prochainId++, leconId: leconId, point: point, leveLe: DateTime.now(), commentaire: commentaire);
+    final p = PointLeve(
+      id: _prochainId++,
+      leconId: leconId,
+      point: point,
+      leveLe: DateTime.now(),
+      commentaire: commentaire,
+      correctionId: correctionId,
+    );
     leves.add(p);
     return p;
   }
@@ -522,10 +547,14 @@ class FausseRedaction implements Redaction {
     leves.removeWhere((p) => p.id == id);
   }
 
+  void _exigerValidateur() {
+    if (!redacteur || !validateur) throw const PostgrestException(message: 'Seul un validateur peut publier.', code: '42501');
+  }
+
   @override
   Future<void> publier(int leconId) async {
     await _avant('publier');
-    _exigerRedacteur();
+    _exigerValidateur();
     final lecon = lecons.firstWhere((l) => l.id == leconId);
     final restants = lecon.points.where((p) => !leves.any((x) => x.leconId == leconId && x.point == p)).length;
     if (restants > 0) {
@@ -554,7 +583,175 @@ class FausseRedaction implements Redaction {
   Future<TexteLecon?> texteLecon(int leconId) async {
     await _avant('texte');
     _exigerRedacteur();
-    return textes[leconId];
+    final t = textes[leconId];
+    final c = _ouverte(leconId);
+    if (t == null || c == null) return t;
+    // Correction ouverte : la copie de travail, comme la vraie rédaction.
+    return TexteLecon(
+      id: t.id,
+      titre: c.texte.titre,
+      publiee: t.publiee,
+      introduction: c.texte.introduction,
+      corps: c.texte.corps,
+      correctionId: c.id,
+    );
+  }
+
+  CorrectionLecon? _ouverte(int leconId) => corrections.where((c) => c.leconId == leconId).firstOrNull;
+
+  /// Remplace le texte de travail d'une correction (le circuit artefact).
+  void corrigerTexte(int correctionId, {String? introduction, String? corps}) {
+    final i = corrections.indexWhere((c) => c.id == correctionId);
+    final c = corrections[i];
+    corrections[i] = _avecTexte(
+      c,
+      TexteRedige(
+        titre: c.texte.titre,
+        objectifs: c.texte.objectifs,
+        introduction: introduction ?? c.texte.introduction,
+        corps: corps ?? c.texte.corps,
+        aRetenir: c.texte.aRetenir,
+      ),
+      modifiee: true,
+    );
+  }
+
+  static CorrectionLecon _avecTexte(CorrectionLecon c, TexteRedige texte, {bool modifiee = false}) => CorrectionLecon(
+        id: c.id,
+        leconId: c.leconId,
+        titreEnLigne: c.titreEnLigne,
+        classe: c.classe,
+        ordreClasse: c.ordreClasse,
+        matiere: c.matiere,
+        matiereSlug: c.matiereSlug,
+        texte: texte,
+        points: c.points,
+        motif: c.motif,
+        demandeeLe: c.demandeeLe,
+        modifieeLe: modifiee ? c.demandeeLe.add(const Duration(hours: 1)) : c.modifieeLe,
+        parMoi: c.parMoi,
+      );
+
+  // --- Corrections et versions (D33) ---
+
+  @override
+  Future<bool> estValidateur() async {
+    await _avant('estValidateur');
+    return redacteur && validateur;
+  }
+
+  @override
+  Future<List<CorrectionLecon>> correctionsEnCours() async {
+    await _avant('corrections');
+    _exigerRedacteur();
+    return List.of(corrections);
+  }
+
+  @override
+  Future<CorrectionLecon?> correctionDe(int leconId) async {
+    await _avant('correctionDe');
+    _exigerRedacteur();
+    return _ouverte(leconId);
+  }
+
+  @override
+  Future<int> demanderCorrection({required int leconId, required String motif, required List<String> points}) async {
+    await _avant('demander');
+    _exigerRedacteur();
+    final t = textes[leconId];
+    if (t == null || !t.publiee) {
+      throw const PostgrestException(message: 'Seule une leçon publiée se corrige ainsi.', code: 'P0001');
+    }
+    if (_ouverte(leconId) != null) {
+      throw const PostgrestException(message: 'Une correction de cette leçon est déjà en cours.', code: 'P0001');
+    }
+    final c = CorrectionLecon(
+      id: _prochainId++,
+      leconId: leconId,
+      titreEnLigne: t.titre,
+      classe: '4ème',
+      ordreClasse: 9,
+      matiere: 'Sciences physiques',
+      matiereSlug: 'sciences-physiques',
+      texte: TexteRedige(titre: t.titre, objectifs: const [], introduction: t.introduction, corps: t.corps, aRetenir: const []),
+      points: points,
+      motif: motif,
+      demandeeLe: DateTime(2026, 11, 16, 18),
+      modifieeLe: DateTime(2026, 11, 16, 18),
+      parMoi: true,
+    );
+    corrections.add(c);
+    return c.id;
+  }
+
+  void _archiver(int leconId, TexteRedige texte, String motif) {
+    final numero = versionsEnBase.where((v) => v.leconId == leconId).fold<int>(0, (m, v) => v.numero > m ? v.numero : m) + 1;
+    versionsEnBase.add(VersionLecon(
+      id: _prochainId++,
+      leconId: leconId,
+      numero: numero,
+      motif: motif,
+      publieeLe: DateTime(2026, 11, 16, 20),
+      texte: texte,
+    ));
+  }
+
+  @override
+  Future<int> publierCorrection(int correctionId) async {
+    await _avant('publierCorrection');
+    _exigerValidateur();
+    final c = corrections.firstWhere((c) => c.id == correctionId);
+    final restants = c.points.where((p) => !leves.any((x) => x.correctionId == c.id && x.point == p)).length;
+    if (restants > 0) throw PostgrestException(message: 'Il reste $restants point(s) à vérifier.', code: 'P0001');
+    final t = textes[c.leconId]!;
+    textes[c.leconId] = TexteLecon(
+      id: t.id,
+      titre: c.texte.titre,
+      publiee: true,
+      introduction: c.texte.introduction,
+      corps: c.texte.corps,
+    );
+    corrections.remove(c);
+    correctionsFermees[c.id] = 'publiee';
+    _archiver(c.leconId, c.texte, c.motif);
+    return versionsEnBase.last.numero;
+  }
+
+  @override
+  Future<List<String>> abandonnerCorrection(int correctionId) async {
+    await _avant('abandonner');
+    final c = corrections.firstWhere((c) => c.id == correctionId);
+    if (!redacteur || !(validateur || c.parMoi)) {
+      throw const PostgrestException(message: 'Seul un validateur peut abandonner.', code: '42501');
+    }
+    final chemins = [for (final s in schemas) if (s.correctionId == c.id) s.chemin];
+    schemas.removeWhere((s) => s.correctionId == c.id);
+    corrections.remove(c);
+    correctionsFermees[c.id] = 'abandonnee';
+    return chemins;
+  }
+
+  @override
+  Future<List<VersionLecon>> versions(int leconId) async {
+    await _avant('versions');
+    _exigerRedacteur();
+    return [for (final v in versionsEnBase) if (v.leconId == leconId) v]..sort((a, b) => b.numero.compareTo(a.numero));
+  }
+
+  @override
+  Future<int> revenirAVersion(int versionId) async {
+    await _avant('revenir');
+    _exigerValidateur();
+    final v = versionsEnBase.firstWhere((v) => v.id == versionId);
+    if (_ouverte(v.leconId) != null) {
+      throw const PostgrestException(message: 'Une correction de cette leçon est en cours.', code: 'P0001');
+    }
+    final t = textes[v.leconId];
+    if (t != null) {
+      textes[v.leconId] = TexteLecon(id: t.id, titre: v.texte.titre, publiee: t.publiee, introduction: v.texte.introduction, corps: v.texte.corps);
+    }
+    _archiver(v.leconId, v.texte, 'Retour à la version ${v.numero}');
+    return versionsEnBase.last.numero;
   }
 
   @override
@@ -590,7 +787,14 @@ class FausseRedaction implements Redaction {
       throw refus;
     }
     final t = textes[leconId]!;
-    final actuel = t.texte(champ) ?? '';
+    final correction = t.publiee ? _ouverte(leconId) : null;
+    if (t.publiee && correction == null && !validateur) {
+      throw const PostgrestException(message: 'Leçon publiée : demande d’abord une correction.', code: '42501');
+    }
+    final actuel = (correction == null
+            ? t.texte(champ)
+            : (champ == ChampLecon.introduction ? correction.texte.introduction : correction.texte.corps)) ??
+        '';
     if (actuel != (texteAttendu ?? '')) {
       throw const PostgrestException(message: 'La leçon a changé entre-temps.', code: '40001');
     }
@@ -598,13 +802,27 @@ class FausseRedaction implements Redaction {
     final morceaux = actuel.trim().isEmpty ? <String>[] : actuel.split(separateurParagraphes);
     final position = apres == null || apres > morceaux.length ? morceaux.length : apres;
     final nouveau = ([...morceaux]..insert(position, ligne)).join('\n\n');
-    textes[leconId] = TexteLecon(
-      id: t.id,
-      titre: t.titre,
-      publiee: t.publiee,
-      introduction: champ == ChampLecon.introduction ? nouveau : t.introduction,
-      corps: champ == ChampLecon.corps ? nouveau : t.corps,
-    );
+    if (correction != null) {
+      final i = corrections.indexOf(correction);
+      corrections[i] = _avecTexte(
+        correction,
+        TexteRedige(
+          titre: correction.texte.titre,
+          objectifs: correction.texte.objectifs,
+          introduction: champ == ChampLecon.introduction ? nouveau : correction.texte.introduction,
+          corps: champ == ChampLecon.corps ? nouveau : correction.texte.corps,
+          aRetenir: correction.texte.aRetenir,
+        ),
+      );
+    } else {
+      textes[leconId] = TexteLecon(
+        id: t.id,
+        titre: t.titre,
+        publiee: t.publiee,
+        introduction: champ == ChampLecon.introduction ? nouveau : t.introduction,
+        corps: champ == ChampLecon.corps ? nouveau : t.corps,
+      );
+    }
     final s = SchemaLecon(
       id: _prochainId++,
       leconId: leconId,
@@ -612,6 +830,7 @@ class FausseRedaction implements Redaction {
       chemin: chemin,
       description: description,
       ajouteLe: DateTime(2026, 11, 16),
+      correctionId: correction?.id,
     );
     schemas.add(s);
     return s.id;
@@ -622,6 +841,11 @@ class FausseRedaction implements Redaction {
     await _avant('retirer');
     _exigerRedacteur();
     final s = schemas.firstWhere((x) => x.id == schemaId);
+    final t = textes[s.leconId];
+    final dansCorrection = s.correctionId != null && corrections.any((c) => c.id == s.correctionId);
+    if (!dansCorrection && (t?.publiee ?? false) && (!validateur || _ouverte(s.leconId) != null)) {
+      throw const PostgrestException(message: 'Ce schéma est en ligne : seul un validateur peut le retirer.', code: '42501');
+    }
     schemas.remove(s);
     return s.chemin;
   }

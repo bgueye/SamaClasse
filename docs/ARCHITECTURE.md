@@ -97,6 +97,11 @@ lib/
     liaison/telephone_lie.dart        espace parents d'un téléphone lié : « Ce n'est plus mon téléphone »
     liaison/fiche_code_liaison.dart   code de liaison et temps restant (parent)
     liaison/outils_liaison.dart       code, temps restant, dePrenom(), messages
+    correction/correction_screen.dart texte corrigé d'une correction en cours (D33)
+    correction/versions_screen.dart   versions d'une leçon, « Revenir à cette version » (validateur)
+    correction/fiche_demande_correction.dart « Demander une correction » : raison, points
+    correction/apercu_texte.dart      texte d'une leçon sur page Seyès (aperçu, version)
+    correction/reserve_redacteurs.dart message « Réservé aux rédacteurs »
     suivi/suivi_screen.dart           « Suivi de mes enfants » (maquette Parent, phase 3)
     suivi/statistiques.dart           debutSemaine(), bilanSemaine(), derniersExercices()…
     validation/validation_screen.dart « Leçons à vérifier » (maquette Validation, rédacteurs)
@@ -119,6 +124,7 @@ test/
   features/puces_test.dart      lisibilité des puces de choix
   features/compte_test.dart     espace parents : saisies, erreurs, écrans, 200 %
   features/liaison_test.dart    liaison : code, vérification au lancement, envoi, écrans, 200 %
+  features/corrections_test.dart corrections, versions, validateur : logique, écrans, 200 %
   features/suivi_test.dart      suivi des enfants : semaine, derniers exercices, écran, 200 %
   features/validation_test.dart validation : points, publication, rôle, écran, 200 %
   features/schemas_test.dart    schémas : paragraphes, description, ajout, refus, retrait, 200 %
@@ -160,6 +166,8 @@ assets/fonts/                   polices embarquées (dont les polices de secours
 | `/a-propos` | `AProposScreen` | aucune (page fixe : présentation, version, licences, D18) |
 | `/compte` | `CompteScreen` | connexion si pas de compte ; sinon `compte.enfants()`, `classes()` et `appareils()` ; téléphone lié : `TelephoneLie` |
 | `/lier` | `LierScreen` | `compte.lierCeTelephone(code)` (session anonyme, D32) |
+| `/lecon/:leconId/correction` | `CorrectionScreen` | `redaction.correctionDe(id)` (D33) |
+| `/lecon/:leconId/versions` | `VersionsScreen` | `redaction.versions(id)`, `estValidateur()`, `correctionDe(id)` (D33) |
 | `/validation` | `ValidationScreen` | `redaction.estRedacteur()`, puis `leconsAVerifier()` et `pointsLeves()` |
 | `/lecon/:leconId/schemas` | `SchemasScreen` | `redaction.estRedacteur()`, puis `texteLecon(id)` et `schemasLecon(id)` (en base, pas la copie locale) |
 | `/suivi` | `SuiviScreen` | envoie d'abord la file du suivi, puis `compte.enfants()`, `lectures()`, `resultats()`, `classes()`, `lecons()` |

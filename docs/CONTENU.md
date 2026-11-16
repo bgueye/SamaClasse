@@ -84,8 +84,36 @@ brouillon ──► a_verifier ──► publiee
   Invisible des élèves.
 - Pour publier : comparer ligne à ligne avec les photos du cahier, lever
   chaque point, vider `points_a_verifier`, puis passer à `publiee`.
-- **Seul Bocar publie.** Une leçon publiée n'est jamais repassée en brouillon
-  sans sa demande.
+- **Seul un validateur publie** (Bocar, D33). Une leçon publiée n'est jamais
+  repassée en brouillon : elle se corrige à part, en restant en ligne.
+
+## Corriger une leçon publiée (D33)
+
+```
+publiee ──► correction ouverte (copie de travail) ──► correction publiée
+               │  texte corrigé par Claude Code            (nouvelle version)
+               │  points levés avec les cahiers
+               └──► abandonnée (la leçon reste telle quelle)
+```
+
+1. Un rédacteur ouvre la leçon, menu « Outils du rédacteur » › « Demander une
+   correction » : ce qu'il faut corriger, et les points à vérifier (un par
+   ligne).
+2. Bocar corrige l'artefact, puis demande à Claude Code : « mets la
+   correction de la leçon 4 ». **Claude Code écrit dans
+   `corrections_lecons` (ligne `etat = 'ouverte'` de la leçon), jamais dans
+   `lecons`** : titre, objectifs, introduction, corps, `a_retenir`. Il montre
+   le passage modifié avant d'enregistrer.
+3. Dans « Leçons à vérifier », section « Corrections en cours » : « Relire
+   le texte corrigé », lever chaque point, ajouter les schémas manquants.
+4. Le validateur touche « Publier la correction » : le texte passe en ligne,
+   une version est archivée. Les élèves le reçoivent à leur mise à jour.
+5. Menu « Versions de la leçon » : relire chaque version ; le validateur peut
+   revenir à l'une d'elles (hors correction en cours).
+
+Les exercices ne passent pas par une correction : Claude Code les corrige sur
+place, à la demande de Bocar (ne jamais supprimer un exercice qui a des
+résultats d'enfants).
 
 La maquette `Validation` décrit l'écran qui outillera ce cycle : liste des
 leçons à vérifier, points à cocher, lien vers l'artefact, bouton « Publier »

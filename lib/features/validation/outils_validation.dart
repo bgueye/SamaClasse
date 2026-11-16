@@ -7,13 +7,79 @@ import 'package:supabase_flutter/supabase_flutter.dart' show PostgrestException;
 
 import '../../data/data.dart';
 
-/// Le point [point] de la leçon [leconId] a-t-il été levé ?
+/// Le point [point] de la leçon [leconId] (pas encore publiée) a-t-il été
+/// levé ? Les points des corrections (D33) ne comptent pas ici.
 PointLeve? pointLeve(List<PointLeve> leves, int leconId, String point) {
   for (final p in leves) {
-    if (p.leconId == leconId && p.point == point) return p;
+    if (p.leconId == leconId && p.point == point && p.correctionId == null) return p;
   }
   return null;
 }
+
+/// Le point [point] de la correction [correctionId] a-t-il été levé ? Comme
+/// dans `publier_correction` : seuls comptent les points de CETTE
+/// correction, même si une ancienne avait un point au même texte.
+PointLeve? pointLeveCorrection(List<PointLeve> leves, int correctionId, String point) {
+  for (final p in leves) {
+    if (p.correctionId == correctionId && p.point == point) return p;
+  }
+  return null;
+}
+
+/// Points de la correction qui restent à lever.
+List<String> pointsRestantsCorrection(CorrectionLecon c, List<PointLeve> leves) =>
+    [for (final p in c.points) if (pointLeveCorrection(leves, c.id, p) == null) p];
+
+/// Longueurs permises pour la raison d'une correction (base : 3 à 500).
+const longueurMinMotif = 3;
+const longueurMaxMotif = 500;
+
+/// Nombre maximal de points d'une correction (base : 20).
+const nombreMaxPoints = 20;
+
+/// Points saisis un par ligne : sans espaces superflus, sans ligne vide ni
+/// doublon, dans l'ordre (la base fait de même).
+List<String> decouperPoints(String saisie) {
+  final vus = <String>{};
+  return [
+    for (final ligne in saisie.split('\n'))
+      if (ligne.trim().isNotEmpty && vus.add(ligne.trim())) ligne.trim(),
+  ];
+}
+
+/// Message d'erreur du champ « Ce qu'il faut corriger », ou `null`.
+String? erreurMotif(String saisie) {
+  final m = saisie.trim();
+  if (m.runes.length < longueurMinMotif) return 'Explique en quelques mots ce qu’il faut corriger.';
+  if (m.runes.length > longueurMaxMotif) return 'Pas plus de $longueurMaxMotif caractères.';
+  return null;
+}
+
+/// Message d'erreur du champ « Points à vérifier », ou `null`.
+String? erreurPoints(String saisie) {
+  final points = decouperPoints(saisie);
+  if (points.isEmpty) return 'Écris au moins un point à vérifier avec les cahiers (un par ligne).';
+  if (points.length > nombreMaxPoints) return 'Pas plus de $nombreMaxPoints points.';
+  if (points.any((p) => p.runes.length > 500)) return 'Un point ne doit pas dépasser 500 caractères.';
+  return null;
+}
+
+/// « Corrigée le 16/11/2026 » ou « Texte pas encore corrigé ».
+String etatTexteCorrection(CorrectionLecon c) {
+  if (!c.texteCorrige) return 'Texte pas encore corrigé';
+  final d = c.modifieeLe.toLocal();
+  return 'Texte corrigé le ${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
+}
+
+/// Phrase sous « Corrections en cours ».
+String resumeCorrections(int nombre) => switch (nombre) {
+      1 => '1 leçon publiée est en correction. Elle reste en ligne telle quelle jusqu’à la publication de la correction.',
+      _ => '$nombre leçons publiées sont en correction. Elles restent en ligne telles quelles jusqu’à la publication '
+          'de leur correction.',
+    };
+
+/// « 4ème, SVT » pour une correction.
+String libelleClasseMatiereCorrection(CorrectionLecon c) => '${c.classe}, ${c.matiere}';
 
 /// Points de [lecon] qui restent à lever. La comparaison se fait sur le
 /// texte, comme dans `publier_lecon` : un point dont le texte a changé dans
@@ -84,6 +150,7 @@ String messageErreurRedaction(Object erreur) {
   if (erreur is PostgrestException) {
     switch (erreur.code) {
       case 'P0001':
+      case '22023':
         return erreur.message;
       case '42501':
         return 'Ton compte n’a pas (ou plus) les droits de rédacteur.';

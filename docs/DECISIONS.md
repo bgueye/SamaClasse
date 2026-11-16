@@ -6,6 +6,27 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D33. Corrections des leçons publiées, versions, rôle validateur
+*Bocar, 16/11/2026.*
+La rédaction reste dans les artefacts : création et correction du texte
+passent par Claude Code, à la demande de Bocar (circuit actuel). Une leçon
+publiée **reste en ligne pendant sa correction** : un rédacteur demande une
+correction (raison, points à vérifier) depuis la leçon (menu « Outils du
+rédacteur ») ; une copie de travail est créée (`corrections_lecons`) ;
+Claude Code y écrit le texte corrigé, jamais dans la leçon en ligne ; les
+rédacteurs relisent l'aperçu et lèvent les points dans « Leçons à
+vérifier » ; un **validateur** publie la correction (elle remplace le texte
+en ligne) ou l'abandonne. Chaque mise en ligne est archivée
+(`versions_lecons`, version 1 créée pour les 13 leçons publiées) ; un
+validateur peut revenir à une version précédente (le retour est lui-même
+archivé). Rôles : tout rédacteur lève les points, demande une correction,
+ajoute des schémas (dans la copie de travail pendant une correction) ; le
+validateur (`redacteurs.validateur`, Bocar) publie leçons et corrections,
+abandonne, revient à une version, ajoute ou retire un schéma en ligne. Le
+texte seul est concerné : les exercices se corrigent sur place (les
+résultats des enfants y sont rattachés). Migration `corrections_versions`
+(28 vérifications).
+
 ### D32. Téléphones des enfants liés à leur profil par un code du parent
 *Bocar, 16/11/2026.*
 Chaque enfant a son téléphone ; il ne doit pas avoir le compte de son

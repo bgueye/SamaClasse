@@ -154,6 +154,31 @@ conseiller de sécurité, comme pour `publier_lecon`.
 (requête, puis `Instantane.seulementPublie`) : un rédacteur connecté lit
 aussi les leçons non publiées.
 
+### Corrections, versions et validateur (phase 5, D33)
+- `redacteurs.validateur` (booléen, à la main) et `est_validateur()` (jamais
+  vrai pour une session anonyme).
+- `corrections_lecons` : copie de travail d'une leçon publiée (`titre`,
+  `objectifs`, `introduction`, `corps`, `a_retenir`), `points_a_verifier`,
+  `motif`, `etat` (`ouverte`, `publiee`, `abandonnee` ; une seule ouverte par
+  leçon), `demandee_par/le`, `modifiee_le` (déclencheur), `close_par/le`.
+  Lue par les rédacteurs ; écrite par les fonctions et par l'administration
+  (texte corrigé).
+- `versions_lecons` : journal des versions mises en ligne (`numero` croissant
+  par leçon, texte, `motif`, `correction_id`, `publiee_par/le`). La dernière
+  est la version en ligne. Lue par les rédacteurs, jamais modifiée.
+- `points_leves.correction_id` : point d'une correction (règles : correction
+  ouverte, point de sa liste ; annulation tant qu'elle est ouverte).
+- `schemas_lecons.correction_id` : schéma ajouté dans une correction.
+- Fonctions : `demander_correction(lecon, motif, points)` (rédacteur, leçon
+  publiée, 1 à 20 points), `publier_correction(id)` (validateur, tous les
+  points levés : remplace le texte en ligne, archive), `abandonner_correction
+  (id)` (validateur ou demandeur ; rend les images à supprimer),
+  `revenir_a_version(id)` (validateur, pas pendant une correction),
+  `publier_lecon` (désormais validateur ; crée la version 1),
+  `archiver_version` (interne, inaccessible). `ajouter_schema` et
+  `retirer_schema` visent la copie de travail quand une correction est
+  ouverte ; en ligne sur une leçon publiée : validateur seulement.
+
 ### Téléphones des enfants liés par un code (phase 5, D32)
 Téléphone d'enfant = **session anonyme** Supabase (rôle `authenticated`,
 `is_anonymous` vrai dans le jeton ; `public.est_anonyme()`).

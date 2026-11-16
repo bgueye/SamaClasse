@@ -76,7 +76,7 @@ class _Reserve extends StatelessWidget {
 }
 
 /// Données de l'écran. [texte] est `null` si la leçon n'existe pas.
-typedef _Donnees = ({TexteLecon? texte, List<SchemaLecon> schemas});
+typedef _Donnees = ({TexteLecon? texte, List<SchemaLecon> schemas, bool validateur});
 
 class _Schemas extends StatefulWidget {
   const _Schemas({super.key, required this.leconId});
@@ -106,8 +106,12 @@ class _SchemasState extends State<_Schemas> {
   Future<_Donnees?> _charger() async {
     final redaction = _scope.redaction;
     if (!await redaction.estRedacteur()) return null;
-    final (texte, schemas) = await (redaction.texteLecon(widget.leconId), redaction.schemasLecon(widget.leconId)).wait;
-    return (texte: texte, schemas: schemas);
+    final (texte, schemas, validateur) = await (
+      redaction.texteLecon(widget.leconId),
+      redaction.schemasLecon(widget.leconId),
+      redaction.estValidateur(),
+    ).wait;
+    return (texte: texte, schemas: schemas, validateur: validateur);
   }
 
   void _recharger() => setState(() {
@@ -267,14 +271,21 @@ class _SchemasState extends State<_Schemas> {
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 0, 0),
               child: Text(
-                resumeSchemas(donnees.schemas.length, publiee: texte.publiee),
+                resumeSchemas(
+                  donnees.schemas.length,
+                  publiee: texte.publiee,
+                  dansCorrection: texte.dansCorrection,
+                  validateur: donnees.validateur,
+                ),
                 style: const TextStyle(fontSize: 15, height: 1.45, color: Couleurs.texteDoux),
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 16, 0, 8),
               child: FilledButton.icon(
-                onPressed: _occupe ? null : () => _ajouter(texte),
+                onPressed: _occupe || !peutAjouterSchema(texte, validateur: donnees.validateur)
+                    ? null
+                    : () => _ajouter(texte),
                 style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                 icon: const Icon(Icons.add_a_photo_outlined),
                 label: const Text('Ajouter un schéma'),
@@ -286,7 +297,10 @@ class _SchemasState extends State<_Schemas> {
                 child: _CarteSchema(
                   schema: s,
                   adresse: _scope.redaction.adresseImage(s.chemin),
-                  onRetirer: _occupe ? null : () => _retirer(s),
+                  dansCorrection: s.correctionId != null && s.correctionId == texte.correctionId,
+                  onRetirer: _occupe || !peutRetirerSchema(s, texte, validateur: donnees.validateur)
+                      ? null
+                      : () => _retirer(s),
                 ),
               ),
             const Padding(
@@ -311,7 +325,15 @@ String _date(DateTime d) {
 
 /// Un schéma ajouté : vignette, description, partie, date, « Retirer ».
 class _CarteSchema extends StatelessWidget {
-  const _CarteSchema({required this.schema, required this.adresse, required this.onRetirer});
+  const _CarteSchema({
+    required this.schema,
+    required this.adresse,
+    required this.onRetirer,
+    this.dansCorrection = false,
+  });
+
+  /// Ajouté dans la correction en cours : pas encore en ligne (D33).
+  final bool dansCorrection;
 
   final SchemaLecon schema;
   final String adresse;
@@ -365,7 +387,8 @@ class _CarteSchema extends StatelessWidget {
                 Text(schema.description, style: const TextStyle(fontSize: 15, height: 1.4, color: Couleurs.texte)),
                 const SizedBox(height: 4),
                 Text(
-                  '${schema.champ.libelle} · ajouté le ${_date(schema.ajouteLe)}',
+                  '${schema.champ.libelle} · ajouté le ${_date(schema.ajouteLe)}'
+                  '${dansCorrection ? ' · dans la correction en cours' : ''}',
                   style: const TextStyle(fontSize: 13, color: Couleurs.texteSecondaire),
                 ),
                 Align(

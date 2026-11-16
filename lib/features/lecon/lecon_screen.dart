@@ -11,9 +11,14 @@ import '../../core/widgets/etats.dart';
 import '../../core/widgets/markdown_cahier.dart';
 import '../../core/widgets/page_seyes.dart';
 import '../../data/data.dart';
+import '../correction/fiche_demande_correction.dart';
+import '../validation/outils_validation.dart' show messageErreurRedaction;
 import 'outils_lecon.dart';
 
 enum _Onglet { lecon, retenir }
+
+/// Outils des rédacteurs sur une leçon publiée (menu de l'en-tête).
+enum _Outil { correction, schemas, versions }
 
 /// Une leçon sur une page de cahier : onglets « La leçon » et « À retenir ».
 class LeconScreen extends StatefulWidget {
@@ -29,8 +34,9 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
   Future<Lecon?>? _chargement;
   _Onglet _onglet = _Onglet.lecon;
 
-  /// Compte rédacteur : bouton « Schémas » dans l'en-tête (phase 5). Une
-  /// erreur réseau le cache simplement, la lecture n'en dépend pas.
+  /// Compte rédacteur : menu « Outils du rédacteur » dans l'en-tête
+  /// (phase 5). Une erreur réseau le cache simplement, la lecture n'en
+  /// dépend pas.
   Future<bool>? _redacteur;
 
   @override
@@ -105,17 +111,57 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
         ],
       );
 
+  /// « Demander une correction » (D33) : la leçon reste en ligne, la
+  /// correction apparaît dans « Leçons à vérifier ».
+  Future<void> _demanderCorrection(Lecon lecon) async {
+    final demande = await afficherDemandeCorrection(context, titre: lecon.titre);
+    if (demande == null || !mounted) return;
+    final messager = ScaffoldMessenger.of(context);
+    try {
+      await AppScope.of(context).redaction.demanderCorrection(
+            leconId: lecon.id,
+            motif: demande.motif,
+            points: demande.points,
+          );
+      messager.showSnackBar(const SnackBar(
+        content: Text('Correction demandée. Elle apparaît dans « Leçons à vérifier » ; la leçon reste en ligne.'),
+      ));
+    } catch (e) {
+      messager.showSnackBar(SnackBar(content: Text(messageErreurRedaction(e))));
+    }
+  }
+
+  void _outil(_Outil outil, Lecon lecon) => switch (outil) {
+        _Outil.correction => _demanderCorrection(lecon),
+        _Outil.schemas => context.push('/lecon/${lecon.id}/schemas'),
+        _Outil.versions => context.push('/lecon/${lecon.id}/versions'),
+      };
+
   Widget _contenu(Lecon lecon) {
     final c = lecon.contexte;
     final retour = LienRetour(libelle: c == null ? 'Retour' : '${c.matiere}, ${c.classe}');
-    // Rédacteurs seulement : ajouter ou retirer les schémas de la leçon.
+    // Rédacteurs seulement : correction, schémas, versions de la leçon.
     final schemas = FutureBuilder<bool>(
       future: _redacteur,
       builder: (context, redacteur) => redacteur.data == true
-          ? IconButton(
-              onPressed: () => context.push('/lecon/${lecon.id}/schemas'),
-              icon: const Icon(Icons.add_photo_alternate_outlined, color: Couleurs.encre),
-              tooltip: 'Schémas de la leçon',
+          ? PopupMenuButton<_Outil>(
+              tooltip: 'Outils du rédacteur',
+              icon: const Icon(Icons.edit_note_rounded, color: Couleurs.encre),
+              onSelected: (o) => _outil(o, lecon),
+              itemBuilder: (context) => const [
+                PopupMenuItem(
+                  value: _Outil.correction,
+                  child: ListTile(leading: Icon(Icons.rate_review_outlined), title: Text('Demander une correction')),
+                ),
+                PopupMenuItem(
+                  value: _Outil.schemas,
+                  child: ListTile(leading: Icon(Icons.add_photo_alternate_outlined), title: Text('Schémas de la leçon')),
+                ),
+                PopupMenuItem(
+                  value: _Outil.versions,
+                  child: ListTile(leading: Icon(Icons.history_rounded), title: Text('Versions de la leçon')),
+                ),
+              ],
             )
           : const SizedBox.shrink(),
     );

@@ -354,6 +354,78 @@ void main() {
     }
   });
 
+  // Corrections et versions (D33).
+  testWidgets('corrections', (tester) async {
+    final correction = CorrectionLecon(
+      id: 50,
+      leconId: 1,
+      titreEnLigne: 'Introduction aux sciences physiques',
+      classe: '4ème',
+      ordreClasse: 9,
+      matiere: 'Sciences physiques',
+      matiereSlug: 'sciences-physiques',
+      texte: const TexteRedige(
+        titre: 'Introduction aux sciences physiques',
+        objectifs: ['Distinguer un phénomène physique d’un phénomène chimique'],
+        introduction: 'Les sciences physiques étudient la matière et ses transformations.',
+        corps: '## I. Les phénomènes physiques\n\nLa glace qui fond reste de l’eau.',
+        aRetenir: [ElementARetenir(notion: 'Phénomène physique', essentiel: 'La matière ne change pas de nature.')],
+      ),
+      points: const ['La date du cours est-elle le 12/11 ?', 'Le titre du I est-il juste ?'],
+      motif: 'La date du cours est fausse',
+      demandeeLe: DateTime(2026, 11, 16, 10),
+      modifieeLe: DateTime(2026, 11, 16, 12),
+      parMoi: false,
+    );
+    VersionLecon version(int id, int numero, String motif) => VersionLecon(
+          id: id,
+          leconId: 1,
+          numero: numero,
+          motif: motif,
+          publieeLe: DateTime(2026, 11, 14 + numero),
+          texte: correction.texte,
+        );
+    for (final (echelle, suffixe) in [(1.0, ''), (2.0, '_200')]) {
+      final redaction = FausseRedaction(
+        redacteur: true,
+        textes: {1: const TexteLecon(id: 1, titre: 'Introduction aux sciences physiques', publiee: true, corps: 'C')},
+        corrections: [correction],
+        leves: [PointLeve(id: 1, leconId: 1, point: 'La date du cours est-elle le 12/11 ?', leveLe: DateTime(2026, 11, 16), commentaire: 'Oui, page 3.', correctionId: 50)],
+        versions: [version(1, 1, 'Version en ligne au 16/11/2026'), version(2, 2, 'Schéma des états ajouté')],
+      );
+      Future<void> ouvrir(String chemin) => lancerApp(
+            tester,
+            depot: FauxDepot(),
+            compte: FauxCompte(connecte: 'redacteur@exemple.sn'),
+            redaction: redaction,
+            chemin: chemin,
+            echelleTexte: echelle,
+          );
+      await ouvrir('/validation');
+      await tester.pumpAndSettle();
+      final titre = find.text('Introduction aux sciences physiques');
+      await tester.scrollUntilVisible(titre, 200, scrollable: find.byType(Scrollable).first);
+      await tester.pumpAndSettle();
+      await tester.tap(titre);
+      await _capturer(tester, 'tel${suffixe}_22_correction_carte');
+      await ouvrir('/lecon/1/correction');
+      await _capturer(tester, 'tel${suffixe}_23_correction_apercu');
+      await ouvrir('/lecon/1/versions');
+      await _capturer(tester, 'tel${suffixe}_24_versions');
+      redaction.corrections.clear();
+      await ouvrir('/lecon/1/versions');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Version 1'));
+      await _capturer(tester, 'tel${suffixe}_25_version');
+      await ouvrir('/lecon/1');
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Outils du rédacteur'));
+      await _capturer(tester, 'tel${suffixe}_26_outils');
+      await tester.tap(find.text('Demander une correction'));
+      await _capturer(tester, 'tel${suffixe}_27_demande');
+    }
+  });
+
   // Téléphone en paysage : en-tête de la leçon sur une seule ligne.
   testWidgets('paysage', (tester) async {
     for (final (echelle, nom) in [(1.0, 'paysage_03_lecon'), (2.0, 'paysage_200_03_lecon')]) {

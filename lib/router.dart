@@ -7,6 +7,8 @@ import 'data/data.dart';
 import 'features/a_propos/a_propos_screen.dart';
 import 'features/accueil/accueil_screen.dart';
 import 'features/compte/compte_screen.dart';
+import 'features/correction/correction_screen.dart';
+import 'features/correction/versions_screen.dart';
 import 'features/exercices/exercices_screen.dart';
 import 'features/lecon/lecon_screen.dart';
 import 'features/liaison/lier_screen.dart';
@@ -21,6 +23,8 @@ import 'features/validation/validation_screen.dart';
 ///   /lecon/12                       une leçon
 ///   /lecon/12/exercices             ses exercices
 ///   /lecon/12/schemas               ses schémas : ajout, retrait (rédacteurs)
+///   /lecon/12/correction            texte de sa correction en cours (rédacteurs, D33)
+///   /lecon/12/versions              ses versions publiées (rédacteurs, D33)
 ///   /a-propos                       présentation, version, licences
 ///   /compte                         espace parents : connexion, profils enfants
 ///   /lier                           téléphone d'un enfant : code du parent (D32)
@@ -65,6 +69,22 @@ GoRouter creerRouteur({String emplacementInitial = '/'}) => GoRouter(
                     if (id == null) return const PageIntrouvable();
                     final lecon = state.extra is Lecon ? state.extra as Lecon : null;
                     return ExercicesScreen(leconId: id, lecon: lecon?.id == id ? lecon : null);
+                  },
+                ),
+                GoRoute(
+                  path: 'correction',
+                  builder: (context, state) {
+                    final id = int.tryParse(state.pathParameters['leconId'] ?? '');
+                    if (id == null) return const PageIntrouvable();
+                    return CorrectionScreen(leconId: id);
+                  },
+                ),
+                GoRoute(
+                  path: 'versions',
+                  builder: (context, state) {
+                    final id = int.tryParse(state.pathParameters['leconId'] ?? '');
+                    if (id == null) return const PageIntrouvable();
+                    return VersionsScreen(leconId: id);
                   },
                 ),
                 GoRoute(
