@@ -821,7 +821,8 @@ class _CarteEnfant extends StatelessWidget {
               ),
             ),
           const SizedBox(height: 4),
-          // Wrap : à 200 % de taille de texte, les boutons passent à la ligne.
+          // Actions sur les téléphones. Wrap : à 200 % de taille de texte,
+          // les boutons passent à la ligne.
           Wrap(
             children: [
               TextButton(
@@ -830,6 +831,13 @@ class _CarteEnfant extends StatelessWidget {
               ),
               if (!actif)
                 TextButton(onPressed: occupe ? null : onUtiliser, child: const Text('Utiliser sur ce téléphone')),
+            ],
+          ),
+          // Actions sur le profil, toujours au même endroit : en bas de la
+          // carte, côte à côte, sous un trait fin.
+          const Divider(height: 12),
+          Wrap(
+            children: [
               TextButton(
                 onPressed: occupe ? null : onModifier,
                 child: Text('Modifier', semanticsLabel: 'Modifier le profil de ${enfant.prenom}'),
