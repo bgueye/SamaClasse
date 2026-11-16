@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
+		<!-- image_picker : ajout d'un schéma par un rédacteur (photo du cahier). -->
+		<key>NSCameraUsageDescription</key>
+		<string>Pour photographier un schéma du cahier et l’ajouter à une leçon (rédacteurs).</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Pour choisir l’image d’un schéma et l’ajouter à une leçon (rédacteurs).</string>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
 		<key>CFBundleDevelopmentRegion</key>

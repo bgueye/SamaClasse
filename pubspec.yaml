@@ -21,6 +21,8 @@ dependencies:
   # Ouvre l'artefact d'une leçon dans le navigateur (écran « Validation »,
   # décision D26). Paquet officiel de l'équipe Flutter.
   url_launcher: ^6.3.3
+  image_picker: ^1.2.4
+  image: ^4.13.1
 
 dev_dependencies:
   flutter_test:
