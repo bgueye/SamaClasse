@@ -301,6 +301,7 @@ class _ValidationState extends State<_Validation> {
                       onBasculer: () => setState(() => _ouverte = _ouverte == l.id ? null : l.id),
                       onPoint: (point) => _basculer(l, point),
                       onArtefact: l.artefactUrl == null ? null : () => _ouvrirArtefact(l.artefactUrl!),
+                      onSchemas: () => context.push('/lecon/${l.id}/schemas'),
                       onPublier: () => _publier(l),
                     ),
                   ),
@@ -351,6 +352,7 @@ class _CarteLecon extends StatelessWidget {
     required this.onBasculer,
     required this.onPoint,
     required this.onArtefact,
+    required this.onSchemas,
     required this.onPublier,
   });
 
@@ -362,6 +364,7 @@ class _CarteLecon extends StatelessWidget {
   final VoidCallback onBasculer;
   final ValueChanged<String> onPoint;
   final VoidCallback? onArtefact;
+  final VoidCallback onSchemas;
   final VoidCallback onPublier;
 
   @override
@@ -436,6 +439,15 @@ class _CarteLecon extends StatelessWidget {
                         label: const Text('Ouvrir la leçon pour la corriger'),
                       ),
                     ),
+                  // Schémas du cahier (phase 5), aussi avant publication.
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      onPressed: publiee ? null : onSchemas,
+                      icon: const Icon(Icons.add_photo_alternate_outlined, size: 20),
+                      label: const Text('Ajouter ou retirer des schémas'),
+                    ),
+                  ),
                   const SizedBox(height: 6),
                   FilledButton(
                     onPressed: publiee || restants > 0 || publication ? null : onPublier,

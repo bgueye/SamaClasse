@@ -59,26 +59,28 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
     (fonction `supprimer_mon_compte`), site https://samaclasse.app sur
     Cloudflare Pages publié par `.github/workflows/site.yml` après les
     tests (D29), `contact@samaclasse.app` (D30), envoi des e-mails par
-    Resend (D22) ;
+    Resend (D22), schémas ajoutés depuis l'application par les rédacteurs
+    (écran « Schémas de la leçon », `ajouter_schema`, D31) ;
   - reste : signature Android, fiche Play Store et test fermé ; réinstaller
     l'application sous le nouvel identifiant sur le téléphone.
-- Reste à faire par Bocar : déposer un vrai schéma dans `schemas`,
+- Reste à faire par Bocar : ajouter un vrai schéma depuis l'application,
   compléter les libellés des tableaux 17 et 31, vérifier et publier les
   leçons 2, 6 et 10 depuis l'application.
-- `flutter analyze` : aucun problème ; `flutter test` : 210/210, sans réseau
+- `flutter analyze` : aucun problème ; `flutter test` : 255/255, sans réseau
   (vraie application avec `test/outils/faux_depot.dart` : `FauxDepot`,
-  `FauxCompte`, `FauxEnvoi`, `FausseRedaction`).
+  `FauxCompte`, `FauxEnvoi`, `FausseRedaction`, `FauxChoixImage`).
 - Pour un nouvel écran : ses quatre états et 200 % dans un test d'écran
   (`test/features/`), et un coup d'œil avec `tool/captures/captures_test.dart`.
 - Écrans livrés : accueil, matière, leçon, exercices, « À propos », « Espace
-  parents », « Suivi de mes enfants », « Leçons à vérifier ». La lecture ne
-  demande jamais de compte.
+  parents », « Suivi de mes enfants », « Leçons à vérifier », « Schémas de
+  la leçon ». La lecture ne demande jamais de compte.
 - 10 leçons sur 13 sont publiées en base : c'est normal que les autres
   affichent « Leçon pas encore disponible ».
-- Base : 7 migrations, de `schema_programme_lecons` à `suppression_compte`.
-  Conseiller de sécurité : deux avertissements attendus, sur `publier_lecon`
-  et `supprimer_mon_compte` (`security definer` appelables par
-  `authenticated`, contrôles faits dans les fonctions).
+- Base : 8 migrations, de `schema_programme_lecons` à `schemas_redacteurs`.
+  Conseiller de sécurité : quatre avertissements attendus, sur
+  `publier_lecon`, `supprimer_mon_compte`, `ajouter_schema` et
+  `retirer_schema` (`security definer` appelables par `authenticated`,
+  contrôles faits dans les fonctions).
 - Dépôt distant : `origin` = https://github.com/bgueye/SamaClasse (branche
   `main`). Toujours demander avant de pousser.
 

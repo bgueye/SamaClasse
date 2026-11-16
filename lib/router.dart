@@ -10,6 +10,7 @@ import 'features/compte/compte_screen.dart';
 import 'features/exercices/exercices_screen.dart';
 import 'features/lecon/lecon_screen.dart';
 import 'features/matiere/matiere_screen.dart';
+import 'features/schemas/schemas_screen.dart';
 import 'features/suivi/suivi_screen.dart';
 import 'features/validation/validation_screen.dart';
 
@@ -18,6 +19,7 @@ import 'features/validation/validation_screen.dart';
 ///   /classe/1/matiere/5             chapitres d'une matière
 ///   /lecon/12                       une leçon
 ///   /lecon/12/exercices             ses exercices
+///   /lecon/12/schemas               ses schémas : ajout, retrait (rédacteurs)
 ///   /a-propos                       présentation, version, licences
 ///   /compte                         espace parents : connexion, profils enfants
 ///   /suivi                          suivi de mes enfants (parents connectés)
@@ -60,6 +62,14 @@ GoRouter creerRouteur({String emplacementInitial = '/'}) => GoRouter(
                     if (id == null) return const PageIntrouvable();
                     final lecon = state.extra is Lecon ? state.extra as Lecon : null;
                     return ExercicesScreen(leconId: id, lecon: lecon?.id == id ? lecon : null);
+                  },
+                ),
+                GoRoute(
+                  path: 'schemas',
+                  builder: (context, state) {
+                    final id = int.tryParse(state.pathParameters['leconId'] ?? '');
+                    if (id == null) return const PageIntrouvable();
+                    return SchemasScreen(leconId: id);
                   },
                 ),
               ],

@@ -12,13 +12,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:samaclasse/app.dart';
 import 'package:samaclasse/core/app_scope.dart';
+import 'package:samaclasse/core/services/choix_image.dart';
 import 'package:samaclasse/core/services/preferences.dart';
+import 'package:samaclasse/core/services/reduction_image.dart';
 import 'package:samaclasse/data/data.dart';
+import 'package:samaclasse/features/schemas/outils_schemas.dart' show separateurParagraphes;
 import 'package:supabase_flutter/supabase_flutter.dart' show AuthApiException, PostgrestException;
 
 /// Les réponses Supabase enregistrées, lues une seule fois.
@@ -370,9 +374,17 @@ class FauxStockageFile implements StockageFile {
 /// Rédaction sans réseau : reproduit les règles de la base (rôle, point
 /// réellement à vérifier, publication seulement si tout est levé).
 class FausseRedaction implements Redaction {
-  FausseRedaction({this.redacteur = false, List<LeconAVerifier>? lecons, List<PointLeve>? leves})
-      : lecons = [...?lecons],
-        leves = [...?leves];
+  FausseRedaction({
+    this.redacteur = false,
+    List<LeconAVerifier>? lecons,
+    List<PointLeve>? leves,
+    Map<int, TexteLecon>? textes,
+    List<SchemaLecon>? schemas,
+  })  : lecons = [...?lecons],
+        leves = [...?leves],
+        textes = {...?textes},
+        schemas = [...?schemas],
+        fichiers = {for (final s in [...?schemas]) s.chemin};
 
   bool redacteur;
   final List<LeconAVerifier> lecons;
@@ -446,6 +458,134 @@ class FausseRedaction implements Redaction {
     }
     publiees.add(leconId);
   }
+
+  // --- Schémas (phase 5) : imite `ajouter_schema` et `retirer_schema` ---
+
+  /// Texte des leçons « en base ».
+  final Map<int, TexteLecon> textes;
+  final List<SchemaLecon> schemas;
+
+  /// Fichiers présents dans l'espace `schemas`.
+  final Set<String> fichiers;
+  var _prochainFichier = 1;
+
+  /// Fichiers supprimés (pour vérifier qu'aucun ne reste orphelin).
+  final supprimes = <String>[];
+
+  /// Erreur à renvoyer au prochain `ajouterSchema` (refus du serveur).
+  Object? refusAjout;
+
+  @override
+  Future<TexteLecon?> texteLecon(int leconId) async {
+    await _avant('texte');
+    _exigerRedacteur();
+    return textes[leconId];
+  }
+
+  @override
+  Future<List<SchemaLecon>> schemasLecon(int leconId) async {
+    await _avant('schemas');
+    _exigerRedacteur();
+    return [for (final s in schemas) if (s.leconId == leconId) s];
+  }
+
+  @override
+  Future<String> deposerImage({required int leconId, required Uint8List octets, required String extension}) async {
+    await _avant('deposer');
+    _exigerRedacteur();
+    final chemin = 'lecons/$leconId/fichier-${_prochainFichier++}.$extension';
+    fichiers.add(chemin);
+    return chemin;
+  }
+
+  @override
+  Future<int> ajouterSchema({
+    required int leconId,
+    required ChampLecon champ,
+    required int? apres,
+    required String? texteAttendu,
+    required String chemin,
+    required String description,
+  }) async {
+    await _avant('ajouter');
+    _exigerRedacteur();
+    final refus = refusAjout;
+    if (refus != null) {
+      refusAjout = null;
+      throw refus;
+    }
+    final t = textes[leconId]!;
+    final actuel = t.texte(champ) ?? '';
+    if (actuel != (texteAttendu ?? '')) {
+      throw const PostgrestException(message: 'La leçon a changé entre-temps.', code: '40001');
+    }
+    final ligne = '![$description](https://exemple.supabase.co/storage/v1/object/public/schemas/$chemin)';
+    final morceaux = actuel.trim().isEmpty ? <String>[] : actuel.split(separateurParagraphes);
+    final position = apres == null || apres > morceaux.length ? morceaux.length : apres;
+    final nouveau = ([...morceaux]..insert(position, ligne)).join('\n\n');
+    textes[leconId] = TexteLecon(
+      id: t.id,
+      titre: t.titre,
+      publiee: t.publiee,
+      introduction: champ == ChampLecon.introduction ? nouveau : t.introduction,
+      corps: champ == ChampLecon.corps ? nouveau : t.corps,
+    );
+    final s = SchemaLecon(
+      id: _prochainId++,
+      leconId: leconId,
+      champ: champ,
+      chemin: chemin,
+      description: description,
+      ajouteLe: DateTime(2026, 11, 16),
+    );
+    schemas.add(s);
+    return s.id;
+  }
+
+  @override
+  Future<String> retirerSchema(int schemaId) async {
+    await _avant('retirer');
+    _exigerRedacteur();
+    final s = schemas.firstWhere((x) => x.id == schemaId);
+    schemas.remove(s);
+    return s.chemin;
+  }
+
+  @override
+  Future<void> supprimerImage(String chemin) async {
+    await _avant('supprimer');
+    fichiers.remove(chemin);
+    supprimes.add(chemin);
+  }
+
+  @override
+  String adresseImage(String chemin) => 'https://exemple.supabase.co/storage/v1/object/public/schemas/$chemin';
+}
+
+/// Appareil photo et galerie sans matériel : rend [octets] (ou `null` pour
+/// « l'utilisateur renonce ») et une image déjà réduite, sans isolat.
+class FauxChoixImage extends ChoixImage {
+  FauxChoixImage({this.octets, this.erreurReduction});
+
+  Uint8List? octets;
+
+  /// Erreur de [reduire] (image illisible, trop lourde).
+  Object? erreurReduction;
+
+  final sources = <SourceImage>[];
+
+  @override
+  Future<Uint8List?> choisir(SourceImage source) async {
+    sources.add(source);
+    return octets;
+  }
+
+  @override
+  Future<ImageReduite> reduire(Uint8List octets) async {
+    final erreur = erreurReduction;
+    if (erreur != null) throw erreur;
+    return ImageReduite(octets: octets, largeur: 1200, hauteur: 800);
+  }
 }
 
 /// Taille d'un téléphone courant (390 × 844, comme dans CLAUDE.md).
@@ -466,6 +606,7 @@ Future<void> lancerApp(
   Compte? compte,
   FauxEnvoi? envoi,
   Redaction? redaction,
+  ChoixImage? choixImage,
   String chemin = '/',
   Size taille = tailleTelephone,
   double echelleTexte = 1,
@@ -495,6 +636,7 @@ Future<void> lancerApp(
     compte: leCompte,
     suivi: suivi,
     redaction: redaction ?? FausseRedaction(),
+    choixImage: choixImage ?? FauxChoixImage(),
     child: SamaClasseApp(emplacementInitial: chemin),
   ));
 }

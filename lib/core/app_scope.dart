@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../data/data.dart';
+import 'services/choix_image.dart';
 import 'services/preferences.dart';
 
 /// Donne accès au dépôt Supabase, aux préférences et au compte parent dans
@@ -15,6 +16,7 @@ class AppScope extends InheritedWidget {
     required this.compte,
     required this.suivi,
     required this.redaction,
+    this.choixImage = const ChoixImageSysteme(),
     required super.child,
   });
 
@@ -33,6 +35,10 @@ class AppScope extends InheritedWidget {
   /// Validation et publication des leçons (phase 4), pour les rédacteurs.
   final Redaction redaction;
 
+  /// Appareil photo et galerie, pour ajouter un schéma à une leçon
+  /// (rédacteurs, phase 5). Remplacé par un faux dans les tests.
+  final ChoixImage choixImage;
+
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
     assert(scope != null, 'AppScope introuvable au-dessus de ce widget.');
@@ -45,5 +51,6 @@ class AppScope extends InheritedWidget {
       preferences != oldWidget.preferences ||
       compte != oldWidget.compte ||
       suivi != oldWidget.suivi ||
-      redaction != oldWidget.redaction;
+      redaction != oldWidget.redaction ||
+      choixImage != oldWidget.choixImage;
 }

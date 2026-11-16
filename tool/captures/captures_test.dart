@@ -20,6 +20,7 @@ import 'package:samaclasse/app.dart';
 import 'package:samaclasse/core/services/preferences.dart';
 import 'package:samaclasse/core/theme/theme.dart';
 import 'package:samaclasse/data/data.dart';
+import 'package:image/image.dart' as img;
 
 import '../../test/outils/faux_depot.dart';
 import '../../test/outils/polices.dart';
@@ -244,6 +245,67 @@ void main() {
       ),
     ));
     await _capturer(tester, 'symboles');
+  });
+
+  // Schémas de la leçon (rédacteurs, phase 5) : liste, puis fenêtre d'ajout.
+  testWidgets('schemas', (tester) async {
+    // Faux « schéma du cahier » : fond blanc, lignes et un cercle.
+    final dessin = img.Image(width: 900, height: 600)..clear(img.ColorRgb8(255, 255, 255));
+    for (var y = 40; y < 600; y += 40) {
+      img.drawLine(dessin, x1: 0, y1: y, x2: 899, y2: y, color: img.ColorRgb8(200, 210, 240));
+    }
+    img.drawCircle(dessin, x: 450, y: 300, radius: 150, color: img.ColorRgb8(30, 60, 200));
+    final photo = img.encodeJpg(dessin);
+    for (final (echelle, suffixe) in [(1.0, ''), (2.0, '_200')]) {
+      final redaction = FausseRedaction(
+        redacteur: true,
+        textes: {
+          1: const TexteLecon(
+            id: 1,
+            titre: 'Introduction aux sciences physiques',
+            publiee: true,
+            introduction: 'Les sciences physiques étudient la matière et ses transformations.',
+            corps: 'Ce premier chapitre présente les deux grandes familles de phénomènes.\n\n'
+                '## Les phénomènes physiques\n\n'
+                'Un phénomène physique ne change pas la nature de la matière : la glace qui fond reste de l’eau.\n\n'
+                '## Les phénomènes chimiques\n\n'
+                'Un phénomène chimique crée de nouvelles substances.',
+          ),
+        },
+        schemas: [
+          SchemaLecon(
+            id: 7,
+            leconId: 1,
+            champ: ChampLecon.corps,
+            chemin: 'lecons/1/fichier-7.jpg',
+            description: 'Les trois états de la matière et les changements d’état entre eux',
+            ajouteLe: DateTime(2026, 11, 16),
+          ),
+        ],
+      );
+      await lancerApp(
+        tester,
+        depot: FauxDepot(),
+        compte: FauxCompte(connecte: 'redacteur@exemple.sn'),
+        redaction: redaction,
+        choixImage: FauxChoixImage(octets: photo),
+        chemin: '/lecon/1/schemas',
+        echelleTexte: echelle,
+      );
+      await _capturer(tester, 'tel${suffixe}_15_schemas');
+      await tester.ensureVisible(find.text('Ajouter un schéma'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Ajouter un schéma'));
+      await _capturer(tester, 'tel${suffixe}_16_schemas_source');
+      await tester.tap(find.text('Choisir dans la galerie'));
+      await tester.pumpAndSettle();
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 300)));
+      await _capturer(tester, 'tel${suffixe}_17_fiche_schema_a');
+      await tester.enterText(find.byType(TextField), 'Les deux familles de phénomènes');
+      await tester.scrollUntilVisible(find.text('Où le placer ?'), 300,
+          scrollable: find.descendant(of: find.byType(ListView).last, matching: find.byType(Scrollable)).first);
+      await _capturer(tester, 'tel${suffixe}_17_fiche_schema_b');
+    }
   });
 
   // Téléphone en paysage : en-tête de la leçon sur une seule ligne.

@@ -154,6 +154,25 @@ conseiller de sécurité, comme pour `publier_lecon`.
 (requête, puis `Instantane.seulementPublie`) : un rédacteur connecté lit
 aussi les leçons non publiées.
 
+### `schemas_lecons` et schémas ajoutés depuis l'application (phase 5, D31)
+`id`, `lecon_id`, `champ` (`introduction` ou `corps`), `chemin` (unique,
+`lecons/<id>/<uuid>.jpg|png|webp`), `description` (3 à 300 caractères),
+`ligne` (la ligne Markdown exacte écrite dans la leçon), `ajoute_par`,
+`ajoute_le`. Lue par les rédacteurs seulement ; écrite seulement par les
+fonctions :
+- `ajouter_schema(lecon, champ, apres, texte_attendu, chemin, description)`
+  (`security definer`) : rédacteur, description sans crochets ni retour à la
+  ligne, fichier présent dans l'espace, **texte du champ identique à
+  `texte_attendu`** (sinon erreur 40001). Insère `![description](adresse)`
+  après `apres` paragraphes (séparateur `\n[ \t]*\n`, le même que
+  `decouperParagraphes` dans l'application ; 0 = au début, `null` = à la
+  fin) sans réécrire le reste du texte. Rend l'id de la trace.
+- `retirer_schema(id)` (`security definer`) : enlève la ligne (et une ligne
+  vide autour), efface la trace, rend le chemin du fichier à supprimer.
+
+Avertissements attendus du conseiller de sécurité pour ces deux fonctions,
+comme pour `publier_lecon`.
+
 ### Vue `matieres_par_classe` (security_invoker)
 `classe_id`, `matiere_id`, `slug`, `nom`, `nb_chapitres`, `nb_lecons`
 (leçons **publiées**). Comme elle applique les RLS de la personne qui lit, les
@@ -218,11 +237,16 @@ Bocar dépose les images par le tableau de bord, puis les insère dans le
 Markdown avec une description obligatoire :
 `![Description](https://earcfeorkfeenqprsxpg.supabase.co/storage/v1/object/public/schemas/<chemin>)`.
 
-Aucune politique sur `storage.objects` : un fichier se télécharge par son
-adresse publique, mais `anon` et `authenticated` ne peuvent ni lister
-l'espace, ni déposer, remplacer ou supprimer un fichier (vérifié le
-14/11/2026). Ne pas ajouter de politique « select » : elle permettrait
-seulement de lister tous les fichiers.
+Un fichier se télécharge par son adresse publique ; `anon` et les parents
+ne peuvent ni lister l'espace, ni déposer, remplacer ou supprimer un fichier.
+Depuis la migration `schemas_redacteurs` (16/11/2026, D31), trois politiques
+sur `storage.objects`, **pour les rédacteurs seulement** :
+- dépôt sous `lecons/<id>/<uuid>.jpg|png|webp` uniquement ;
+- liste de l'espace (nécessaire à la suppression par l'API) ;
+- suppression d'un fichier de `lecons/` qu'aucune ligne de
+  `schemas_lecons` n'utilise (retirer d'abord le schéma de la leçon). Les
+  fichiers déposés par le tableau de bord ailleurs dans l'espace sont à
+  l'abri.
 
 Hors connexion, les images ne sont pas gardées sur le téléphone : la
 description s'affiche à leur place (à revoir quand les schémas seront nombreux).

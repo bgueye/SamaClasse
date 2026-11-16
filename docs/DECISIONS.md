@@ -6,6 +6,21 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D31. Schémas ajoutés depuis l'application par les rédacteurs
+*Bocar, 16/11/2026.*
+Complète D15 : plus besoin du tableau de bord. Depuis la leçon (bouton
+réservé aux rédacteurs) ou « Leçons à vérifier », « Ajouter un schéma » :
+photo du cahier ou image de la galerie (`image_picker`), réduite sur le
+téléphone sous 150 Ko en JPEG (paquet `image` : redressée, fond blanc,
+métadonnées effacées), description obligatoire, endroit choisi entre deux
+paragraphes de l'introduction ou du corps. La base insère la ligne
+(`ajouter_schema`, refus si le texte a changé entre-temps) et garde une
+trace (`schemas_lecons`) ; « Retirer » l'enlève (`retirer_schema`) et
+supprime le fichier. Permis aussi sur une leçon publiée (les élèves le
+voient à leur mise à jour). Pas de recadrage dans l'application (une
+troisième dépendance) : recadrer dans la galerie avant. Migration
+`schemas_redacteurs`, testée le 16/11/2026 (31 vérifications).
+
 ### D30. Contact du site : `contact@samaclasse.app`
 *Bocar, 15/11/2026.*
 Adresse affichée sur la politique de confidentialité et la page de

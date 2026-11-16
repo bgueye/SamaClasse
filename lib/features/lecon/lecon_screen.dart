@@ -29,10 +29,15 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
   Future<Lecon?>? _chargement;
   _Onglet _onglet = _Onglet.lecon;
 
+  /// Compte rédacteur : bouton « Schémas » dans l'en-tête (phase 5). Une
+  /// erreur réseau le cache simplement, la lecture n'en dépend pas.
+  Future<bool>? _redacteur;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _chargement ??= _charger();
+    _redacteur ??= AppScope.of(context).redaction.estRedacteur().catchError((Object _) => false);
   }
 
   /// Leçon corrigée et republiée pendant la lecture (RechargeSiNouveauContenu).
@@ -103,6 +108,17 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
   Widget _contenu(Lecon lecon) {
     final c = lecon.contexte;
     final retour = LienRetour(libelle: c == null ? 'Retour' : '${c.matiere}, ${c.classe}');
+    // Rédacteurs seulement : ajouter ou retirer les schémas de la leçon.
+    final schemas = FutureBuilder<bool>(
+      future: _redacteur,
+      builder: (context, redacteur) => redacteur.data == true
+          ? IconButton(
+              onPressed: () => context.push('/lecon/${lecon.id}/schemas'),
+              icon: const Icon(Icons.add_photo_alternate_outlined, color: Couleurs.encre),
+              tooltip: 'Schémas de la leçon',
+            )
+          : const SizedBox.shrink(),
+    );
     final onglets = ControleSegmente<_Onglet>(
       libelleGroupe: 'Contenu de la leçon',
       options: const [(_Onglet.lecon, 'La leçon'), (_Onglet.retenir, 'À retenir')],
@@ -131,6 +147,7 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
                         // Le lien se tronque (« … ») avant que les onglets
                         // ne rétrécissent.
                         Expanded(child: retour),
+                        schemas,
                         const SizedBox(width: 12),
                         SizedBox(width: 300, child: onglets),
                       ],
@@ -141,7 +158,7 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        retour,
+                        Row(children: [Expanded(child: retour), schemas]),
                         const SizedBox(height: 8),
                         Padding(padding: const EdgeInsets.only(left: 4), child: onglets),
                       ],

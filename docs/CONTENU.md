@@ -43,7 +43,19 @@ Aujourd'hui l'application n'affiche pas ce statut aux élèves. Le montrer
 8. Sources et fidélité → `lecon_sources` (et l'artefact)
 9. Points à vérifier (facultatif) → `points_a_verifier`
 
-## Insérer un schéma (D15)
+## Insérer un schéma (D15, D31)
+
+**Le plus simple : depuis l'application** (compte rédacteur). Ouvrir la
+leçon, toucher l'icône d'image en haut (ou, pour une leçon à vérifier,
+« Ajouter ou retirer des schémas » dans « Leçons à vérifier »), puis
+« Ajouter un schéma » : photo du cahier ou image de la galerie, description,
+endroit (introduction ou corps, entre deux paragraphes). L'application réduit
+l'image sous 150 Ko, la dépose dans `schemas/lecons/<id>/` et insère la ligne
+Markdown. « Retirer » enlève la ligne et supprime l'image. Recadrer la photo
+sur le schéma dans la galerie avant de la choisir.
+
+**Par le tableau de bord** (pour un énoncé ou un corrigé d'exercice, que
+l'application ne propose pas encore) :
 
 1. Préparer l'image : PNG, JPEG ou WebP, **moins de 150 Ko** (le serveur
    refuse au-delà). Une largeur de 1 000 à 1 200 pixels suffit ; pas de SVG.

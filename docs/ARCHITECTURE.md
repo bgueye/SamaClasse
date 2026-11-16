@@ -62,6 +62,8 @@ lib/
     widgets/page_seyes.dart     page de cahier défilante (lignes + marge)
     widgets/markdown_cahier.dart rendu Markdown des leçons et exercices
     widgets/schema_cahier.dart  schémas insérés dans le Markdown (D15) : filtre d'adresse, description de secours
+    services/choix_image.dart   ChoixImage : appareil photo, galerie (image_picker), réduction en isolat
+    services/reduction_image.dart reduireImage() : JPEG < 150 Ko, redressé, sans métadonnées (D31)
   data/
     models.dart                 Classe, MatiereDeClasse, Chapitre, LeconResume, Lecon,
                                 Exercice, ElementARetenir, ContexteLecon + énumérations
@@ -75,7 +77,9 @@ lib/
     compte.dart                 Enfant, Compte (contrat, ChangeNotifier), CompteSupabase :
                                 connexion par code e-mail (D22), table enfants (D21)
     redaction.dart              Redaction, RedactionSupabase : leçons à vérifier, points
-                                levés (D25), publication par publier_lecon (phase 4)
+                                levés (D25), publication par publier_lecon (phase 4) ;
+                                schémas : TexteLecon, SchemaLecon, dépôt, ajouter_schema,
+                                retirer_schema (phase 5, D31)
     suivi.dart                  SuiviResultats : lectures et résultats de l'enfant de ce
                                 téléphone, file d'attente locale, envoi au retour du réseau (D24)
     data.dart                   export groupé
@@ -91,6 +95,10 @@ lib/
     suivi/statistiques.dart           debutSemaine(), bilanSemaine(), derniersExercices()…
     validation/validation_screen.dart « Leçons à vérifier » (maquette Validation, rédacteurs)
     validation/outils_validation.dart pointsRestants(), resumeValidation(), messages d'erreur
+    schemas/schemas_screen.dart       « Schémas de la leçon » (rédacteurs, D31) : liste, retrait
+    schemas/fiche_schema.dart         fenêtre « Ajouter un schéma » : aperçu, description, endroit
+    schemas/outils_schemas.dart       decouperParagraphes() (même règle que la base), reperes(),
+                                      apercuParagraphe(), erreurDescription(), messages
     matiere/matiere_screen.dart       chapitres par partie, filtre
     matiere/regroupement.dart         regrouperParPartie(), etatChapitre()
     lecon/lecon_screen.dart           onglets « La leçon » / « À retenir »
@@ -106,6 +114,8 @@ test/
   features/compte_test.dart     espace parents : saisies, erreurs, écrans, 200 %
   features/suivi_test.dart      suivi des enfants : semaine, derniers exercices, écran, 200 %
   features/validation_test.dart validation : points, publication, rôle, écran, 200 %
+  features/schemas_test.dart    schémas : paragraphes, description, ajout, refus, retrait, 200 %
+  core/reduction_image_test.dart réduction sous 150 Ko, orientation, transparence, EXIF
   data/contenu_hors_ligne_test.dart synchronisation, copie locale, erreurs réseau
   data/suivi_test.dart          file d'attente du suivi : hors connexion, doublons, refus, écrans
   core/seyes_test.dart          alignement du texte sur les lignes Seyès (vraies polices)
@@ -143,6 +153,7 @@ assets/fonts/                   polices embarquées (dont les polices de secours
 | `/a-propos` | `AProposScreen` | aucune (page fixe : présentation, version, licences, D18) |
 | `/compte` | `CompteScreen` | connexion si pas de compte ; sinon `compte.enfants()` et `classes()` |
 | `/validation` | `ValidationScreen` | `redaction.estRedacteur()`, puis `leconsAVerifier()` et `pointsLeves()` |
+| `/lecon/:leconId/schemas` | `SchemasScreen` | `redaction.estRedacteur()`, puis `texteLecon(id)` et `schemasLecon(id)` (en base, pas la copie locale) |
 | `/suivi` | `SuiviScreen` | envoie d'abord la file du suivi, puis `compte.enfants()`, `lectures()`, `resultats()`, `classes()`, `lecons()` |
 
 Règles :
