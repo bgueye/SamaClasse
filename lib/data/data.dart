@@ -4,6 +4,7 @@ export 'contenu_hors_ligne.dart';
 export 'copie_locale.dart';
 export 'correction.dart';
 export 'instantane.dart';
+export 'liaison.dart';
 export 'models.dart';
 export 'redaction.dart';
 export 'samaclasse_repository.dart';

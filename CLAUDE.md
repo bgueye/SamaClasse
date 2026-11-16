@@ -54,33 +54,39 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
     un point demande une réponse si c'est une question ; historique dans
     `points_leves` (D25) ; publication par la fonction `publier_lecon` ;
     lien vers l'artefact par `url_launcher` (D26). Bocar est rédacteur.
-- **Phase 5, diffusion, en cours** (D27 à D30) :
+- **Phase 5, diffusion, en cours** (D27 à D32) :
   - fait : identifiant `sn.samaclasse.app` (D28), « Supprimer mon compte »
     (fonction `supprimer_mon_compte`), site https://samaclasse.app sur
     Cloudflare Pages publié par `.github/workflows/site.yml` après les
     tests (D29), `contact@samaclasse.app` (D30), envoi des e-mails par
     Resend (D22), schémas ajoutés depuis l'application par les rédacteurs
-    (écran « Schémas de la leçon », `ajouter_schema`, D31) ;
+    (écran « Schémas de la leçon », `ajouter_schema`, D31), téléphones des
+    enfants liés par un code du parent (session anonyme limitée au profil,
+    `lib/data/liaison.dart`, D32) ;
   - reste : signature Android, fiche Play Store et test fermé ; réinstaller
     l'application sous le nouvel identifiant sur le téléphone.
-- Reste à faire par Bocar : ajouter un vrai schéma depuis l'application,
-  compléter les libellés des tableaux 17 et 31, vérifier et publier les
-  leçons 2, 6 et 10 depuis l'application.
-- `flutter analyze` : aucun problème ; `flutter test` : 255/255, sans réseau
+- Reste à faire par Bocar : photographier les schémas des leçons 8, 9 et
+  10 (repères « [Schéma : …] » à retirer ensuite), compléter les libellés
+  des tableaux 17 et 31.
+- `flutter analyze` : aucun problème ; `flutter test` : 285/285, sans réseau
   (vraie application avec `test/outils/faux_depot.dart` : `FauxDepot`,
   `FauxCompte`, `FauxEnvoi`, `FausseRedaction`, `FauxChoixImage`).
 - Pour un nouvel écran : ses quatre états et 200 % dans un test d'écran
   (`test/features/`), et un coup d'œil avec `tool/captures/captures_test.dart`.
 - Écrans livrés : accueil, matière, leçon, exercices, « À propos », « Espace
   parents », « Suivi de mes enfants », « Leçons à vérifier », « Schémas de
-  la leçon ». La lecture ne demande jamais de compte.
-- 10 leçons sur 13 sont publiées en base : c'est normal que les autres
-  affichent « Leçon pas encore disponible ».
-- Base : 8 migrations, de `schema_programme_lecons` à `schemas_redacteurs`.
-  Conseiller de sécurité : quatre avertissements attendus, sur
-  `publier_lecon`, `supprimer_mon_compte`, `ajouter_schema` et
-  `retirer_schema` (`security definer` appelables par `authenticated`,
-  contrôles faits dans les fonctions).
+  la leçon », « Lier ce téléphone », « Téléphone d'Awa ». La lecture ne
+  demande jamais de compte.
+- Les 13 leçons sont publiées (16/11/2026).
+- **« Connecté » veut dire « parent connecté »** (`compte.estConnecte`) ; une
+  session anonyme (téléphone d'enfant, D32) a `estAnonyme` vrai et
+  `estConnecte` faux. Le suivi part pour l'une ou l'autre.
+- Base : 10 migrations, de `schema_programme_lecons` à
+  `redacteur_jamais_anonyme`. Conseiller de sécurité, attendu : les
+  fonctions `security definer` appelables par `authenticated` (contrôles
+  faits dans les fonctions), « RLS sans règle » sur `codes_liaison` et
+  `essais_liaison` (voulu), « Anonymous Access Policies » (sessions
+  anonymes activées ; règles vérifiées, voir `docs/BASE_DE_DONNEES.md`).
 - Dépôt distant : `origin` = https://github.com/bgueye/SamaClasse (branche
   `main`). Toujours demander avant de pousser.
 

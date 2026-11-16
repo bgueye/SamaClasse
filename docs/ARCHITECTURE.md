@@ -82,6 +82,8 @@ lib/
                                 retirer_schema (phase 5, D31)
     suivi.dart                  SuiviResultats : lectures et résultats de l'enfant de ce
                                 téléphone, file d'attente locale, envoi au retour du réseau (D24)
+    liaison.dart                téléphones d'enfants liés par un code (D32) : CodeLiaison,
+                                AppareilLie, typeAppareil(), verifierTelephoneLie()
     data.dart                   export groupé
   features/
     a_propos/a_propos_screen.dart     présentation, version, licences, crédit (D18)
@@ -91,6 +93,10 @@ lib/
                                       « Mes enfants » (vouvoiement : public parents)
     compte/fiche_enfant.dart          fiche prénom + classe (boîte de dialogue)
     compte/outils_compte.dart         validation des saisies, messageErreurCompte()
+    liaison/lier_screen.dart          « J'ai un code de mon parent » (téléphone de l'enfant, D32)
+    liaison/telephone_lie.dart        espace parents d'un téléphone lié : « Ce n'est plus mon téléphone »
+    liaison/fiche_code_liaison.dart   code de liaison et temps restant (parent)
+    liaison/outils_liaison.dart       code, temps restant, dePrenom(), messages
     suivi/suivi_screen.dart           « Suivi de mes enfants » (maquette Parent, phase 3)
     suivi/statistiques.dart           debutSemaine(), bilanSemaine(), derniersExercices()…
     validation/validation_screen.dart « Leçons à vérifier » (maquette Validation, rédacteurs)
@@ -112,6 +118,7 @@ test/
   features/hors_connexion_test.dart bandeau, mode avion, mise à jour automatique des écrans
   features/puces_test.dart      lisibilité des puces de choix
   features/compte_test.dart     espace parents : saisies, erreurs, écrans, 200 %
+  features/liaison_test.dart    liaison : code, vérification au lancement, envoi, écrans, 200 %
   features/suivi_test.dart      suivi des enfants : semaine, derniers exercices, écran, 200 %
   features/validation_test.dart validation : points, publication, rôle, écran, 200 %
   features/schemas_test.dart    schémas : paragraphes, description, ajout, refus, retrait, 200 %
@@ -151,7 +158,8 @@ assets/fonts/                   polices embarquées (dont les polices de secours
 | `/lecon/:leconId` | `LeconScreen` | `lecon(id)` ; mémorise la dernière leçon |
 | `/lecon/:leconId/exercices` | `ExercicesScreen` | la `Lecon` passée en `extra`, sinon `lecon(id)` |
 | `/a-propos` | `AProposScreen` | aucune (page fixe : présentation, version, licences, D18) |
-| `/compte` | `CompteScreen` | connexion si pas de compte ; sinon `compte.enfants()` et `classes()` |
+| `/compte` | `CompteScreen` | connexion si pas de compte ; sinon `compte.enfants()`, `classes()` et `appareils()` ; téléphone lié : `TelephoneLie` |
+| `/lier` | `LierScreen` | `compte.lierCeTelephone(code)` (session anonyme, D32) |
 | `/validation` | `ValidationScreen` | `redaction.estRedacteur()`, puis `leconsAVerifier()` et `pointsLeves()` |
 | `/lecon/:leconId/schemas` | `SchemasScreen` | `redaction.estRedacteur()`, puis `texteLecon(id)` et `schemasLecon(id)` (en base, pas la copie locale) |
 | `/suivi` | `SuiviScreen` | envoie d'abord la file du suivi, puis `compte.enfants()`, `lectures()`, `resultats()`, `classes()`, `lecons()` |

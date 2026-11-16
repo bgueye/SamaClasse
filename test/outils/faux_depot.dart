@@ -204,10 +204,84 @@ class FauxCompte extends Compte {
     List<Enfant>? enfants,
     List<LectureLecon>? lectures,
     List<ResultatExercice>? resultats,
+    List<AppareilLie>? appareils,
+    this.lieA,
   })  : _email = connecte,
         _enfants = [...?enfants],
         lecturesEnBase = [...?lectures],
-        resultatsEnBase = [...?resultats];
+        resultatsEnBase = [...?resultats],
+        appareilsEnBase = [...?appareils],
+        anonyme = lieA != null;
+
+  // --- Téléphones des enfants (D32) ---
+
+  /// Session anonyme ouverte sur ce faux téléphone.
+  bool anonyme;
+
+  /// Profil auquel ce faux téléphone est lié (session anonyme), `null` sinon.
+  Enfant? lieA;
+
+  /// Codes « en base » : code → profil, comme `codes_liaison`.
+  final codesLiaison = <String, Enfant>{};
+  final List<AppareilLie> appareilsEnBase;
+  final appareilsDelies = <String>[];
+  var _prochainCode = 482913;
+
+  /// Essais restants pour ce téléphone (5 par heure en base).
+  var essaisRestants = 5;
+
+  @override
+  bool get estAnonyme => anonyme;
+
+  @override
+  Future<CodeLiaison> creerCodeLiaison(int enfantId) async {
+    await _avant('creerCode');
+    final enfant = _enfants.firstWhere((e) => e.id == enfantId);
+    final code = '${_prochainCode++}';
+    codesLiaison[code] = enfant;
+    return CodeLiaison(code: code, expireLe: DateTime.now().add(const Duration(minutes: 10)));
+  }
+
+  @override
+  Future<List<AppareilLie>> appareils() async {
+    await _avant('appareils');
+    return List.of(appareilsEnBase);
+  }
+
+  @override
+  Future<void> delierAppareil(String appareilId) async {
+    await _avant('delierAppareil');
+    appareilsEnBase.removeWhere((a) => a.id == appareilId);
+    appareilsDelies.add(appareilId);
+  }
+
+  @override
+  Future<Enfant> lierCeTelephone(String code) async {
+    await _avant('lier');
+    anonyme = true;
+    notifyListeners();
+    final enfant = codesLiaison.remove(code);
+    if (enfant == null) {
+      essaisRestants--;
+      throw CodeLiaisonRefuse(essaisRestants);
+    }
+    lieA = enfant;
+    return enfant;
+  }
+
+  @override
+  Future<Enfant?> enfantDeCeTelephone() async {
+    await _avant('enfantDeCeTelephone');
+    return anonyme ? lieA : null;
+  }
+
+  @override
+  Future<void> delierCeTelephone() async {
+    await _avant('delierCeTelephone');
+    anonyme = false;
+    lieA = null;
+    notifyListeners();
+  }
 
   /// Ce que la base renverrait au parent connecté (déjà filtré par les RLS).
   final List<LectureLecon> lecturesEnBase;
@@ -263,6 +337,7 @@ class FauxCompte extends Compte {
   Future<void> deconnecter() async {
     await _avant('deconnecter');
     _email = null;
+    anonyme = false;
     notifyListeners();
   }
 

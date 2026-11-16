@@ -50,7 +50,15 @@ Future<void> main() async {
     envoi: EnvoiSupabase(Supabase.instance.client),
     stockage: StockageFileLocal(),
   )..envoyer().ignore();
-  AppLifecycleListener(onResume: () => suivi.envoyer().ignore());
+  // Téléphone d'enfant lié par un code (D32) : toujours lié ? (Le parent a
+  // pu le délier ou supprimer le profil.)
+  Future<void> verifierLiaison() =>
+      verifierTelephoneLie(compte: compte, preferences: preferences, suivi: suivi).then((_) {}, onError: (Object _) {});
+  verifierLiaison().ignore();
+  AppLifecycleListener(onResume: () {
+    suivi.envoyer().ignore();
+    verifierLiaison().ignore();
+  });
 
   runApp(AppScope(
     repository: contenu,

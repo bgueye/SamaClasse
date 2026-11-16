@@ -308,6 +308,52 @@ void main() {
     }
   });
 
+  // Liaison du téléphone d'un enfant (D32) : enfant, téléphone lié, parent.
+  testWidgets('liaison', (tester) async {
+    const awa = Enfant(id: 1, prenom: 'Awa', classeId: 1);
+    const moussa = Enfant(id: 2, prenom: 'Moussa', classeId: 2);
+    for (final (echelle, suffixe) in [(1.0, ''), (2.0, '_200')]) {
+      await lancerApp(tester, depot: FauxDepot(), chemin: '/lier', echelleTexte: echelle);
+      await tester.enterText(find.byType(TextField), '111 111');
+      await tester.tap(find.widgetWithText(FilledButton, 'Lier ce téléphone'), warnIfMissed: false);
+      await _capturer(tester, 'tel${suffixe}_18_lier');
+
+      await lancerApp(
+        tester,
+        depot: FauxDepot(),
+        compte: FauxCompte(lieA: awa),
+        preferences: FaussesPreferences(enfant: const EnfantActif(id: 1, prenom: 'Awa', lie: true)),
+        chemin: '/compte',
+        echelleTexte: echelle,
+      );
+      await _capturer(tester, 'tel${suffixe}_19_telephone_lie');
+
+      final compte = FauxCompte(
+        connecte: 'parent@exemple.sn',
+        enfants: [awa, moussa],
+        appareils: [AppareilLie(id: 't', enfantId: 1, appareil: 'Android', lieLe: DateTime(2026, 11, 16))],
+      );
+      await lancerApp(tester, depot: FauxDepot(), compte: compte, chemin: '/compte', echelleTexte: echelle);
+      final lier = find.bySemanticsLabel('Lier le téléphone d’Awa');
+      await tester.scrollUntilVisible(lier, 200, scrollable: find.byType(Scrollable).first);
+      await tester.pumpAndSettle();
+      await _capturer(tester, 'tel${suffixe}_20_enfants_telephones');
+      await tester.tap(lier);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      // Pas de pumpAndSettle : le compte à rebours tourne.
+      await tester.runAsync(() async {
+        final image = await captureImage(find.byType(SamaClasseApp).evaluate().single);
+        final octets = await image.toByteData(format: ui.ImageByteFormat.png);
+        File('$_dossier/tel${suffixe}_21_code_liaison.png')
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(octets!.buffer.asUint8List());
+      });
+      await tester.tap(find.text('Fermer'));
+      await tester.pumpAndSettle();
+    }
+  });
+
   // Téléphone en paysage : en-tête de la leçon sur une seule ligne.
   testWidgets('paysage', (tester) async {
     for (final (echelle, nom) in [(1.0, 'paysage_03_lecon'), (2.0, 'paysage_200_03_lecon')]) {

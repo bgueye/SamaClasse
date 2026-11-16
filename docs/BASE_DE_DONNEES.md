@@ -154,6 +154,35 @@ conseiller de sécurité, comme pour `publier_lecon`.
 (requête, puis `Instantane.seulementPublie`) : un rédacteur connecté lit
 aussi les leçons non publiées.
 
+### Téléphones des enfants liés par un code (phase 5, D32)
+Téléphone d'enfant = **session anonyme** Supabase (rôle `authenticated`,
+`is_anonymous` vrai dans le jeton ; `public.est_anonyme()`).
+- `appareils` : `id` (= `auth.users.id` de la session anonyme, `on delete
+  cascade`), `enfant_id`, `appareil` (« Android », « iPhone »,
+  « Navigateur »), `lie_le`. Lue par le parent de l'enfant et par le
+  téléphone lui-même ; écrite seulement par les fonctions.
+- `codes_liaison` (un code par enfant : empreinte SHA-256, `expire_le`) et
+  `essais_liaison` (essais par téléphone) : aucune règle, accès par les
+  fonctions seulement (remarques « RLS sans règle » du conseiller, voulues).
+- `creer_code_liaison(enfant)` : parent (non anonyme) de l'enfant ; 6
+  chiffres, 10 minutes, remplace le code précédent ; refus au-delà de 3
+  téléphones.
+- `utiliser_code_liaison(code, appareil)` : session anonyme seulement ;
+  rend `{lie, enfant_id, prenom, classe_id}` ou `{lie: false,
+  essais_restants}` (pas d'erreur, pour garder le décompte) ; 5 essais par
+  heure ; code à usage unique.
+- `delier_appareil(id)` : parent de l'enfant ; supprime la session anonyme
+  (jamais un compte non anonyme).
+- `enfant_de_cet_appareil()` (security definer) : profil du téléphone
+  connecté. Règles : le téléphone lit SON enfant (prénom, classe), lit et
+  écrit ses `lectures` et `resultats` (contenu publié seulement).
+- Règles **restrictives** sur `enfants` : une session anonyme n'ajoute, ne
+  modifie ni ne supprime aucun profil. `est_redacteur()` est faux pour une
+  session anonyme (migration `redacteur_jamais_anonyme`).
+- Le conseiller signale « Anonymous Access Policies » sur toutes les règles
+  `authenticated` : vérifié le 16/11/2026, chacune exige d'être parent de
+  l'enfant ou rédacteur, ce qu'une session anonyme n'est jamais.
+
 ### `schemas_lecons` et schémas ajoutés depuis l'application (phase 5, D31)
 `id`, `lecon_id`, `champ` (`introduction` ou `corps`), `chemin` (unique,
 `lecons/<id>/<uuid>.jpg|png|webp`), `description` (3 à 300 caractères),

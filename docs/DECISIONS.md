@@ -6,6 +6,25 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D32. Téléphones des enfants liés à leur profil par un code du parent
+*Bocar, 16/11/2026.*
+Chaque enfant a son téléphone ; il ne doit pas avoir le compte de son
+parent (sinon il pourrait changer de profil, voir le suivi de ses frères et
+sœurs, supprimer des profils ou le compte). Le parent, dans « Mes
+enfants », touche « Lier un téléphone » : un code de 6 chiffres, valable
+10 minutes, à usage unique. Sur le téléphone de l'enfant, « J'ai un code de
+mon parent » (Espace parents) ouvre une **session Supabase anonyme** (aucune
+donnée personnelle) liée à ce seul profil (table `appareils`) : elle envoie
+les leçons lues et résultats de cet enfant, et rien d'autre. Le parent voit
+les téléphones liés et les délie (la session est supprimée). Au lancement,
+un téléphone délié ou dont le profil a disparu revient en mode normal.
+5 essais de code par heure, 3 téléphones par enfant. Les sessions anonymes
+sont activées dans le tableau de bord (Authentication › Sign In /
+Providers). Une session anonyme n'est jamais rédactrice
+(`est_redacteur`). Migrations `liaison_appareils` (32 vérifications) et
+`redacteur_jamais_anonyme`, 16/11/2026. « Utiliser sur ce téléphone »
+reste pour le téléphone familial du parent.
+
 ### D31. Schémas ajoutés depuis l'application par les rédacteurs
 *Bocar, 16/11/2026.*
 Complète D15 : plus besoin du tableau de bord. Depuis la leçon (bouton

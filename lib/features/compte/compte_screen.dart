@@ -9,13 +9,18 @@ import '../../core/theme/theme.dart';
 import '../../core/widgets/composants.dart';
 import '../../core/widgets/etats.dart';
 import '../../data/data.dart';
+import '../liaison/fiche_code_liaison.dart';
+import '../liaison/outils_liaison.dart';
+import '../liaison/telephone_lie.dart';
 import 'fiche_enfant.dart';
 import 'outils_compte.dart';
 
 /// « Espace parents » (phase 2, D21 et D22), à l'adresse `/compte`.
 ///
 /// Sans connexion : connexion en deux étapes (e-mail, puis code chiffré reçu
-/// par e-mail). Connecté : la liste des profils enfants.
+/// par e-mail), et l'accès « J'ai un code de mon parent » pour le téléphone
+/// d'un enfant (D32). Connecté : la liste des profils enfants. Téléphone
+/// d'enfant lié : [TelephoneLie], sans aucun accès au compte du parent.
 /// L'écran suit le compte (`ListenableBuilder`) : il bascule tout seul d'une
 /// vue à l'autre à la connexion et à la déconnexion.
 class CompteScreen extends StatelessWidget {
@@ -32,10 +37,43 @@ class CompteScreen extends StatelessWidget {
             builder: (context, _) => compte.estConnecte
                 // Clé par adresse : un autre compte repart d'une liste neuve.
                 ? MesEnfants(key: ValueKey(compte.email))
-                : const ConnexionParent(),
+                : compte.estAnonyme
+                    ? const _VueTelephoneEnfant()
+                    : const ConnexionParent(),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Session anonyme ouverte : téléphone d'enfant lié (profil retenu avec
+/// `lie`), sinon liaison pas aboutie, et l'on montre la connexion habituelle.
+class _VueTelephoneEnfant extends StatefulWidget {
+  const _VueTelephoneEnfant();
+
+  @override
+  State<_VueTelephoneEnfant> createState() => _VueTelephoneEnfantState();
+}
+
+class _VueTelephoneEnfantState extends State<_VueTelephoneEnfant> {
+  Future<EnfantActif?>? _actif;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _actif ??= AppScope.of(context).preferences.enfantActif();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<EnfantActif?>(
+      future: _actif,
+      builder: (context, instantane) {
+        if (instantane.connectionState != ConnectionState.done) return const Chargement();
+        final actif = instantane.data;
+        return actif != null && actif.lie ? TelephoneLie(enfant: actif) : const ConnexionParent();
+      },
     );
   }
 }
@@ -229,6 +267,27 @@ class _ConnexionParentState extends State<ConnexionParent> {
         if (_erreur != null) _ErreurFormulaire(_erreur!),
         const SizedBox(height: 18),
         _BoutonAction(libelle: 'Recevoir un code', enCours: _enCours, onPressed: _envoyerCode),
+        // Téléphone d'un enfant (D32) : pas de compte, un code du parent.
+        const SizedBox(height: 32),
+        const Divider(),
+        const SizedBox(height: 12),
+        Semantics(
+          header: true,
+          child: const Text('C’est le téléphone d’un enfant ?', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'Liez-le à son profil avec un code affiché sur le téléphone du parent. L’enfant n’a pas '
+          'besoin du compte de son parent.',
+          style: TextStyle(fontSize: 15, height: 1.45, color: Couleurs.texteDoux),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: _enCours ? null : () => context.push('/lier'),
+          icon: const Icon(Icons.phonelink_lock_outlined),
+          label: const Text('J’ai un code de mon parent'),
+          style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+        ),
       ];
 
   List<Widget> _etapeCode() => [
@@ -298,9 +357,10 @@ class MesEnfants extends StatefulWidget {
   State<MesEnfants> createState() => _MesEnfantsState();
 }
 
-/// Ce dont la liste a besoin : les profils, et les classes pour afficher leur
-/// nom et les proposer dans la fiche.
-typedef _DonneesEnfants = ({List<Enfant> enfants, List<Classe> classes});
+/// Ce dont la liste a besoin : les profils, les classes pour afficher leur
+/// nom et les proposer dans la fiche, et les téléphones liés (D32 ; `null`
+/// s'ils n'ont pas pu être chargés : la liste s'affiche quand même).
+typedef _DonneesEnfants = ({List<Enfant> enfants, List<Classe> classes, List<AppareilLie>? appareils});
 
 class _MesEnfantsState extends State<MesEnfants> {
   late AppScope _scope;
@@ -332,8 +392,13 @@ class _MesEnfantsState extends State<MesEnfants> {
   Future<_DonneesEnfants> _charger() async {
     // En parallèle : les classes viennent de la copie locale (immédiat), les
     // profils du serveur.
-    final (enfants, classes) = await (_scope.compte.enfants(), _scope.repository.classes()).wait;
-    return (enfants: enfants, classes: classes);
+    final (enfants, classes, appareils) = await (
+      _scope.compte.enfants(),
+      _scope.repository.classes(),
+      // Les téléphones liés ne doivent pas empêcher d'afficher les profils.
+      _scope.compte.appareils().then<List<AppareilLie>?>((a) => a, onError: (Object _) => null),
+    ).wait;
+    return (enfants: enfants, classes: classes, appareils: appareils);
   }
 
   void _recharger() => setState(() { _chargement = _charger(); });
@@ -409,6 +474,47 @@ class _MesEnfantsState extends State<MesEnfants> {
       }
       if (mounted) _annoncer('Profil de ${enfant.prenom} supprimé.');
     });
+  }
+
+  /// « Lier un téléphone » : le code à donner à l'enfant (D32), puis la
+  /// liste des téléphones rechargée.
+  Future<void> _lierTelephone(Enfant enfant) async {
+    await afficherCodeLiaison(context, compte: _scope.compte, enfant: enfant);
+    if (mounted) _recharger();
+  }
+
+  Future<void> _delierTelephone(Enfant enfant, AppareilLie appareil) async {
+    final confirme = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Délier ce téléphone ?'),
+        content: Text(
+          'Ce téléphone (${libelleAppareil(appareil)}) n’enverra plus le suivi ${dePrenom(enfant.prenom)}. '
+          'Ce qui a déjà été envoyé reste dans son suivi.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Couleurs.faux),
+            child: const Text('Délier'),
+          ),
+        ],
+      ),
+    );
+    if (confirme != true || !mounted) return;
+    setState(() => _occupe = true);
+    try {
+      await _scope.compte.delierAppareil(appareil.id);
+      if (mounted) _annoncer('Le téléphone ${dePrenom(enfant.prenom)} est délié.');
+    } catch (e) {
+      if (mounted) _annoncer(messageErreurParentLiaison(e));
+    } finally {
+      if (mounted) {
+        setState(() => _occupe = false);
+        _recharger();
+      }
+    }
   }
 
   /// Retient [enfant] comme profil de ce téléphone et choisit sa classe à
@@ -556,9 +662,12 @@ class _MesEnfantsState extends State<MesEnfants> {
               classe: libelles[e.classeId] ?? 'Classe inconnue',
               actif: _actif?.id == e.id,
               occupe: _occupe,
+              appareils: donnees.appareils == null ? null : appareilsDe(donnees.appareils!, e.id),
               onUtiliser: () => _utiliser(e),
               onModifier: () => _modifier(e, donnees.classes),
               onSupprimer: () => _supprimer(e),
+              onLier: () => _lierTelephone(e),
+              onDelier: (a) => _delierTelephone(e, a),
             ),
           // 10 profils au plus par compte (règle de la base) : bouton masqué
           // une fois la limite atteinte plutôt qu'une erreur après coup.
@@ -634,18 +743,27 @@ class _CarteEnfant extends StatelessWidget {
     required this.classe,
     required this.actif,
     required this.occupe,
+    required this.appareils,
     required this.onUtiliser,
     required this.onModifier,
     required this.onSupprimer,
+    required this.onLier,
+    required this.onDelier,
   });
 
   final Enfant enfant;
   final String classe;
   final bool actif;
   final bool occupe;
+
+  /// Téléphones liés à ce profil (D32) ; `null` s'ils n'ont pas pu être
+  /// chargés.
+  final List<AppareilLie>? appareils;
   final VoidCallback onUtiliser;
   final VoidCallback onModifier;
   final VoidCallback onSupprimer;
+  final VoidCallback onLier;
+  final ValueChanged<AppareilLie> onDelier;
 
   @override
   Widget build(BuildContext context) {
@@ -680,10 +798,36 @@ class _CarteEnfant extends StatelessWidget {
               ],
             ),
           ],
+          // Téléphones de l'enfant liés par un code (D32).
+          for (final a in appareils ?? const <AppareilLie>[])
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                children: [
+                  const Icon(Icons.phonelink_lock_outlined, size: 18, color: Couleurs.texteDoux),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      libelleAppareil(a),
+                      style: const TextStyle(fontSize: 14, color: Couleurs.texteDoux),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: occupe ? null : () => onDelier(a),
+                    style: TextButton.styleFrom(foregroundColor: Couleurs.faux),
+                    child: Text('Délier', semanticsLabel: 'Délier ce téléphone ${dePrenom(enfant.prenom)}'),
+                  ),
+                ],
+              ),
+            ),
           const SizedBox(height: 4),
           // Wrap : à 200 % de taille de texte, les boutons passent à la ligne.
           Wrap(
             children: [
+              TextButton(
+                onPressed: occupe ? null : onLier,
+                child: Text('Lier un téléphone', semanticsLabel: 'Lier le téléphone ${dePrenom(enfant.prenom)}'),
+              ),
               if (!actif)
                 TextButton(onPressed: occupe ? null : onUtiliser, child: const Text('Utiliser sur ce téléphone')),
               TextButton(

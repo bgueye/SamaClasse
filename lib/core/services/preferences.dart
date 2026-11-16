@@ -38,20 +38,34 @@ class DerniereLecon {
       );
 }
 
-/// Profil enfant choisi sur ce téléphone (« Utiliser sur ce téléphone »).
+/// Profil enfant de ce téléphone.
 ///
-/// Gardé localement pour l'afficher sans réseau (« Bonjour Awa ! ») ; la
-/// phase 3 s'en servira pour rattacher les résultats au bon enfant.
+/// Deux façons d'y arriver :
+/// * « Utiliser sur ce téléphone » dans l'espace parents, compte parent
+///   connecté sur ce téléphone (téléphone familial) ;
+/// * liaison par un code du parent (D32) : le téléphone de l'enfant a une
+///   session anonyme rattachée à ce seul profil ([lie] vrai).
+///
+/// Gardé localement pour l'afficher sans réseau (« Bonjour Awa ! ») et
+/// rattacher les lectures et résultats au bon enfant (phase 3).
 class EnfantActif {
-  const EnfantActif({required this.id, required this.prenom});
+  const EnfantActif({required this.id, required this.prenom, this.lie = false});
 
   final int id;
   final String prenom;
 
-  Map<String, Object?> toJson() => {'id': id, 'prenom': prenom};
+  /// Téléphone lié par un code (D32) plutôt que choisi par le parent connecté.
+  final bool lie;
 
-  factory EnfantActif.fromJson(Map<String, dynamic> json) =>
-      EnfantActif(id: (json['id'] as num).toInt(), prenom: json['prenom'] as String);
+  EnfantActif avecPrenom(String prenom) => EnfantActif(id: id, prenom: prenom, lie: lie);
+
+  Map<String, Object?> toJson() => {'id': id, 'prenom': prenom, if (lie) 'lie': true};
+
+  factory EnfantActif.fromJson(Map<String, dynamic> json) => EnfantActif(
+        id: (json['id'] as num).toInt(),
+        prenom: json['prenom'] as String,
+        lie: json['lie'] == true,
+      );
 }
 
 class Preferences {

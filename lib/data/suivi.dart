@@ -2,8 +2,9 @@
 // exercices, gardés sur le téléphone puis envoyés à Supabase.
 //
 // Règles :
-// * Rien n'est noté sans profil enfant choisi sur ce téléphone ET parent
-//   connecté : sans compte, l'application reste sans aucun envoi.
+// * Rien n'est noté sans profil enfant choisi sur ce téléphone ET une
+//   session : parent connecté, ou téléphone d'enfant lié par un code (D32).
+//   Sans compte, l'application reste sans aucun envoi.
 // * Jamais le texte saisi : seulement « réussi ou non », le score et la date.
 // * Hors connexion, les lignes attendent dans une file sur l'appareil et
 //   partent au prochain envoi réussi. Chaque résultat porte un identifiant
@@ -296,8 +297,12 @@ class SuiviResultats {
   }
 
   void _surChangementDeCompte() {
-    if (compte.estConnecte) envoyer();
+    if (_sessionPourEnvoyer) envoyer();
   }
+
+  /// Parent connecté, ou session anonyme d'un téléphone d'enfant lié (D32 :
+  /// les règles de la base lui permettent d'écrire pour son enfant).
+  bool get _sessionPourEnvoyer => compte.estConnecte || compte.estAnonyme;
 
   /// À appeler si le service est remplacé (tests) : cesse d'écouter le compte.
   void arreter() => compte.removeListener(_surChangementDeCompte);
@@ -320,9 +325,9 @@ class SuiviResultats {
   }
 
   /// Profil à qui attribuer une activité, ou `null` s'il ne faut rien noter
-  /// (pas de profil choisi, ou parent déconnecté).
+  /// (pas de profil choisi, ou pas de session).
   Future<int?> _enfantANoter() async {
-    if (!compte.estConnecte) return null;
+    if (!_sessionPourEnvoyer) return null;
     return (await preferences.enfantActif())?.id;
   }
 
@@ -369,9 +374,9 @@ class SuiviResultats {
         await stockage.ecrire(encoderFile(file.avecResultat(resultat)));
       }).then((_) => envoyer());
 
-  /// Envoie ce qui attend. Sans parent connecté, la file attend.
+  /// Envoie ce qui attend. Sans session, la file attend.
   Future<void> envoyer() => _enSerie(() async {
-        if (!compte.estConnecte) return;
+        if (!_sessionPourEnvoyer) return;
         final file = await _lireFile();
         if (file.estVide) return;
 

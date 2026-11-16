@@ -277,6 +277,8 @@ compte Google Play déjà ouvert. Suppression du compte : migration
   suppression en ligne avec le site.
 - ~~Service d'envoi d'e-mails dédié~~ : fait le 15/11/2026, Resend avec
   `noreply@samaclasse.app` (D22) ; essai de connexion réussi.
+- ~~Téléphones des enfants~~ : fait le 16/11/2026, liaison par un code du
+  parent, session anonyme limitée au profil de l'enfant (D32).
 - Facultatif : enregistrement DMARC (`_dmarc`, `p=none`) dans Cloudflare ;
   redirection de `www.samaclasse.app` vers `samaclasse.app`.
 - Passage à `supabase_flutter` v3, une fois sortie en version stable (préversion

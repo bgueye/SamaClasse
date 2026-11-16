@@ -9,6 +9,7 @@ import 'features/accueil/accueil_screen.dart';
 import 'features/compte/compte_screen.dart';
 import 'features/exercices/exercices_screen.dart';
 import 'features/lecon/lecon_screen.dart';
+import 'features/liaison/lier_screen.dart';
 import 'features/matiere/matiere_screen.dart';
 import 'features/schemas/schemas_screen.dart';
 import 'features/suivi/suivi_screen.dart';
@@ -22,6 +23,7 @@ import 'features/validation/validation_screen.dart';
 ///   /lecon/12/schemas               ses schémas : ajout, retrait (rédacteurs)
 ///   /a-propos                       présentation, version, licences
 ///   /compte                         espace parents : connexion, profils enfants
+///   /lier                           téléphone d'un enfant : code du parent (D32)
 ///   /suivi                          suivi de mes enfants (parents connectés)
 ///   /validation                     leçons à vérifier et publication (rédacteurs)
 ///
@@ -36,6 +38,7 @@ GoRouter creerRouteur({String emplacementInitial = '/'}) => GoRouter(
           routes: [
             GoRoute(path: 'a-propos', builder: (context, state) => const AProposScreen()),
             GoRoute(path: 'compte', builder: (context, state) => const CompteScreen()),
+            GoRoute(path: 'lier', builder: (context, state) => const LierScreen()),
             GoRoute(path: 'suivi', builder: (context, state) => const SuiviScreen()),
             GoRoute(path: 'validation', builder: (context, state) => const ValidationScreen()),
             GoRoute(

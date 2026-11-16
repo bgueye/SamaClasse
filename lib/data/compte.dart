@@ -7,12 +7,17 @@
 //
 // La lecture du contenu ne dépend jamais du compte : sans connexion, ou sans
 // compte, l'application fonctionne comme avant.
+//
+// Téléphone d'un enfant (D32) : une session anonyme, liée à un seul profil
+// par un code du parent (liaison.dart). Ce n'est PAS une connexion de
+// parent : `estConnecte` reste faux, `estAnonyme` est vrai.
 
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'liaison.dart';
 import 'suivi.dart';
 
 /// Profil d'un enfant, tel que stocké dans la table `enfants`.
@@ -45,10 +50,16 @@ class Enfant {
 /// c'est la piste prévue par docs/ARCHITECTURE.md pour le compte connecté.
 /// Abstrait pour que les tests passent un faux compte sans réseau.
 abstract class Compte extends ChangeNotifier {
-  /// Adresse e-mail du parent connecté, `null` sans connexion.
+  /// Adresse e-mail du parent connecté, `null` sans connexion (et pour la
+  /// session anonyme d'un téléphone d'enfant).
   String? get email;
 
+  /// Un parent est connecté sur ce téléphone.
   bool get estConnecte => email != null;
+
+  /// Session anonyme ouverte sur ce téléphone (téléphone d'enfant, lié ou en
+  /// cours de liaison, D32).
+  bool get estAnonyme;
 
   /// Envoie un code de connexion à [email]. Crée le compte s'il n'existe pas.
   Future<void> envoyerCode(String email);
@@ -80,6 +91,31 @@ abstract class Compte extends ChangeNotifier {
   /// aux [limite] derniers (assez pour « Cette semaine » et « Derniers
   /// exercices »).
   Future<List<ResultatExercice>> resultats({int limite = 500});
+
+  // --- Téléphones des enfants (D32) ---
+
+  /// Parent : code à donner à l'enfant pour lier son téléphone à son profil
+  /// (6 chiffres, 10 minutes, usage unique).
+  Future<CodeLiaison> creerCodeLiaison(int enfantId);
+
+  /// Parent : téléphones liés aux profils de ses enfants.
+  Future<List<AppareilLie>> appareils();
+
+  /// Parent : délie un téléphone (il n'enverra plus rien).
+  Future<void> delierAppareil(String appareilId);
+
+  /// Téléphone de l'enfant : ouvre une session anonyme si besoin, puis donne
+  /// le [code]. Rend le profil auquel le téléphone est désormais lié ;
+  /// lève [CodeLiaisonRefuse] si le code est faux ou expiré.
+  Future<Enfant> lierCeTelephone(String code);
+
+  /// Téléphone de l'enfant : profil auquel il est lié, ou `null` s'il ne
+  /// l'est plus (délié par le parent, profil supprimé).
+  Future<Enfant?> enfantDeCeTelephone();
+
+  /// Téléphone de l'enfant : « Ce n'est plus mon téléphone ». Supprime la
+  /// session anonyme (et donc la liaison).
+  Future<void> delierCeTelephone();
 }
 
 /// Compte réel, adossé à Supabase Auth et à la table `enfants`.
@@ -98,7 +134,15 @@ class CompteSupabase extends Compte {
   static const _colonnes = 'id, prenom, classe_id';
 
   @override
-  String? get email => _client.auth.currentUser?.email;
+  String? get email {
+    final compte = _client.auth.currentUser;
+    // Session anonyme (téléphone d'enfant) : pas un parent.
+    if (compte == null || compte.isAnonymous) return null;
+    return compte.email;
+  }
+
+  @override
+  bool get estAnonyme => _client.auth.currentUser?.isAnonymous ?? false;
 
   @override
   Future<void> envoyerCode(String email) => _client.auth.signInWithOtp(
@@ -173,6 +217,63 @@ class CompteSupabase extends Compte {
         .order('fait_le', ascending: false)
         .limit(limite);
     return lignes.map(ResultatExercice.fromJson).toList();
+  }
+
+  // --- Téléphones des enfants (D32) ---
+
+  @override
+  Future<CodeLiaison> creerCodeLiaison(int enfantId) async {
+    final lignes = await _client.rpc<List<dynamic>>('creer_code_liaison', params: {'p_enfant_id': enfantId});
+    final ligne = lignes.single as Map<String, dynamic>;
+    return CodeLiaison(code: ligne['code'] as String, expireLe: DateTime.parse(ligne['expire_le'] as String));
+  }
+
+  @override
+  Future<List<AppareilLie>> appareils() async {
+    final lignes = await _client.from('appareils').select('id, enfant_id, appareil, lie_le').order('lie_le');
+    return lignes.map(AppareilLie.fromJson).toList();
+  }
+
+  @override
+  Future<void> delierAppareil(String appareilId) =>
+      _client.rpc<void>('delier_appareil', params: {'p_appareil': appareilId});
+
+  @override
+  Future<Enfant> lierCeTelephone(String code) async {
+    // Une seule session anonyme par téléphone : on la garde entre deux
+    // essais (le nombre d'essais lui est compté).
+    if (_client.auth.currentUser == null) await _client.auth.signInAnonymously();
+    final reponse = await _client.rpc<Map<String, dynamic>>('utiliser_code_liaison', params: {
+      'p_code': code,
+      'p_appareil': typeAppareil(plateforme: defaultTargetPlatform, web: kIsWeb),
+    });
+    if (reponse['lie'] != true) {
+      throw CodeLiaisonRefuse((reponse['essais_restants'] as num?)?.toInt() ?? 0);
+    }
+    notifyListeners();
+    return Enfant(
+      id: (reponse['enfant_id'] as num).toInt(),
+      prenom: reponse['prenom'] as String,
+      classeId: (reponse['classe_id'] as num).toInt(),
+    );
+  }
+
+  @override
+  Future<Enfant?> enfantDeCeTelephone() async {
+    if (!estAnonyme) return null;
+    // Les règles ne montrent à un téléphone lié que le profil de son enfant.
+    final lignes = await _client.from('enfants').select(_colonnes).limit(1);
+    return lignes.isEmpty ? null : Enfant.fromJson(lignes.first);
+  }
+
+  @override
+  Future<void> delierCeTelephone() async {
+    if (!estAnonyme) return;
+    // Supprime la session anonyme : la liaison disparaît avec elle.
+    await _client.rpc<void>('supprimer_mon_compte');
+    try {
+      await _client.auth.signOut(scope: SignOutScope.local);
+    } catch (_) {}
   }
 
   @override
