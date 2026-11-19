@@ -87,6 +87,7 @@ lecons ─< points_leves                   (phase 4, D25)
 | `corps` | text | Markdown, titres de partie en `##` |
 | `a_retenir` | jsonb, défaut `[]` | `[{"notion": "...", "essentiel": "..."}]` |
 | `points_a_verifier` | text[] | doubles à lever avant publication, **jamais affichés aux élèves** |
+| `script_audio` | jsonb, facultatif | « Écouter la leçon » (D34) : `[{"lang": "fr-FR", "texte": "..."}]`, liste ordonnée ; `lang` en BCP-47 (`fr-FR`, `en-GB`, `es-ES`), `texte` rédigé pour l'oral (sans Markdown). `null` : pas de script, pas de barre. Contrainte `lecons_script_audio_is_array` |
 | `statut` | `statut_lecon`, défaut `brouillon` | |
 | `artefact_url` | text | lien vers la version de travail (artefact claude.ai) |
 | `created_at`, `updated_at` | timestamptz | `updated_at` mis à jour par le trigger `lecons_updated_at` |
@@ -329,7 +330,7 @@ from('chapitres')
 // toutes les leçons publiées, complètes
 from('lecons')
   .select('id, chapitre_id, numero, titre, date_cours, objectifs, introduction, corps, '
-          'a_retenir, statut, exercices(id, ordre, niveau, type, enonce, donnees, reponse, corrige), '
+          'a_retenir, script_audio, statut, exercices(id, ordre, niveau, type, enonce, donnees, reponse, corrige), '
           'chapitres(titre, partie, classes(libelle), matieres(nom, slug))')
   .order('ordre', referencedTable: 'exercices');
 ```

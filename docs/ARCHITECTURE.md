@@ -51,7 +51,7 @@ lib/
     config.dart                 SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY (dart-define)
     version.dart                version affichée, à garder égale à pubspec.yaml (testé)
     app_scope.dart              InheritedWidget : repository + preferences + compte + suivi
-                                + redaction
+                                + redaction + choixImage + creerMoteurVocal
     services/preferences.dart   SharedPreferencesAsync : classe choisie, dernière leçon,
                                 profil enfant de ce téléphone (EnfantActif)
     theme/couleurs.dart         palette (voir DESIGN.md)
@@ -63,6 +63,7 @@ lib/
     widgets/markdown_cahier.dart rendu Markdown des leçons et exercices
     widgets/schema_cahier.dart  schémas insérés dans le Markdown (D15) : filtre d'adresse, description de secours
     services/choix_image.dart   ChoixImage : appareil photo, galerie (image_picker), réduction en isolat
+    services/moteur_vocal.dart  MoteurVocal : synthèse vocale (flutter_tts), un faux dans les tests (D34)
     services/reduction_image.dart reduireImage() : JPEG < 150 Ko, redressé, sans métadonnées (D31)
   data/
     models.dart                 Classe, MatiereDeClasse, Chapitre, LeconResume, Lecon,
@@ -113,6 +114,8 @@ lib/
     matiere/matiere_screen.dart       chapitres par partie, filtre
     matiere/regroupement.dart         regrouperParPartie(), etatChapitre()
     lecon/lecon_screen.dart           onglets « La leçon » / « À retenir »
+    lecon/lecteur_lecon.dart          « Écouter la leçon » (D34) : LecteurLecon (passages, voix,
+                                      pause, sauts), BarreLecteur, languesAEssayer()
     exercices/exercices_screen.dart   série d'exercices, bilan
     exercices/outils_exercices.dart   reponseInitiale(), libelleChemin()…
     exercices/saisies/                une zone de réponse par type (voir EXERCICES.md)
@@ -128,12 +131,15 @@ test/
   features/suivi_test.dart      suivi des enfants : semaine, derniers exercices, écran, 200 %
   features/validation_test.dart validation : points, publication, rôle, écran, 200 %
   features/schemas_test.dart    schémas : paragraphes, description, ajout, refus, retrait, 200 %
+  features/lecteur_lecon_test.dart « Écouter la leçon » : ordre, voix, pause, sauts, langue absente,
+                                barre dans l'écran (exercices, retour), 200 %
+  data/segment_audio_test.dart  script_audio : lecture tolérante, copie hors connexion
   core/reduction_image_test.dart réduction sous 150 Ko, orientation, transparence, EXIF
   data/contenu_hors_ligne_test.dart synchronisation, copie locale, erreurs réseau
   data/suivi_test.dart          file d'attente du suivi : hors connexion, doublons, refus, écrans
   core/seyes_test.dart          alignement du texte sur les lignes Seyès (vraies polices)
   outils/faux_depot.dart        FauxDepot, FaussesPreferences, FauxCompte, FauxEnvoi, FausseRedaction,
-                                FauxStockageFile, lancerApp(),
+                                FauxStockageFile, FauxMoteurVocal, lancerApp(),
                                 FausseSource, FauxStockage, instantaneReel()
   outils/polices.dart           chargement des vraies polices dans un test
   fixtures/supabase.json        réponses Supabase réelles (rôle anon, sans artefact_url)

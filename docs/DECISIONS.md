@@ -6,6 +6,26 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D34. « Écouter la leçon » : script oral en base, voix du téléphone
+*Bocar, 19/11/2026 (suite de D20).*
+Première étape d'un futur « prof » qui explique le cours. Chaque leçon peut
+avoir un **script rédigé pour l'oral** (`lecons.script_audio`, migration
+`lecons_script_audio`) : une liste de passages `{lang, texte}`, sans
+Markdown, tableaux et symboles déjà mis en phrases. L'application ne
+fabrique jamais ce texte à partir du corps de la leçon : il est écrit et
+vérifié en base, comme le reste du contenu. Lecture par `flutter_tts`
+(voix du téléphone, gratuite, hors connexion), chaque passage dans sa
+langue ; vitesse 0,45 (un peu plus lent que la normale). Une voix absente
+est remplacée par une variante de la même langue (en-GB → en-US), jamais
+par une autre langue : sinon le passage est **sauté** et la barre invite à
+installer la voix. Barre en bas de l'écran de leçon, absente sans script ;
+pause quand un autre écran passe par-dessus (exercices : l'élève reprend au
+même passage), arrêt en quittant la leçon. Proposition technique : le
+moteur vocal est derrière une interface (`MoteurVocal`) pour tester le
+lecteur sans téléphone. Première leçon avec un script : la leçon 28
+(« The present simple », 4ème, anglais, 47 passages). Point ouvert : une
+correction de leçon publiée (D33) ne porte pas sur `script_audio`.
+
 ### D33. Corrections des leçons publiées, versions, rôle validateur
 *Bocar, 16/11/2026.*
 La rédaction reste dans les artefacts : création et correction du texte

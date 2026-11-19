@@ -91,7 +91,7 @@ Ordre de réalisation :
 | 4 | Page « À propos » | texte rédigé par Claude, validé par Bocar ; pas de contact, crédit « Conçue par Bocar Gueye » (D18) | fait le 13/11/2026 |
 | 5 | Icône et écran de lancement | variante A « Couverture » choisie par Bocar (D19) | fait le 14/11/2026, vérifié sur le téléphone par Bocar |
 | 6 | Schémas des leçons | stockage Supabase public `schemas` (D15) | fait le 14/11/2026 (espace de stockage et affichage) ; à vérifier avec une vraie image déposée par Bocar |
-| — | Lecture à voix haute | reportée (D20) | plus tard |
+| — | Lecture à voix haute | `flutter_tts`, script oral en base (D34, après D20) | fait le 19/11/2026 côté code |
 
 Critère commun : rien ne doit ralentir l'ouverture de l'application sur un
 téléphone d'entrée de gamme avec une connexion 3G.
@@ -279,6 +279,11 @@ compte Google Play déjà ouvert. Suppression du compte : migration
   `noreply@samaclasse.app` (D22) ; essai de connexion réussi.
 - ~~Téléphones des enfants~~ : fait le 16/11/2026, liaison par un code du
   parent, session anonyme limitée au profil de l'enfant (D32).
+- ~~« Écouter la leçon »~~ : fait le 19/11/2026 côté code (D34), lecture du
+  script oral de la leçon par la voix du téléphone. À essayer sur le
+  téléphone avec la leçon 28 (voix française et anglaise, pause, sauts,
+  arrêt en quittant). Reste : rédiger les scripts des autres leçons ;
+  décider si une correction (D33) peut porter sur le script.
 - Facultatif : enregistrement DMARC (`_dmarc`, `p=none`) dans Cloudflare ;
   redirection de `www.samaclasse.app` vers `samaclasse.app`.
 - Passage à `supabase_flutter` v3, une fois sortie en version stable (préversion
@@ -293,7 +298,7 @@ compte Google Play déjà ouvert. Suppression du compte : migration
 | --- | --- | --- |
 | 1 | ~~Format des libellés de catégories des tableaux~~ : tranché (D14) | 1 |
 | 2 | ~~Images des schémas : stockage, dépôt~~ : tranché (D15) | 1 |
-| 3 | ~~Lecture à voix haute (dépendance)~~ : reportée (D20) | plus tard |
+| 3 | ~~Lecture à voix haute (dépendance)~~ : tranché (D34, `flutter_tts`, script oral en base) | 5 |
 | 4 | ~~Connexion des élèves mineurs~~ : tranché (D21, compte parent et profils enfants) | 2 |
 | 5 | ~~Méthode de connexion~~ : tranché (D22, code par e-mail) ; rôle rédacteur : D23 | 2 |
 | 6 | ~~Enregistrement hors connexion des résultats~~ : tranché (D24, gardés puis envoyés) | 3 |

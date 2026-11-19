@@ -34,7 +34,7 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
    en rôle `anon` (et `authenticated` si concerné), puis conseillers de sécurité
    Supabase sans alerte.
 
-## État du code (15/11/2026)
+## État du code (19/11/2026)
 
 - **Phases 0 à 4 terminées côté code**, chacune essayée avec succès sur le
   téléphone (Galaxy S23 Ultra, Android 17). Détail, décisions et état dans
@@ -63,15 +63,19 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
     (écran « Schémas de la leçon », `ajouter_schema`, D31), téléphones des
     enfants liés par un code du parent (session anonyme limitée au profil,
     `lib/data/liaison.dart`, D32), corrections des leçons publiées avec
-    versions et rôle validateur (D33) ;
+    versions et rôle validateur (D33), « Écouter la leçon » : barre de
+    lecture du script oral `lecons.script_audio` par `flutter_tts`
+    (`lib/features/lecon/lecteur_lecon.dart`, D34 ; seule la leçon 28 a un
+    script ; à essayer sur le téléphone) ;
   - reste : signature Android, fiche Play Store et test fermé ; réinstaller
     l'application sous le nouvel identifiant sur le téléphone.
 - Reste à faire par Bocar : photographier les schémas des leçons 8, 9 et
   10 (repères « [Schéma : …] » à retirer ensuite), compléter les libellés
   des tableaux 17 et 31.
-- `flutter analyze` : aucun problème ; `flutter test` : 309/309, sans réseau
+- `flutter analyze` : aucun problème ; `flutter test` : 330/330, sans réseau
   (vraie application avec `test/outils/faux_depot.dart` : `FauxDepot`,
-  `FauxCompte`, `FauxEnvoi`, `FausseRedaction`, `FauxChoixImage`).
+  `FauxCompte`, `FauxEnvoi`, `FausseRedaction`, `FauxChoixImage`,
+  `FauxMoteurVocal`).
 - Pour un nouvel écran : ses quatre états et 200 % dans un test d'écran
   (`test/features/`), et un coup d'œil avec `tool/captures/captures_test.dart`.
 - Écrans livrés : accueil, matière, leçon, exercices, « À propos », « Espace
@@ -79,7 +83,8 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   la leçon », « Lier ce téléphone », « Téléphone d'Awa », « Versions de la
   leçon », aperçu d'une correction. La lecture ne
   demande jamais de compte.
-- Les 13 leçons sont publiées (16/11/2026).
+- Les 13 leçons sont publiées (16/11/2026), ainsi que la leçon 28
+  (anglais, 4ème, avec un script oral) au 19/11/2026.
 - **« Connecté » veut dire « parent connecté »** (`compte.estConnecte`) ; une
   session anonyme (téléphone d'enfant, D32) a `estAnonyme` vrai et
   `estConnecte` faux. Le suivi part pour l'une ou l'autre.
@@ -87,8 +92,8 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   texte corrigé dans `corrections_lecons` (la correction ouverte de la
   leçon), **jamais directement dans `lecons`** ; c'est un validateur qui le
   met en ligne depuis l'application. Procédure : `docs/CONTENU.md`.
-- Base : 11 migrations, de `schema_programme_lecons` à
-  `corrections_versions`. Bocar est rédacteur et validateur. Conseiller de
+- Base : 12 migrations, de `schema_programme_lecons` à
+  `lecons_script_audio`. Bocar est rédacteur et validateur. Conseiller de
   sécurité, attendu : les
   fonctions `security definer` appelables par `authenticated` (contrôles
   faits dans les fonctions), « RLS sans règle » sur `codes_liaison` et
