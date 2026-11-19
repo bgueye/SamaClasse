@@ -44,7 +44,7 @@ alter table public.lecons add constraint lecons_script_audio_is_array
 
 **Données de test** : seule la leçon **id 28** (« The present simple », 4e, anglais) a un script, de 47 passages en `fr-FR` et `en-GB`.
 
-> ⚠️ **RLS** : l'app ne voit que les leçons au statut `publiee`. La leçon 28 est au statut `a_verifier` : elle est **invisible depuis l'app** tant que le propriétaire du projet ne l'a pas publiée. **Ne modifie ni les politiques RLS, ni le statut des leçons.** Si la leçon 28 n'est pas visible au moment du test, signale-le au lieu de contourner la règle.
+> ⚠️ **RLS** : l'app ne voit que les leçons au statut `publiee`. La leçon 28 est **publiée** depuis le 19/11/2026 (elle était au statut `a_verifier` quand ce document a été rédigé) : elle est visible depuis l'app. **Ne modifie ni les politiques RLS, ni le statut des leçons.** Si une leçon n'est pas visible au moment du test, signale-le au lieu de contourner la règle.
 
 ## 4. Travail à faire
 
@@ -404,6 +404,6 @@ void main() {
 
 - [ ] `flutter analyze` sans nouvel avertissement, `flutter test` au vert.
 - [ ] Sur une leçon sans script : aucune barre visible.
-- [ ] Sur la leçon 28 (une fois visible) : lecture complète en alternant voix française et voix anglaise ; pause, reprise, précédent, suivant et arrêt conformes à la section 5.
+- [ ] Sur la leçon 28 (publiée) : lecture complète en alternant voix française et voix anglaise ; pause, reprise, précédent, suivant et arrêt conformes à la section 5.
 - [ ] La voix s'arrête quand on quitte l'écran de leçon.
 - [ ] Un court compte rendu : fichiers créés ou modifiés, écarts avec ce document et leur raison, ce qui n'a pas pu être testé.
