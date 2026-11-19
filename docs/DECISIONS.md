@@ -25,6 +25,7 @@ moteur vocal est derrière une interface (`MoteurVocal`) pour tester le
 lecteur sans téléphone. Première leçon avec un script : la leçon 28
 (« The present simple », 4ème, anglais, 47 passages). Point ouvert : une
 correction de leçon publiée (D33) ne porte pas sur `script_audio`.
+Spécification d'origine : `docs/IMPLEMENTATION_LECTEUR_VOCAL.md`.
 
 ### D33. Corrections des leçons publiées, versions, rôle validateur
 *Bocar, 16/11/2026.*
