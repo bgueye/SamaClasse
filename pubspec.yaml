@@ -23,6 +23,9 @@ dependencies:
   url_launcher: ^6.3.3
   image_picker: ^1.2.4
   image: ^4.13.1
+  # « Écouter la leçon » : synthèse vocale du téléphone (voix française,
+  # anglaise, espagnole selon le passage), sans réseau ni service payant.
+  flutter_tts: ^4.2.5
 
 dev_dependencies:
   flutter_test:

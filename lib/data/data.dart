@@ -8,5 +8,6 @@ export 'liaison.dart';
 export 'models.dart';
 export 'redaction.dart';
 export 'samaclasse_repository.dart';
+export 'segment_audio.dart';
 export 'suivi.dart';
 export 'telechargement_supabase.dart';

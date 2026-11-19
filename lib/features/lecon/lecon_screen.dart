@@ -13,6 +13,7 @@ import '../../core/widgets/page_seyes.dart';
 import '../../data/data.dart';
 import '../correction/fiche_demande_correction.dart';
 import '../validation/outils_validation.dart' show messageErreurRedaction;
+import 'lecteur_lecon.dart';
 import 'outils_lecon.dart';
 
 enum _Onglet { lecon, retenir }
@@ -219,6 +220,14 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
               child: _onglet == _Onglet.lecon ? _PageLecon(lecon: lecon) : _PageARetenir(lecon: lecon),
             ),
           ),
+        ),
+        // « Écouter la leçon » : sous la page, hors des onglets, pour que la
+        // lecture continue quand on passe à « À retenir ». Rien sans script.
+        // La clé recrée le lecteur si le script change (leçon corrigée et
+        // rechargée pendant la lecture) : jamais l'ancien texte lu.
+        BarreLecteur(
+          key: ValueKey((lecon.id, Object.hashAll(lecon.scriptAudio))),
+          segments: lecon.scriptAudio,
         ),
       ],
     );

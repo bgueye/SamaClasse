@@ -19,6 +19,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:samaclasse/app.dart';
 import 'package:samaclasse/core/app_scope.dart';
 import 'package:samaclasse/core/services/choix_image.dart';
+import 'package:samaclasse/core/services/moteur_vocal.dart';
 import 'package:samaclasse/core/services/preferences.dart';
 import 'package:samaclasse/core/services/reduction_image.dart';
 import 'package:samaclasse/data/data.dart';
@@ -887,6 +888,61 @@ class FauxChoixImage extends ChoixImage {
   }
 }
 
+/// Synthèse vocale sans téléphone (« Écouter la leçon »).
+///
+/// [journal] garde chaque appel (`langue fr-FR`, `dire Bonjour.`, `arrêt`).
+/// Automatique par défaut : chaque passage se termine aussitôt. Avec
+/// `automatique: false`, un passage dure jusqu'à [finirPassage] ou à un
+/// arrêt, pour observer une pause ou un saut en pleine lecture.
+class FauxMoteurVocal implements MoteurVocal {
+  FauxMoteurVocal({this.langues = const {'fr-FR', 'en-GB'}, this.automatique = true});
+
+  /// Voix installées sur le « téléphone ».
+  final Set<String> langues;
+  final bool automatique;
+
+  final journal = <String>[];
+  double? vitesse;
+  Completer<void>? _passage;
+
+  /// Un passage est en train d'être dit (mode non automatique).
+  bool get parle => _passage != null;
+
+  /// Termine le passage en cours, comme la fin naturelle d'une phrase.
+  /// Ensuite, `pumpEventQueue()` (ou `tester.pump()` dans un test d'écran)
+  /// laisse la boucle de lecture passer au passage suivant.
+  void finirPassage() {
+    final p = _passage;
+    _passage = null;
+    p?.complete();
+  }
+
+  @override
+  Future<void> preparer({required double vitesse}) async => this.vitesse = vitesse;
+
+  @override
+  Future<bool> langueDisponible(String langue) async => langues.contains(langue);
+
+  @override
+  Future<void> choisirLangue(String langue) async => journal.add('langue $langue');
+
+  @override
+  Future<void> dire(String texte) {
+    journal.add('dire $texte');
+    if (automatique) return Future.value();
+    return (_passage = Completer<void>()).future;
+  }
+
+  @override
+  Future<void> arreter() async {
+    journal.add('arrêt');
+    // Comme Android : l'arrêt termine la phrase en cours.
+    final p = _passage;
+    _passage = null;
+    p?.complete();
+  }
+}
+
 /// Taille d'un téléphone courant (390 × 844, comme dans CLAUDE.md).
 const tailleTelephone = Size(390, 844);
 
@@ -906,6 +962,7 @@ Future<void> lancerApp(
   FauxEnvoi? envoi,
   Redaction? redaction,
   ChoixImage? choixImage,
+  MoteurVocal? moteurVocal,
   String chemin = '/',
   Size taille = tailleTelephone,
   double echelleTexte = 1,
@@ -936,6 +993,8 @@ Future<void> lancerApp(
     suivi: suivi,
     redaction: redaction ?? FausseRedaction(),
     choixImage: choixImage ?? FauxChoixImage(),
+    // Toujours un faux : flutter_tts n'a pas de canal natif dans les tests.
+    creerMoteurVocal: () => moteurVocal ?? FauxMoteurVocal(),
     child: SamaClasseApp(emplacementInitial: chemin),
   ));
 }

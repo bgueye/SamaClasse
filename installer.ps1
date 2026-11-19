@@ -29,6 +29,16 @@ if (Test-Path $manifeste) {
   if ($xml -notmatch 'android\.permission\.INTERNET') {
     $xml = $xml -replace '(\s*)<application', "`$1<uses-permission android:name=`"android.permission.INTERNET`" />`$1<application"
   }
+  # flutter_tts (« Écouter la leçon ») : sans cette requête, Android 11+
+  # ne laisse pas l'application trouver le moteur de synthèse vocale.
+  if ($xml -notmatch 'android\.intent\.action\.TTS_SERVICE') {
+    $requeteTts = '<intent><action android:name="android.intent.action.TTS_SERVICE" /></intent>'
+    if ($xml -match '</queries>') {
+      $xml = $xml -replace '</queries>', "    $requeteTts`n    </queries>"
+    } else {
+      $xml = $xml -replace '</manifest>', "    <queries>`n        $requeteTts`n    </queries>`n</manifest>"
+    }
+  }
   $xml = $xml -replace 'android:label="samaclasse"', 'android:label="SamaClasse"'
   [System.IO.File]::WriteAllText($manifeste, $xml)
 }

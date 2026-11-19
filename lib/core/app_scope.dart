@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../data/data.dart';
 import 'services/choix_image.dart';
+import 'services/moteur_vocal.dart';
 import 'services/preferences.dart';
 
 /// Donne accès au dépôt Supabase, aux préférences et au compte parent dans
@@ -17,6 +18,7 @@ class AppScope extends InheritedWidget {
     required this.suivi,
     required this.redaction,
     this.choixImage = const ChoixImageSysteme(),
+    this.creerMoteurVocal = MoteurFlutterTts.new,
     required super.child,
   });
 
@@ -39,6 +41,10 @@ class AppScope extends InheritedWidget {
   /// (rédacteurs, phase 5). Remplacé par un faux dans les tests.
   final ChoixImage choixImage;
 
+  /// Fabrique du moteur de synthèse vocale de « Écouter la leçon » : un
+  /// moteur par écran de leçon, détruit avec lui. Un faux dans les tests.
+  final MoteurVocal Function() creerMoteurVocal;
+
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
     assert(scope != null, 'AppScope introuvable au-dessus de ce widget.');
@@ -52,5 +58,6 @@ class AppScope extends InheritedWidget {
       compte != oldWidget.compte ||
       suivi != oldWidget.suivi ||
       redaction != oldWidget.redaction ||
-      choixImage != oldWidget.choixImage;
+      choixImage != oldWidget.choixImage ||
+      creerMoteurVocal != oldWidget.creerMoteurVocal;
 }

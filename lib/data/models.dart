@@ -4,6 +4,8 @@
 // (fromJson). Les noms de colonnes restent ceux de la base (snake_case),
 // les champs Dart sont en camelCase.
 
+import 'segment_audio.dart';
+
 /// Fiabilité d'un chapitre du programme (enum `statut_programme`).
 enum StatutProgramme {
   officiel('officiel'),
@@ -305,6 +307,7 @@ class Lecon {
     required this.statut,
     required this.exercices,
     required this.contexte,
+    this.scriptAudio = const [],
   });
 
   final int id;
@@ -325,6 +328,10 @@ class Lecon {
   final StatutLecon statut;
   final List<Exercice> exercices;
   final ContexteLecon? contexte;
+
+  /// Script de « Écouter la leçon » (`lecons.script_audio`), passage par
+  /// passage. Vide si la leçon n'a pas de script : la barre ne s'affiche pas.
+  final List<SegmentAudio> scriptAudio;
 
   factory Lecon.fromJson(Map<String, dynamic> json) {
     final exercices = ((json['exercices'] as List?) ?? const [])
@@ -349,6 +356,7 @@ class Lecon {
       statut: StatutLecon.fromDb(json['statut'] as String),
       exercices: exercices,
       contexte: chapitre == null ? null : ContexteLecon.fromJson(chapitre),
+      scriptAudio: SegmentAudio.listeDepuis(json['script_audio']),
     );
   }
 }
