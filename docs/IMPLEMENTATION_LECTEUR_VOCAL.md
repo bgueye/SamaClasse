@@ -402,8 +402,10 @@ void main() {
 
 ## 8. Critères de fin
 
-- [ ] `flutter analyze` sans nouvel avertissement, `flutter test` au vert.
-- [ ] Sur une leçon sans script : aucune barre visible.
-- [ ] Sur la leçon 28 (publiée) : lecture complète en alternant voix française et voix anglaise ; pause, reprise, précédent, suivant et arrêt conformes à la section 5.
-- [ ] La voix s'arrête quand on quitte l'écran de leçon.
-- [ ] Un court compte rendu : fichiers créés ou modifiés, écarts avec ce document et leur raison, ce qui n'a pas pu être testé.
+- [x] `flutter analyze` sans nouvel avertissement, `flutter test` au vert.
+- [x] Sur une leçon sans script : aucune barre visible.
+- [x] Sur la leçon 28 (publiée) : lecture complète en alternant voix française et voix anglaise ; pause, reprise, précédent, suivant et arrêt conformes à la section 5.
+- [x] La voix s'arrête quand on quitte l'écran de leçon.
+- [x] Un court compte rendu : fichiers créés ou modifiés, écarts avec ce document et leur raison, ce qui n'a pas pu être testé.
+
+Critères vérifiés le 19/11/2026 : `flutter analyze` sans problème et `flutter test` à 330/330 ; comportement couvert par `test/features/lecteur_lecon_test.dart` ; essai sur le téléphone (Galaxy S23 Ultra, Android 17) confirmé par Bocar. Compte rendu et écarts : décision D34 (`docs/DECISIONS.md`).
