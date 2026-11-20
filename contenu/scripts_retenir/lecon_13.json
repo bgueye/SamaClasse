@@ -1,0 +1,12 @@
+[
+  {"lang": "fr-FR", "texte": "Mathématiques, classe de quatrième. À retenir : puissances de dix, valeur absolue et comparaison des rationnels."},
+  {"lang": "fr-FR", "texte": "L'écriture scientifique. Un nombre s'écrit a fois dix puissance p. Le nombre a ne compte qu'un seul chiffre non nul avant la virgule : sa valeur absolue est supérieure ou égale à un, et strictement inférieure à dix. Le nombre p est un entier relatif."},
+  {"lang": "fr-FR", "texte": "Par exemple, quatre cent cinquante mille s'écrit quatre virgule cinq fois dix puissance cinq."},
+  {"lang": "fr-FR", "texte": "Les calculs sur les puissances de dix. Dix puissance n, fois dix puissance èmme, égale dix puissance n plus èmme. Dix puissance n, le tout à la puissance èmme, égale dix puissance n fois èmme. Dix puissance n, divisé par dix puissance èmme, égale dix puissance n moins èmme."},
+  {"lang": "fr-FR", "texte": "La valeur absolue. Si a est positif ou nul, la valeur absolue de a est égale à a. Si a est négatif, la valeur absolue de a est égale à l'opposé de a. Une valeur absolue n'est jamais négative."},
+  {"lang": "fr-FR", "texte": "L'égalité de deux rationnels. Dire que a sur b égale c sur d revient à dire que a fois d égale b fois c. Ce sont les produits en croix."},
+  {"lang": "fr-FR", "texte": "Comparer deux rationnels. Entre deux nombres positifs, le plus grand est celui qui a la plus grande valeur absolue. Entre deux nombres négatifs, le plus grand est celui qui a la plus petite valeur absolue. Et tout nombre positif est plus grand que tout nombre négatif."},
+  {"lang": "fr-FR", "texte": "Les égalités et les opérations. On peut ajouter, retrancher, multiplier ou diviser les deux membres d'une égalité par un même nombre. Pour diviser, ce nombre ne doit pas être nul."},
+  {"lang": "fr-FR", "texte": "Les inégalités et les opérations. Ajouter ou retrancher un même nombre garde le sens de l'inégalité. Multiplier ou diviser par un nombre positif garde aussi son sens. Mais multiplier ou diviser par un nombre négatif change le sens de l'inégalité."},
+  {"lang": "fr-FR", "texte": "Fin du résumé. Pour vérifier que tu as retenu, essaie Interroge-moi, puis fais les exercices."}
+]
