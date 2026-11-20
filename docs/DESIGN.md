@@ -12,6 +12,23 @@ https://claude.ai/artifact/3Ci5BP3dorfEx2apfePJhE
 | `Parent` | Suivi de mes enfants | fait (phase 3), avec deux écarts : « exercices réussis » au lieu de « bonnes réponses » (c'est ce qui est mesuré), pas de bouton vers la validation (phase 4) |
 | `Validation` | Leçons à vérifier, publication | fait (phase 4), avec un écart de texte : « les élèves la verront à la prochaine mise à jour de leur application » au lieu de « la voient maintenant » ; confirmation avant de publier |
 
+Maquettes des idées validées par Bocar le 20/11/2026 (canvas séparé, D35) :
+https://claude.ai/artifact/XXUbNZErgvvaKgHve2Bo3M
+
+| Maquette | Écran | Public | État dans le code |
+| --- | --- | --- | --- |
+| `Main` | « Interroge-moi » : cartes de révision tirées de « À retenir » | élève | à faire (premier) |
+| `CartesParent` | « Fais réciter ton enfant » : question, réponse attendue visible du parent | parent | à faire (premier) |
+| `Partage` | « Envoyer cette leçon » : lien samaclasse.app par une autre application | tous | à faire |
+| `Fiche`, `FicheCorrige` | fiche A4 à imprimer (résumé, exercices) et son corrigé séparé | enseignant | à faire |
+| `Indice` | un indice avant le corrigé | élève | à faire ; demande un indice rédigé par question |
+| `Essentiel` | « Écouter l’essentiel » : lecture de « À retenir » | élève | à faire |
+| `Revision` | « Révision du BFEM » : série mêlée par matière | élève | à faire |
+| `ResumeParent` | résumé simple de la semaine et « Que lui demander ce soir ? » | parent | à faire |
+| `Signaler` | « Signaler une erreur » sur une leçon ou un exercice | tous | à faire ; demande une migration |
+| `Projection` | mode projection, partie par partie, très gros caractères (web) | enseignant | à faire |
+| `Programme` | programme d’une matière : chapitres disponibles, « fait en classe » (web) | enseignant | à faire |
+
 L'idée : l'application ressemble au cahier que l'élève connaît. Encre bleue,
 marge rouge, lignes Seyès sur la page de leçon, titres écrits à la main, et une
 couleur de protège-cahier par matière.

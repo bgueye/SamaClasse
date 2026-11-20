@@ -6,6 +6,21 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D35. Idées pour les élèves, les parents et les enseignants : maquettes validées
+*Bocar, 20/11/2026.*
+Maquettes validées (canvas « SamaClasse — Idées à tester », lien et liste
+dans `DESIGN.md`) : cartes « Interroge-moi » et mode parent « Fais réciter
+ton enfant », envoi d'une leçon par lien, fiche A4 à imprimer avec corrigé
+séparé ; puis indice avant le corrigé, « Écouter l’essentiel », révision du
+BFEM, résumé simple pour le parent avec « Que lui demander ce soir ? »,
+signaler une erreur, mode projection et programme d'une matière pour
+l'enseignant. Écartés pour l'instant : mode sombre (contraire à la charte
+papier, beaucoup de travail) et espace enseignant avec devoirs et classes.
+Ordre : d'abord « Interroge-moi » et le mode parent (ni changement de base,
+ni dépendance, ni contenu nouveau, D16 : tout est déjà sur le téléphone).
+Les cartes viennent de `lecons.a_retenir`. Analyse d'origine :
+`ANALYSE_FEUILLE_DE_ROUTE.md`.
+
 ### D34. « Écouter la leçon » : script oral en base, voix du téléphone
 *Bocar, 19/11/2026 (suite de D20).*
 Première étape d'un futur « prof » qui explique le cours. Chaque leçon peut
