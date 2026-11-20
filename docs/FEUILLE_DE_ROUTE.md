@@ -282,8 +282,61 @@ compte Google Play déjà ouvert. Suppression du compte : migration
 - ~~« Écouter la leçon »~~ : fait le 19/11/2026 côté code (D34), lecture du
   script oral de la leçon par la voix du téléphone. À essayer sur le
   téléphone avec la leçon 28 (voix française et anglaise, pause, sauts,
-  arrêt en quittant). Reste : rédiger les scripts des autres leçons ;
-  décider si une correction (D33) peut porter sur le script.
+  arrêt en quittant), fait le 19/11/2026. Reste : rédiger les scripts des
+  autres leçons ; décider si une correction (D33) peut porter sur le script.
+
+### Idées pour élèves, parents et enseignants (D35) : état au 20/11/2026
+
+Maquettes validées : canvas « SamaClasse — Idées à tester » (lien dans
+`DESIGN.md`). Fait et poussé sur `main` le 20/11/2026, essayé sur le
+téléphone sauf mention :
+
+- ~~« Interroge-moi »~~ (cartes de « À retenir ») et mode parent « Faire
+  réciter », encart « Que lui demander ce soir ? » dans « Suivi ».
+- ~~« Envoyer cette leçon »~~ et ~~« Fiche à imprimer »~~ (PDF, fiche puis
+  corrigé), adresses web sans « # » (D36).
+- ~~« Écouter l’essentiel »~~ (colonne `lecons.script_retenir`, D37) ; scripts
+  écrits pour les leçons 4, 13 et 28 seulement.
+- ~~Résumé simple de la semaine~~ dans « Suivi » (phrases, « Écouter le
+  résumé », « Envoyer ce résumé », jours travaillés).
+- ~~Mode projection~~ (`/lecon/:id/projection`) : **pas encore essayé** sur le
+  site en ligne ni sur une tablette.
+
+**Reste à faire**, dans l'ordre proposé (à confirmer par Bocar) :
+
+1. **« Signaler une erreur »** (maquette `Signaler`) : demande une
+   migration à soumettre d'abord (table de signalements, écriture par
+   `anon` et `authenticated` avec une limite d'envois, lecture par les
+   rédacteurs), puis l'affichage des signalements dans « Leçons à
+   vérifier ». Décider si l'envoi est ouvert à tous ou réservé aux profils.
+2. **Scripts « À retenir » des 20 autres leçons** : brouillons dans
+   `contenu/scripts_retenir/` (règles dans son README, vérifiés par
+   `test/data/scripts_retenir_test.dart`), relecture par Bocar, puis
+   écriture en base avec son accord, leçon par leçon. Possible par lots
+   par matière.
+3. **Un indice avant le corrigé** (maquette `Indice`) : demande un champ
+   (migration) et un indice rédigé par question : contenu à valider.
+4. **Révision du BFEM** et **programme d'une matière** pour l'enseignant
+   (maquettes `Revision`, `Programme`) : utiles quand une classe sera plus
+   complète.
+
+**Points ouverts relevés en chemin** :
+
+- Une correction de leçon publiée (D33) ne couvre ni `script_audio` ni
+  `script_retenir` : décider s'ils passent par le même circuit.
+- Cartes « Interroge-moi » : pas encore de révision espacée (les cartes
+  ratées ne reviennent pas les jours suivants) ; pas de bouton « Écouter la
+  question » en mode parent.
+- « Écouter l’essentiel » : la notion lue n'est pas surlignée dans la page.
+- App Links Android (ouvrir `samaclasse.app/lecon/…` directement dans
+  l'application) : après la clé de signature définitive.
+- À vérifier en vrai : fiche PDF et partage depuis le web ; mode
+  projection sur le site et sur tablette.
+- Conseiller de sécurité : « Leaked Password Protection Disabled » est sans
+  objet (connexion par code reçu par e-mail, sans mot de passe).
+- Découpage en sprints de la feuille de route (image du 20/11/2026) : mis
+  de côté, à refaire (`ANALYSE_FEUILLE_DE_ROUTE.md`).
+
 - Facultatif : enregistrement DMARC (`_dmarc`, `p=none`) dans Cloudflare ;
   redirection de `www.samaclasse.app` vers `samaclasse.app`.
 - Passage à `supabase_flutter` v3, une fois sortie en version stable (préversion

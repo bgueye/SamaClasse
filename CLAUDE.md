@@ -34,7 +34,7 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
    en rôle `anon` (et `authenticated` si concerné), puis conseillers de sécurité
    Supabase sans alerte.
 
-## État du code (19/11/2026)
+## État du code (20/11/2026)
 
 - **Phases 0 à 4 terminées côté code**, chacune essayée avec succès sur le
   téléphone (Galaxy S23 Ultra, Android 17). Détail, décisions et état dans
@@ -69,8 +69,13 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
     script ; à essayer sur le téléphone), « Écouter l’essentiel » (même
     barre sur l'onglet « À retenir », colonne `lecons.script_retenir`, D37 ;
     aucun script rédigé pour l'instant) ;
-  - reste : signature Android, fiche Play Store et test fermé ; réinstaller
-    l'application sous le nouvel identifiant sur le téléphone.
+  - reste : signature Android (`android/app/build.gradle.kts`, modifié et
+    pas encore enregistré dans git), fiche Play Store et test fermé.
+- **Idées D35, à reprendre** : « Signaler une erreur » (migration à
+  soumettre), scripts « À retenir » des 20 autres leçons, indice avant le
+  corrigé, révision du BFEM et programme d'une matière. Liste complète,
+  ordre et points ouverts : `docs/FEUILLE_DE_ROUTE.md`, phase 5, « Idées
+  pour élèves, parents et enseignants (D35) ».
 - Reste à faire par Bocar : photographier les schémas des leçons 8, 9 et
   10 (repères « [Schéma : …] » à retirer ensuite), compléter les libellés
   des tableaux 17 et 31.
