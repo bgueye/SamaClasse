@@ -13,6 +13,7 @@ import 'features/exercices/exercices_screen.dart';
 import 'features/lecon/lecon_screen.dart';
 import 'features/liaison/lier_screen.dart';
 import 'features/matiere/matiere_screen.dart';
+import 'features/projection/projection_screen.dart';
 import 'features/revision/cartes_screen.dart';
 import 'features/revision/outils_cartes.dart';
 import 'features/schemas/schemas_screen.dart';
@@ -26,6 +27,7 @@ import 'features/validation/validation_screen.dart';
 ///   /lecon/12/exercices             ses exercices
 ///   /lecon/12/reviser               « Interroge-moi » : cartes de révision (D35),
 ///                                   `?mode=parent` pour faire réciter un enfant
+///   /lecon/12/projection            mode projection, partie par partie (D35)
 ///   /lecon/12/schemas               ses schémas : ajout, retrait (rédacteurs)
 ///   /lecon/12/correction            texte de sa correction en cours (rédacteurs, D33)
 ///   /lecon/12/versions              ses versions publiées (rédacteurs, D33)
@@ -86,6 +88,14 @@ GoRouter creerRouteur({String emplacementInitial = '/'}) => GoRouter(
                       leconId: id,
                       mode: ModeCartes.depuisAdresse(state.uri.queryParameters['mode']),
                     );
+                  },
+                ),
+                GoRoute(
+                  path: 'projection',
+                  builder: (context, state) {
+                    final id = int.tryParse(state.pathParameters['leconId'] ?? '');
+                    if (id == null) return const PageIntrouvable();
+                    return ProjectionScreen(leconId: id);
                   },
                 ),
                 GoRoute(

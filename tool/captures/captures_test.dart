@@ -526,4 +526,12 @@ void main() {
       ..createSync(recursive: true)
       ..writeAsBytesSync(octets!);
   });
+
+  // Mode projection (D35) : ouverture et une partie du cours, en web large.
+  testWidgets('projection', (tester) async {
+    await lancerApp(tester, depot: FauxDepot(), chemin: '/lecon/1/projection', taille: tailleWeb);
+    await _capturer(tester, 'web_20_projection_ouverture');
+    await tester.tap(find.byTooltip('Partie suivante'));
+    await _capturer(tester, 'web_21_projection_partie');
+  });
 }

@@ -117,6 +117,8 @@ lib/
     matiere/matiere_screen.dart       chapitres par partie, filtre
     matiere/regroupement.dart         regrouperParPartie(), etatChapitre()
     lecon/lecon_screen.dart           onglets « La leçon » / « À retenir »
+    projection/projection_screen.dart mode projection (D35) : partie par partie, texte agrandi, clavier
+    projection/outils_projection.dart diapositives() (découpage aux « ## »), agrandissementProjection()
     revision/cartes_screen.dart       « Interroge-moi » (D35) : cartes de « À retenir », modes élève
                                       et parent (`?mode=parent`)
     revision/outils_cartes.dart       SeanceCartes (ordre, verso, bilan, cartes ratées), questionParent()
@@ -141,6 +143,7 @@ test/
   features/validation_test.dart validation : points, publication, rôle, écran, 200 %
   features/schemas_test.dart    schémas : paragraphes, description, ajout, refus, retrait, 200 %
   features/fiche_test.dart      fiche (blocs, types, PDF réel), envoi, icônes de la leçon, 200 %
+  features/projection_test.dart découpage, boutons, clavier, quitter, quatre états, 200 %
   features/cartes_test.dart     « Interroge-moi » : séance, modes, quatre états, encart du suivi, 200 %
   features/lecteur_lecon_test.dart « Écouter la leçon » : ordre, voix, pause, sauts, langue absente,
                                 barre dans l'écran (exercices, retour), 200 %
@@ -181,6 +184,7 @@ assets/fonts/                   polices embarquées (dont les polices de secours
 | `/classe/:classeId/matiere/:matiereId` | `MatiereScreen` | `classes()`, `matieres()`, `chapitres()` en parallèle |
 | `/lecon/:leconId` | `LeconScreen` | `lecon(id)` ; mémorise la dernière leçon |
 | `/lecon/:leconId/exercices` | `ExercicesScreen` | la `Lecon` passée en `extra`, sinon `lecon(id)` |
+| `/lecon/:leconId/projection` | `ProjectionScreen` | `lecon(id)` ; mode projection (D35) |
 | `/lecon/:leconId/reviser` | `CartesScreen` | `lecon(id)` ; `?mode=parent` ouvre le mode parent (D35) |
 | `/a-propos` | `AProposScreen` | aucune (page fixe : présentation, version, licences, D18) |
 | `/compte` | `CompteScreen` | connexion si pas de compte ; sinon `compte.enfants()`, `classes()` et `appareils()` ; téléphone lié : `TelephoneLie` |

@@ -184,6 +184,16 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
           icon: const Icon(Icons.print_outlined),
           onPressed: () => imprimerFiche(context, lecon),
         ),
+        // Mode projection (D35) : sur un écran large seulement (web,
+        // tablette, ordinateur relié au projecteur) ; un téléphone a déjà
+        // un en-tête plein. L'adresse /lecon/:id/projection reste ouverte.
+        if (MediaQuery.sizeOf(context).width >= 720)
+          IconButton(
+            tooltip: 'Projeter la leçon',
+            color: Couleurs.encre,
+            icon: const Icon(Icons.slideshow_outlined),
+            onPressed: () => context.push('/lecon/${lecon.id}/projection'),
+          ),
         schemas,
       ],
     );

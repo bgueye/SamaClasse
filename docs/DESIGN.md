@@ -26,7 +26,7 @@ https://claude.ai/artifact/XXUbNZErgvvaKgHve2Bo3M
 | `Revision` | « Révision du BFEM » : série mêlée par matière | élève | à faire |
 | `ResumeParent` | résumé simple de la semaine et « Que lui demander ce soir ? » | parent | fait (20/11/2026) dans « Suivi » : les trois cases deviennent trois phrases à icône (leçons lues, exercices réussis, jours travaillés), « Écouter le résumé » (voix du téléphone), « Envoyer ce résumé » ; « Que lui demander ce soir ? » montre les trois premières questions. Écart : icône neutre (crayon) pour les exercices, pas de coche verte |
 | `Signaler` | « Signaler une erreur » sur une leçon ou un exercice | tous | à faire ; demande une migration |
-| `Projection` | mode projection, partie par partie, très gros caractères (web) | enseignant | à faire |
+| `Projection` | mode projection, partie par partie, très gros caractères (web) | enseignant | fait (20/11/2026) : `/lecon/:id/projection`, icône dans l'en-tête de la leçon sur écran large (≥ 720 px) ; ouverture (objectifs, introduction), une diapositive par partie « ## », puis « À retenir » ; flèches, Espace, Page suivante/précédente, Échap ; sans lignes Seyès (texte agrandi : les lignes ne tomberaient plus juste) |
 | `Programme` | programme d’une matière : chapitres disponibles, « fait en classe » (web) | enseignant | à faire |
 
 L'idée : l'application ressemble au cahier que l'élève connaît. Encre bleue,

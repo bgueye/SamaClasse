@@ -74,7 +74,7 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
 - Reste à faire par Bocar : photographier les schémas des leçons 8, 9 et
   10 (repères « [Schéma : …] » à retirer ensuite), compléter les libellés
   des tableaux 17 et 31.
-- `flutter analyze` : aucun problème ; `flutter test` : 380/380, sans réseau
+- `flutter analyze` : aucun problème ; `flutter test` : 391/391, sans réseau
   (vraie application avec `test/outils/faux_depot.dart` : `FauxDepot`,
   `FauxCompte`, `FauxEnvoi`, `FausseRedaction`, `FauxChoixImage`,
   `FauxMoteurVocal`, `FauxPartage`, `FausseImpression`).
@@ -85,7 +85,7 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   la leçon », « Lier ce téléphone », « Téléphone d'Awa », « Versions de la
   leçon », aperçu d'une correction, « Interroge-moi » (cartes de
   révision et mode parent, D35), « Envoyer cette leçon », « Fiche à imprimer »
-  (PDF, D36). La lecture ne
+  (PDF, D36), mode projection (D35). La lecture ne
   demande jamais de compte.
 - Les 13 leçons sont publiées (16/11/2026), ainsi que la leçon 28
   (anglais, 4ème, avec un script oral) au 19/11/2026.
