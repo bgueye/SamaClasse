@@ -74,7 +74,7 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
 - Reste à faire par Bocar : photographier les schémas des leçons 8, 9 et
   10 (repères « [Schéma : …] » à retirer ensuite), compléter les libellés
   des tableaux 17 et 31.
-- `flutter analyze` : aucun problème ; `flutter test` : 364/364, sans réseau
+- `flutter analyze` : aucun problème ; `flutter test` : 380/380, sans réseau
   (vraie application avec `test/outils/faux_depot.dart` : `FauxDepot`,
   `FauxCompte`, `FauxEnvoi`, `FausseRedaction`, `FauxChoixImage`,
   `FauxMoteurVocal`, `FauxPartage`, `FausseImpression`).

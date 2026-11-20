@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/app_scope.dart';
+import '../../core/services/moteur_vocal.dart';
 import '../../core/theme/couleurs.dart';
 import '../../core/theme/matieres.dart';
 import '../../core/theme/theme.dart';
 import '../../core/widgets/composants.dart';
 import '../../core/widgets/etats.dart';
 import '../../data/data.dart';
+import '../revision/outils_cartes.dart' show questionParent;
 import 'statistiques.dart';
 
 /// « Suivi de mes enfants » (phase 3, maquette `Parent`), à l'adresse
@@ -90,11 +92,53 @@ class _SuiviConnecteState extends State<_SuiviConnecte> {
   /// Compte rédacteur : le crayon « Leçons à vérifier » s'affiche (phase 4).
   bool _redacteur = false;
 
+  /// « Écouter le résumé » (D35) : moteur créé au premier appui, arrêté en
+  /// quittant l'écran ou quand un autre écran passe par-dessus.
+  MoteurVocal? _moteur;
+  bool _parle = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _scope = AppScope.of(context);
     _chargement ??= _charger();
+    if (!(ModalRoute.isCurrentOf(context) ?? true)) _arreterLecture();
+  }
+
+  @override
+  void dispose() {
+    _moteur?.arreter().ignore();
+    super.dispose();
+  }
+
+  void _arreterLecture() {
+    if (!_parle) return;
+    _moteur?.arreter().ignore();
+    if (mounted) setState(() => _parle = false);
+  }
+
+  /// Lit [texte] avec la voix française ; un second appui arrête.
+  Future<void> _ecouter(String texte) async {
+    if (_parle) return _arreterLecture();
+    final moteur = _moteur ??= _scope.creerMoteurVocal();
+    setState(() => _parle = true);
+    try {
+      await moteur.preparer(vitesse: 0.45);
+      await moteur.choisirLangue('fr-FR');
+      await moteur.dire(texte);
+    } catch (_) {
+      // Pas de voix : rien de grave, le résumé reste écrit.
+    }
+    if (mounted) setState(() => _parle = false);
+  }
+
+  Future<void> _envoyer(String texte) async {
+    final messager = ScaffoldMessenger.of(context);
+    try {
+      await _scope.partage.envoyer(texte, sujet: 'Résumé de la semaine');
+    } catch (_) {
+      messager.showSnackBar(const SnackBar(content: Text('L’envoi n’a pas marché. Réessayez dans un instant.')));
+    }
   }
 
   Future<_DonneesSuivi> _charger() async {
@@ -235,8 +279,12 @@ class _SuiviConnecteState extends State<_SuiviConnecte> {
           Text('${enfant.prenom}, $classe', style: Styles.cahier(taille: 20)),
           const SizedBox(height: 20),
         ],
-        const _TitreSection('Cette semaine'),
-        _CasesSemaine(bilan: bilan),
+        _ResumeSemaine(
+          bilan: bilan,
+          parle: _parle,
+          onEcouter: () => _ecouter(texteResume(enfant.prenom, bilan)),
+          onEnvoyer: () => _envoyer('${texteResume(enfant.prenom, bilan)} (SamaClasse)'),
+        ),
         const SizedBox(height: 26),
         // « Que lui demander ce soir ? » (D35) : seulement s'il a lu une
         // leçon qui a des notions à réciter.
@@ -369,92 +417,6 @@ class _BoutonEnfant extends StatelessWidget {
 }
 
 /// Les trois chiffres de la semaine, dans un cadre blanc.
-class _CasesSemaine extends StatelessWidget {
-  const _CasesSemaine({required this.bilan});
-
-  final BilanSemaine bilan;
-
-  @override
-  Widget build(BuildContext context) {
-    final pourcentage = bilan.pourcentage;
-    final cases = [
-      (bilan.leconsLues.toString(), bilan.leconsLues == 1 ? 'leçon lue' : 'leçons lues'),
-      (bilan.exercicesFaits.toString(), bilan.exercicesFaits == 1 ? 'exercice fait' : 'exercices faits'),
-      // Tiret sans exercice : « 0 % » laisserait croire à des échecs.
-      (pourcentage == null ? '–' : '$pourcentage %', 'exercices réussis'),
-    ];
-    Widget uneCase(int i, {required bool enLigne}) => Semantics(
-          // Une case = un élément pour le lecteur d'écran, lu d'un bloc :
-          // « 3 leçons lues ». Sans `container`, les trois cases étaient
-          // fusionnées en une seule annonce.
-          container: true,
-          label: i == 2 && pourcentage == null
-              ? 'Exercices réussis : pas encore d’exercice'
-              : '${cases[i].$1} ${cases[i].$2}',
-          excludeSemantics: true,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            child: enLigne
-                // Texte très agrandi : chiffre et libellé côte à côte, une
-                // case par ligne.
-                ? Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 10,
-                    children: [
-                      Text(cases[i].$1, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-                      Text(cases[i].$2, style: Styles.secondaire),
-                    ],
-                  )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(cases[i].$1, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-                      const SizedBox(height: 4),
-                      Text(cases[i].$2, style: Styles.secondaire),
-                    ],
-                  ),
-          ),
-        );
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Couleurs.papier,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Couleurs.bordureCarte, width: 1.5),
-      ),
-      child: LayoutBuilder(
-        builder: (context, contraintes) {
-          // Trois colonnes tant qu'un libellé comme « exercices » y tient
-          // sans couper les mots ; sinon, une case par ligne.
-          final serre = contraintes.maxWidth / 3 < MediaQuery.textScalerOf(context).scale(110);
-          if (serre) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (var i = 0; i < cases.length; i++) ...[
-                  if (i > 0) const Divider(height: 1, thickness: 1, color: Couleurs.bordure),
-                  uneCase(i, enLigne: true),
-                ],
-              ],
-            );
-          }
-          return IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (var i = 0; i < cases.length; i++) ...[
-                  if (i > 0) const VerticalDivider(width: 1, thickness: 1, color: Couleurs.bordure),
-                  Expanded(child: uneCase(i, enLigne: false)),
-                ],
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
 class _LigneExercice extends StatelessWidget {
   const _LigneExercice({required this.fait});
 
@@ -542,7 +504,20 @@ class _ACeSoir extends StatelessWidget {
               'Dernière leçon lue par $prenom : ${lecon.titre}${matiere == null ? '' : ' (${matiere.toLowerCase()})'}.',
               style: const TextStyle(fontSize: 15, height: 1.4, color: Couleurs.texteDoux),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
+            // Les premières questions, pour commencer tout de suite.
+            for (final n in lecon.aRetenir.take(3))
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Couleurs.fond, borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    child: Text(questionParent(n.notion), style: const TextStyle(fontSize: 16, height: 1.4, color: Couleurs.texte)),
+                  ),
+                ),
+              ),
+            const SizedBox(height: 6),
             FilledButton.icon(
               onPressed: () => context.push('/lecon/${lecon.id}/reviser?mode=parent'),
               icon: const Icon(Icons.record_voice_over_outlined),
@@ -551,6 +526,98 @@ class _ACeSoir extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// « Cette semaine » en trois lignes à grosse icône (D35, maquette
+/// `ResumeParent`) : des phrases plutôt que des chiffres seuls, lisibles par
+/// un parent qui ne connaît pas l'application. Puis « Écouter le résumé » et
+/// « Envoyer ce résumé ».
+class _ResumeSemaine extends StatelessWidget {
+  const _ResumeSemaine({
+    required this.bilan,
+    required this.parle,
+    required this.onEcouter,
+    required this.onEnvoyer,
+  });
+
+  final BilanSemaine bilan;
+  final bool parle;
+  final VoidCallback onEcouter;
+  final VoidCallback onEnvoyer;
+
+  @override
+  Widget build(BuildContext context) {
+    final lignes = [
+      (Icons.menu_book_outlined, Couleurs.selection, Couleurs.encre, phraseLecons(bilan)),
+      // Icône neutre : une coche verte annoncerait une réussite, même pour
+      // « n'a pas encore fait d'exercice » ou « 2 sur 10 ».
+      (Icons.edit_outlined, Couleurs.selection, Couleurs.encre, phraseExercices(bilan)),
+      (Icons.calendar_month_outlined, Couleurs.fond, Couleurs.texte, phraseJours(bilan)),
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            const Expanded(child: _TitreSection('Cette semaine')),
+            IconButton.outlined(
+              tooltip: parle ? 'Arrêter la lecture' : 'Écouter le résumé',
+              onPressed: onEcouter,
+              icon: Icon(parle ? Icons.stop_rounded : Icons.volume_up_outlined),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: Couleurs.papier,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Couleurs.bordureCarte, width: 1.5),
+          ),
+          child: Column(
+            children: [
+              for (final (i, (icone, fond, couleur, phrase)) in lignes.indexed) ...[
+                if (i > 0) const Divider(height: 1, thickness: 1, color: Couleurs.bordure),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  child: Row(
+                    children: [
+                      // Décor : la phrase dit tout.
+                      ExcludeSemantics(
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: fond,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Couleurs.bordureCarte),
+                          ),
+                          child: Icon(icone, color: couleur, size: 24),
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Text(
+                          majuscule(phrase),
+                          style: const TextStyle(fontSize: 17, height: 1.35, color: Couleurs.texte),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        OutlinedButton.icon(
+          onPressed: onEnvoyer,
+          icon: const Icon(Icons.share_outlined),
+          label: const Text('Envoyer ce résumé'),
+        ),
+      ],
     );
   }
 }

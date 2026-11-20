@@ -29,7 +29,6 @@ ResultatExercice _res(int exerciceId, DateTime quand, {int enfant = 1, bool reus
     );
 
 /// Ce qu'un lecteur d'écran annonce pour la case qui contient [texte].
-String _annonce(WidgetTester tester, String texte) => tester.getSemantics(find.text(texte)).label;
 
 void main() {
   group('Semaine', () {
@@ -40,6 +39,35 @@ void main() {
       expect(debutSemaine(DateTime(2026, 11, 16, 0, 5)), DateTime(2026, 11, 16));
       // Dimanche 15/11 : semaine commencée le lundi 9/11.
       expect(debutSemaine(DateTime(2026, 11, 15, 23, 59)), DateTime(2026, 11, 9));
+    });
+
+    test('résumé en phrases : pluriels, zéros, phrase complète', () {
+      const b = BilanSemaine(leconsLues: 3, exercicesFaits: 10, reussis: 8, joursTravailles: 4);
+      expect(majuscule(phraseLecons(b)), 'A lu 3 leçons');
+      expect(phraseExercices(b), 'a réussi 8 exercices sur 10');
+      expect(phraseJours(b), 'a travaillé 4 jours sur 7');
+      expect(texteResume('Awa', b),
+          'Cette semaine, Awa a lu 3 leçons, a réussi 8 exercices sur 10 et a travaillé 4 jours sur 7.');
+      const un = BilanSemaine(leconsLues: 1, exercicesFaits: 1, reussis: 1, joursTravailles: 1);
+      expect(texteResume('Awa', un), 'Cette semaine, Awa a lu 1 leçon, a réussi 1 exercice sur 1 et a travaillé 1 jour sur 7.');
+      const rien = BilanSemaine(leconsLues: 0, exercicesFaits: 0, reussis: 0);
+      expect(texteResume('Awa', rien), 'Cette semaine, Awa n’a pas encore travaillé dans SamaClasse.');
+      expect(majuscule(phraseExercices(rien)), 'N’a pas encore fait d’exercice');
+    });
+
+    test('jours travaillés : jours distincts, lectures et exercices mêlés', () {
+      final jeudi = DateTime(2026, 11, 19, 15);
+      final bilan = bilanSemaine(
+        enfantId: 1,
+        lectures: [LectureLecon(enfantId: 1, leconId: 1, lueLe: DateTime(2026, 11, 16, 9))],
+        resultats: [
+          _res(20, DateTime(2026, 11, 16, 18)),
+          _res(21, DateTime(2026, 11, 18, 10)),
+          _res(22, DateTime(2026, 11, 19, 8)),
+        ],
+        maintenant: jeudi,
+      );
+      expect(bilan.joursTravailles, 3);
     });
 
     test('bilan : seulement cet enfant et cette semaine', () {
@@ -62,7 +90,8 @@ void main() {
         ],
         maintenant: jeudi,
       );
-      expect(bilan, const BilanSemaine(leconsLues: 1, exercicesFaits: 3, reussis: 2));
+      // Mardi seulement : la lecture et les trois exercices du même jour.
+      expect(bilan, const BilanSemaine(leconsLues: 1, exercicesFaits: 3, reussis: 2, joursTravailles: 1));
       expect(bilan.pourcentage, 67);
     });
 
@@ -141,8 +170,6 @@ void main() {
     });
 
     testWidgets('chargement, puis contenu de l’enfant de ce téléphone', (tester) async {
-      // Les cases sont vérifiées par ce qu'entend un lecteur d'écran.
-      final semantique = tester.ensureSemantics();
       final maintenant = DateTime.now();
       final compte = compteAvec(
         resultats: [
@@ -163,22 +190,19 @@ void main() {
 
       compte.attente!.complete();
       await tester.pumpAndSettle();
-      // Moussa (enfant de ce téléphone) est affiché d'abord.
-      expect(_annonce(tester, 'leçon lue'), '1 leçon lue');
-      expect(_annonce(tester, 'exercices faits'), '2 exercices faits');
-      expect(_annonce(tester, 'exercices réussis'), '50 % exercices réussis');
+      // Moussa (enfant de ce téléphone) est affiché d'abord, en phrases.
+      expect(find.text('A lu 1 leçon'), findsOneWidget);
+      expect(find.text('A réussi 1 exercice sur 2'), findsOneWidget);
+      expect(find.text('A travaillé 1 jour sur 7'), findsOneWidget);
       expect(find.text('2 sur 6'), findsOneWidget);
       expect(find.text('Juste, selon l’enfant'), findsOneWidget);
       expect(find.text('Tableau à compléter'), findsOneWidget);
       // Seconde L : pas de leçon publiée dans le jeu de test.
       expect(find.text('Leçons disponibles en Seconde L'), findsOneWidget);
       expect(find.text('Pas encore de leçon publiée.'), findsOneWidget);
-      semantique.dispose();
     });
 
     testWidgets('changer d’enfant change les chiffres et les leçons', (tester) async {
-      // Les cases sont vérifiées par ce qu'entend un lecteur d'écran.
-      final semantique = tester.ensureSemantics();
       await lancerApp(
         tester,
         depot: FauxDepot(),
@@ -190,14 +214,45 @@ void main() {
       expect(find.text('Leçons disponibles en 4ème'), findsOneWidget);
       expect(find.text('Introduction aux sciences physiques'), findsOneWidget);
       expect(find.text('1 leçon et 5 exercices pour l’instant.'), findsOneWidget);
-      expect(_annonce(tester, 'exercices réussis'), 'Exercices réussis : pas encore d’exercice');
+      expect(find.text('N’a pas encore lu de leçon'), findsOneWidget);
+      expect(find.text('N’a pas encore fait d’exercice'), findsOneWidget);
+      expect(find.text('N’a pas encore travaillé'), findsOneWidget);
       expect(find.textContaining('Aucun exercice pour l’instant'), findsOneWidget);
 
       await tester.tap(find.text('Moussa'));
       await tester.pumpAndSettle();
       expect(find.text('Leçons disponibles en Seconde L'), findsOneWidget);
-      expect(_annonce(tester, 'exercice fait'), '1 exercice fait');
-      semantique.dispose();
+      expect(find.text('A réussi 1 exercice sur 1'), findsOneWidget);
+    });
+
+    testWidgets('« Écouter le résumé » et « Envoyer ce résumé »', (tester) async {
+      final moteur = FauxMoteurVocal();
+      final partage = FauxPartage();
+      await lancerApp(
+        tester,
+        depot: FauxDepot(),
+        compte: compteAvec(
+          profils: [enfants.first],
+          lectures: [LectureLecon(enfantId: 1, leconId: 1, lueLe: DateTime.now())],
+        ),
+        moteurVocal: moteur,
+        partage: partage,
+        chemin: '/suivi',
+      );
+      await tester.pumpAndSettle();
+      const resume = 'Cette semaine, Awa a lu 1 leçon, n’a pas encore fait d’exercice et a travaillé 1 jour sur 7.';
+
+      await tester.tap(find.byTooltip('Écouter le résumé'));
+      await tester.pumpAndSettle();
+      expect(moteur.vitesse, 0.45);
+      expect(moteur.journal, ['langue fr-FR', 'dire $resume']);
+
+      final envoyer = find.text('Envoyer ce résumé');
+      await tester.ensureVisible(envoyer);
+      await tester.pumpAndSettle();
+      await tester.tap(envoyer);
+      await tester.pumpAndSettle();
+      expect(partage.envois, ['$resume (SamaClasse)']);
     });
 
     testWidgets('erreur réseau, puis « Réessayer »', (tester) async {

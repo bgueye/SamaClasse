@@ -17,14 +17,23 @@ DateTime debutSemaine(DateTime maintenant) {
   return jour.subtract(Duration(days: jour.weekday - DateTime.monday));
 }
 
-/// Les trois chiffres de « Cette semaine ».
+/// Les chiffres de « Cette semaine ».
 @immutable
 class BilanSemaine {
-  const BilanSemaine({required this.leconsLues, required this.exercicesFaits, required this.reussis});
+  const BilanSemaine({
+    required this.leconsLues,
+    required this.exercicesFaits,
+    required this.reussis,
+    this.joursTravailles = 0,
+  });
 
   final int leconsLues;
   final int exercicesFaits;
   final int reussis;
+
+  /// Jours distincts (heure du téléphone) avec au moins une leçon lue ou un
+  /// exercice fait depuis lundi (D35, résumé simple).
+  final int joursTravailles;
 
   /// Part d'exercices réussis, arrondie ; `null` sans exercice (on affiche
   /// alors un tiret : « 0 % » laisserait croire à des échecs).
@@ -35,13 +44,14 @@ class BilanSemaine {
       other is BilanSemaine &&
       other.leconsLues == leconsLues &&
       other.exercicesFaits == exercicesFaits &&
-      other.reussis == reussis;
+      other.reussis == reussis &&
+      other.joursTravailles == joursTravailles;
 
   @override
-  int get hashCode => Object.hash(leconsLues, exercicesFaits, reussis);
+  int get hashCode => Object.hash(leconsLues, exercicesFaits, reussis, joursTravailles);
 
   @override
-  String toString() => 'BilanSemaine($leconsLues lues, $reussis/$exercicesFaits)';
+  String toString() => 'BilanSemaine($leconsLues lues, $reussis/$exercicesFaits, $joursTravailles jours)';
 }
 
 /// Activité de l'enfant [enfantId] depuis lundi 0 h.
@@ -57,11 +67,54 @@ BilanSemaine bilanSemaine({
   final debut = debutSemaine(maintenant);
   bool cetteSemaine(DateTime d) => !d.toLocal().isBefore(debut);
   final semaine = [for (final r in resultats) if (r.enfantId == enfantId && cetteSemaine(r.faitLe)) r];
+  final lues = [for (final l in lectures) if (l.enfantId == enfantId && cetteSemaine(l.lueLe)) l];
+  DateTime jour(DateTime d) {
+    final local = d.toLocal();
+    return DateTime(local.year, local.month, local.day);
+  }
+
   return BilanSemaine(
-    leconsLues: lectures.where((l) => l.enfantId == enfantId && cetteSemaine(l.lueLe)).length,
+    leconsLues: lues.length,
     exercicesFaits: semaine.length,
     reussis: semaine.where((r) => r.reussi).length,
+    // Une leçon relue ne garde que sa dernière date (une ligne par leçon) :
+    // un jour de simple relecture peut manquer. Le chiffre reste un minimum.
+    joursTravailles: {for (final l in lues) jour(l.lueLe), for (final r in semaine) jour(r.faitLe)}.length,
   );
+}
+
+// --- Résumé simple (D35, maquette `ResumeParent`) ---
+//
+// Phrases à la troisième personne, reprises telles quelles à l'écran (avec
+// une majuscule), lues à voix haute et envoyées par « Envoyer ce résumé ».
+
+String _pluriel(int n, String singulier, String pluriel) => n > 1 ? pluriel : singulier;
+
+/// « a lu 3 leçons » ; « n’a pas encore lu de leçon ».
+String phraseLecons(BilanSemaine b) => b.leconsLues == 0
+    ? 'n’a pas encore lu de leçon'
+    : 'a lu ${b.leconsLues} ${_pluriel(b.leconsLues, 'leçon', 'leçons')}';
+
+/// « a réussi 8 exercices sur 10 » ; « n’a pas encore fait d’exercice ».
+String phraseExercices(BilanSemaine b) => b.exercicesFaits == 0
+    ? 'n’a pas encore fait d’exercice'
+    : 'a réussi ${b.reussis} ${_pluriel(b.reussis, 'exercice', 'exercices')} sur ${b.exercicesFaits}';
+
+/// « a travaillé 4 jours sur 7 » ; « n’a pas encore travaillé ».
+String phraseJours(BilanSemaine b) => b.joursTravailles == 0
+    ? 'n’a pas encore travaillé'
+    : 'a travaillé ${b.joursTravailles} ${_pluriel(b.joursTravailles, 'jour', 'jours')} sur 7';
+
+/// Première lettre en majuscule (« A lu 3 leçons »).
+String majuscule(String texte) => texte.isEmpty ? texte : texte[0].toUpperCase() + texte.substring(1);
+
+/// Le résumé en une phrase : « Cette semaine, Awa a lu 3 leçons, a réussi
+/// 8 exercices sur 10 et a travaillé 4 jours sur 7. »
+String texteResume(String prenom, BilanSemaine b) {
+  if (b.leconsLues == 0 && b.exercicesFaits == 0) {
+    return 'Cette semaine, $prenom n’a pas encore travaillé dans SamaClasse.';
+  }
+  return 'Cette semaine, $prenom ${phraseLecons(b)}, ${phraseExercices(b)} et ${phraseJours(b)}.';
 }
 
 /// Un exercice fait, avec ce qu'il faut pour l'afficher.

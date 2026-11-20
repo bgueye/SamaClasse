@@ -24,7 +24,7 @@ https://claude.ai/artifact/XXUbNZErgvvaKgHve2Bo3M
 | `Indice` | un indice avant le corrigé | élève | à faire ; demande un indice rédigé par question |
 | `Essentiel` | « Écouter l’essentiel » : lecture de « À retenir » | élève | fait côté code (20/11/2026, D37) : la barre du bas lit `script_retenir` sur l'onglet « À retenir » ; sans surlignage de la notion lue ; scripts à rédiger |
 | `Revision` | « Révision du BFEM » : série mêlée par matière | élève | à faire |
-| `ResumeParent` | résumé simple de la semaine et « Que lui demander ce soir ? » | parent | à faire |
+| `ResumeParent` | résumé simple de la semaine et « Que lui demander ce soir ? » | parent | fait (20/11/2026) dans « Suivi » : les trois cases deviennent trois phrases à icône (leçons lues, exercices réussis, jours travaillés), « Écouter le résumé » (voix du téléphone), « Envoyer ce résumé » ; « Que lui demander ce soir ? » montre les trois premières questions. Écart : icône neutre (crayon) pour les exercices, pas de coche verte |
 | `Signaler` | « Signaler une erreur » sur une leçon ou un exercice | tous | à faire ; demande une migration |
 | `Projection` | mode projection, partie par partie, très gros caractères (web) | enseignant | à faire |
 | `Programme` | programme d’une matière : chapitres disponibles, « fait en classe » (web) | enseignant | à faire |
