@@ -19,8 +19,8 @@ https://claude.ai/artifact/XXUbNZErgvvaKgHve2Bo3M
 | --- | --- | --- | --- |
 | `Main` | « Interroge-moi » : cartes de révision tirées de « À retenir » | élève | fait (20/11/2026), avec un écart : pas de « reviendront dans quelques jours » (pas encore de révision espacée) |
 | `CartesParent` | « Fais réciter ton enfant » : question, réponse attendue visible du parent | parent | fait (20/11/2026), avec des écarts : même écran que les cartes (sélecteur « Je révise seul » / « Je fais réciter », sans compte), question « Explique-moi : « notion ». », vouvoiement, pas encore de bouton « Écouter la question » ; ouvert aussi depuis « Suivi » (« Que lui demander ce soir ? ») |
-| `Partage` | « Envoyer cette leçon » : lien samaclasse.app par une autre application | tous | à faire |
-| `Fiche`, `FicheCorrige` | fiche A4 à imprimer (résumé, exercices) et son corrigé séparé | enseignant | à faire |
+| `Partage` | « Envoyer cette leçon » : lien samaclasse.app par une autre application | tous | fait (20/11/2026) : icône dans l'en-tête de la leçon |
+| `Fiche`, `FicheCorrige` | fiche A4 à imprimer (résumé, exercices) et son corrigé séparé | enseignant | fait (20/11/2026) : icône dans l'en-tête de la leçon, un seul PDF (fiche puis corrigé sur une nouvelle page), tous les exercices de la leçon, schémas remplacés par leur description |
 | `Indice` | un indice avant le corrigé | élève | à faire ; demande un indice rédigé par question |
 | `Essentiel` | « Écouter l’essentiel » : lecture de « À retenir » | élève | à faire |
 | `Revision` | « Révision du BFEM » : série mêlée par matière | élève | à faire |

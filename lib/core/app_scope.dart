@@ -2,7 +2,9 @@ import 'package:flutter/widgets.dart';
 
 import '../data/data.dart';
 import 'services/choix_image.dart';
+import 'services/impression.dart';
 import 'services/moteur_vocal.dart';
+import 'services/partage.dart';
 import 'services/preferences.dart';
 
 /// Donne accès au dépôt Supabase, aux préférences et au compte parent dans
@@ -19,6 +21,8 @@ class AppScope extends InheritedWidget {
     required this.redaction,
     this.choixImage = const ChoixImageSysteme(),
     this.creerMoteurVocal = MoteurFlutterTts.new,
+    this.partage = const PartageSysteme(),
+    this.impression = const ImpressionSysteme(),
     required super.child,
   });
 
@@ -45,6 +49,14 @@ class AppScope extends InheritedWidget {
   /// moteur par écran de leçon, détruit avec lui. Un faux dans les tests.
   final MoteurVocal Function() creerMoteurVocal;
 
+  /// « Envoyer cette leçon » (D35) : partage du système, presse-papiers.
+  /// Un faux dans les tests.
+  final Partage partage;
+
+  /// « Fiche à imprimer » (D35) : aperçu d'impression du système. Un faux
+  /// dans les tests.
+  final Impression impression;
+
   static AppScope of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<AppScope>();
     assert(scope != null, 'AppScope introuvable au-dessus de ce widget.');
@@ -59,5 +71,7 @@ class AppScope extends InheritedWidget {
       suivi != oldWidget.suivi ||
       redaction != oldWidget.redaction ||
       choixImage != oldWidget.choixImage ||
-      creerMoteurVocal != oldWidget.creerMoteurVocal;
+      creerMoteurVocal != oldWidget.creerMoteurVocal ||
+      partage != oldWidget.partage ||
+      impression != oldWidget.impression;
 }

@@ -13,6 +13,7 @@ import '../../core/widgets/page_seyes.dart';
 import '../../data/data.dart';
 import '../correction/fiche_demande_correction.dart';
 import '../validation/outils_validation.dart' show messageErreurRedaction;
+import 'envoi_lecon.dart';
 import 'lecteur_lecon.dart';
 import 'outils_lecon.dart';
 
@@ -166,6 +167,26 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
             )
           : const SizedBox.shrink(),
     );
+    // Pour tous (D35) : envoyer le lien de la leçon, imprimer sa fiche.
+    // Puis, pour les rédacteurs, leur menu.
+    final outils = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          tooltip: 'Envoyer cette leçon',
+          color: Couleurs.encre,
+          icon: const Icon(Icons.share_outlined),
+          onPressed: () => afficherEnvoi(context, lecon),
+        ),
+        IconButton(
+          tooltip: 'Fiche à imprimer',
+          color: Couleurs.encre,
+          icon: const Icon(Icons.print_outlined),
+          onPressed: () => imprimerFiche(context, lecon),
+        ),
+        schemas,
+      ],
+    );
     final onglets = ControleSegmente<_Onglet>(
       libelleGroupe: 'Contenu de la leçon',
       options: const [(_Onglet.lecon, 'La leçon'), (_Onglet.retenir, 'À retenir')],
@@ -194,7 +215,7 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
                         // Le lien se tronque (« … ») avant que les onglets
                         // ne rétrécissent.
                         Expanded(child: retour),
-                        schemas,
+                        outils,
                         const SizedBox(width: 12),
                         SizedBox(width: 300, child: onglets),
                       ],
@@ -205,7 +226,7 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Row(children: [Expanded(child: retour), schemas]),
+                        Row(children: [Expanded(child: retour), outils]),
                         const SizedBox(height: 8),
                         Padding(padding: const EdgeInsets.only(left: 4), child: onglets),
                       ],

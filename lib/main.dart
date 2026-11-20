@@ -8,6 +8,7 @@
 import 'package:flutter/foundation.dart' show LicenseEntryWithLineBreaks, LicenseRegistry;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
@@ -19,6 +20,10 @@ import 'core/theme/theme.dart';
 import 'data/data.dart';
 
 Future<void> main() async {
+  // Web : adresses sans « # » (samaclasse.app/lecon/4), pour des liens
+  // partagés lisibles (D35). Cloudflare Pages renvoie ces adresses vers
+  // index.html. Sans effet sur Android et iOS.
+  usePathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   _enregistrerLicencesPolices();
 

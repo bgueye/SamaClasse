@@ -6,6 +6,22 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D36. Envoi et fiche : share_plus, pdf, printing ; adresses web sans « # »
+*Bocar, 20/11/2026.*
+Pour « Envoyer cette leçon » et « Fiche à imprimer » (D35), trois paquets
+ajoutés : `share_plus` (liste « Envoyer avec… » du téléphone : WhatsApp,
+SMS, Bluetooth… ; partage du navigateur sur le web), `pdf` et `printing`
+(fiche A4 fabriquée sur l'appareil, hors connexion, avec les polices
+embarquées, puis aperçu d'impression du système ou du navigateur). Tous deux
+derrière une interface (`Partage`, `Impression`) remplacée par un faux dans
+les tests. Adresses web sans « # » (`usePathUrlStrategy`, paquet
+`flutter_web_plugins` du SDK) : les liens envoyés sont de la forme
+`https://samaclasse.app/lecon/4` ; Cloudflare Pages renvoie ces adresses vers
+`index.html`. Avant, l'application utilisait des adresses avec « # » et un
+lien `/lecon/4` menait à l'accueil. Prochaine étape possible : les App Links
+Android (ouvrir ces liens directement dans l'application), une fois la clé
+de signature définitive.
+
 ### D35. Idées pour les élèves, les parents et les enseignants : maquettes validées
 *Bocar, 20/11/2026.*
 Maquettes validées (canvas « SamaClasse — Idées à tester », lien et liste

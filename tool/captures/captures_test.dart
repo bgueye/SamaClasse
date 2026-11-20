@@ -20,6 +20,8 @@ import 'package:samaclasse/app.dart';
 import 'package:samaclasse/core/services/preferences.dart';
 import 'package:samaclasse/core/theme/theme.dart';
 import 'package:samaclasse/data/data.dart';
+import 'package:samaclasse/features/fiche/contenu_fiche.dart';
+import 'package:samaclasse/features/fiche/fiche_pdf.dart';
 import 'package:image/image.dart' as img;
 
 import '../../test/outils/faux_depot.dart';
@@ -514,5 +516,14 @@ void main() {
       );
       await _capturer(tester, 'tel${suffixe}_34_suivi_ce_soir');
     }
+  });
+
+  // « Fiche à imprimer » (D35) : le PDF de la leçon 1, à ouvrir à l'œil.
+  testWidgets('fiche', (tester) async {
+    final lecon = Lecon.fromJson((donneesReelles['lecons'] as Map)['1'] as Map<String, dynamic>);
+    final octets = await tester.runAsync(() async => fabriquerFichePdf(contenuFiche(lecon), await chargerPolicesFiche()));
+    File('$_dossier/fiche_lecon_1.pdf')
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(octets!);
   });
 }

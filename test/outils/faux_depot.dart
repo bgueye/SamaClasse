@@ -19,7 +19,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:samaclasse/app.dart';
 import 'package:samaclasse/core/app_scope.dart';
 import 'package:samaclasse/core/services/choix_image.dart';
+import 'package:samaclasse/core/services/impression.dart';
 import 'package:samaclasse/core/services/moteur_vocal.dart';
+import 'package:samaclasse/core/services/partage.dart';
 import 'package:samaclasse/core/services/preferences.dart';
 import 'package:samaclasse/core/services/reduction_image.dart';
 import 'package:samaclasse/data/data.dart';
@@ -943,6 +945,31 @@ class FauxMoteurVocal implements MoteurVocal {
   }
 }
 
+/// Partage sans téléphone : garde ce qui a été envoyé ou copié.
+class FauxPartage extends Partage {
+  final envois = <String>[];
+  final copies = <String>[];
+
+  @override
+  Future<void> envoyer(String texte, {String? sujet}) async => envois.add(texte);
+
+  @override
+  Future<void> copier(String texte) async => copies.add(texte);
+}
+
+/// Impression sans imprimante : fabrique le document (pour vérifier qu'il se
+/// construit) et garde son nom et sa taille.
+class FausseImpression extends Impression {
+  final noms = <String>[];
+  final documents = <Uint8List>[];
+
+  @override
+  Future<void> imprimer({required String nom, required Future<Uint8List> Function() document}) async {
+    noms.add(nom);
+    documents.add(await document());
+  }
+}
+
 /// Taille d'un téléphone courant (390 × 844, comme dans CLAUDE.md).
 const tailleTelephone = Size(390, 844);
 
@@ -963,6 +990,8 @@ Future<void> lancerApp(
   Redaction? redaction,
   ChoixImage? choixImage,
   MoteurVocal? moteurVocal,
+  Partage? partage,
+  Impression? impression,
   String chemin = '/',
   Size taille = tailleTelephone,
   double echelleTexte = 1,
@@ -995,6 +1024,8 @@ Future<void> lancerApp(
     choixImage: choixImage ?? FauxChoixImage(),
     // Toujours un faux : flutter_tts n'a pas de canal natif dans les tests.
     creerMoteurVocal: () => moteurVocal ?? FauxMoteurVocal(),
+    partage: partage ?? FauxPartage(),
+    impression: impression ?? FausseImpression(),
     child: SamaClasseApp(emplacementInitial: chemin),
   ));
 }

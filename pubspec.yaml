@@ -26,6 +26,16 @@ dependencies:
   # « Écouter la leçon » : synthèse vocale du téléphone (voix française,
   # anglaise, espagnole selon le passage), sans réseau ni service payant.
   flutter_tts: ^4.2.5
+  # « Envoyer cette leçon » (D36) : liste « Envoyer avec… » du téléphone
+  # (WhatsApp, SMS…), partage du navigateur sur le web.
+  share_plus: ^13.3.1
+  # « Fiche à imprimer » (D36) : fiche A4 en PDF fabriquée sur l'appareil,
+  # hors connexion, puis aperçu d'impression du système ou du navigateur.
+  pdf: ^3.13.1
+  printing: ^5.15.1
+  # Web : adresses sans « # » (samaclasse.app/lecon/4), D36. Fait partie du SDK.
+  flutter_web_plugins:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
