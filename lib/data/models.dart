@@ -308,6 +308,7 @@ class Lecon {
     required this.exercices,
     required this.contexte,
     this.scriptAudio = const [],
+    this.scriptRetenir = const [],
   });
 
   final int id;
@@ -333,6 +334,10 @@ class Lecon {
   /// passage. Vide si la leçon n'a pas de script : la barre ne s'affiche pas.
   final List<SegmentAudio> scriptAudio;
 
+  /// Script de « Écouter l’essentiel » (`lecons.script_retenir`, D37) : le
+  /// résumé « À retenir » rédigé pour l'oral. Vide sans script.
+  final List<SegmentAudio> scriptRetenir;
+
   factory Lecon.fromJson(Map<String, dynamic> json) {
     final exercices = ((json['exercices'] as List?) ?? const [])
         .map((e) => Exercice.fromJson(e as Map<String, dynamic>))
@@ -357,6 +362,7 @@ class Lecon {
       exercices: exercices,
       contexte: chapitre == null ? null : ContexteLecon.fromJson(chapitre),
       scriptAudio: SegmentAudio.listeDepuis(json['script_audio']),
+      scriptRetenir: SegmentAudio.listeDepuis(json['script_retenir']),
     );
   }
 }

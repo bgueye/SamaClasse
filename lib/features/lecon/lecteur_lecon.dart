@@ -196,9 +196,13 @@ class LecteurLecon extends ChangeNotifier {
 /// (exercices, schémas…, ouverts par `push` : l'écran de leçon reste alors en
 /// mémoire) et s'arrête quand l'écran de leçon est fermé.
 class BarreLecteur extends StatefulWidget {
-  const BarreLecteur({super.key, required this.segments});
+  const BarreLecteur({super.key, required this.segments, this.titre = 'Écouter la leçon'});
 
   final List<SegmentAudio> segments;
+
+  /// Ce qui est lu, affiché à l'arrêt et sur le bouton Lecture :
+  /// « Écouter la leçon » ou « Écouter l’essentiel » (D37).
+  final String titre;
 
   @override
   State<BarreLecteur> createState() => _BarreLecteurState();
@@ -277,7 +281,7 @@ class _BarreLecteurState extends State<BarreLecteur> {
           ),
         // Le passage lu s'affiche pour que l'élève suive des yeux.
         Text(
-          arrete ? 'Écouter la leçon' : l.segments[l.index].texte,
+          arrete ? widget.titre : l.segments[l.index].texte,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: arrete
@@ -306,7 +310,7 @@ class _BarreLecteurState extends State<BarreLecteur> {
             ),
             const SizedBox(width: 4),
             IconButton.filled(
-              tooltip: enLecture ? 'Pause' : (l.etat == EtatLecteur.pause ? 'Reprendre' : 'Écouter la leçon'),
+              tooltip: enLecture ? 'Pause' : (l.etat == EtatLecteur.pause ? 'Reprendre' : widget.titre),
               style: IconButton.styleFrom(
                 backgroundColor: Couleurs.encre,
                 foregroundColor: Couleurs.texteSurEncre,

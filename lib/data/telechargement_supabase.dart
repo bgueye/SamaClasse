@@ -51,9 +51,10 @@ class TelechargementSupabase implements SourceContenu {
       _db
           .from('lecons')
           .select('id, chapitre_id, numero, titre, date_cours, objectifs, introduction, corps, '
-              // script_audio : « Écouter la leçon », gardé hors connexion
-              // avec le reste de la leçon (lignes brutes de l'Instantane).
-              'a_retenir, script_audio, statut, exercices($_colonnesExercice), '
+              // script_audio et script_retenir : « Écouter la leçon » et
+              // « Écouter l'essentiel », gardés hors connexion avec le reste
+              // de la leçon (lignes brutes de l'Instantane).
+              'a_retenir, script_audio, script_retenir, statut, exercices($_colonnesExercice), '
               'chapitres(titre, partie, classes(libelle), matieres(nom, slug))')
           .eq('statut', 'publiee')
           .order('ordre', referencedTable: 'exercices'),

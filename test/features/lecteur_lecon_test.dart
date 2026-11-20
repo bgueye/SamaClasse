@@ -218,6 +218,47 @@ void main() {
       expect(moteur.parle, isFalse);
     });
 
+    testWidgets('« À retenir » avec son script : la barre lit l’essentiel (D37)', (tester) async {
+      const essentiel = [
+        SegmentAudio(lang: 'fr-FR', texte: 'À retenir : le présent simple.'),
+        SegmentAudio(lang: 'en-GB', texte: 'He drinks.'),
+      ];
+      final donnees = {
+        ...avecScript,
+        'lecons': {
+          '1': {
+            ...((avecScript['lecons'] as Map)['1'] as Map<String, dynamic>),
+            'script_retenir': [
+              for (final s in essentiel) {'lang': s.lang, 'texte': s.texte},
+            ],
+          },
+        },
+      };
+      final moteur = FauxMoteurVocal(automatique: false);
+      await lancerApp(tester, depot: FauxDepot(donnees), moteurVocal: moteur, chemin: '/lecon/1');
+      await tester.pumpAndSettle();
+      // « La leçon » : le cours, comme avant.
+      await tester.tap(ecouter);
+      await tester.pump();
+      expect(moteur.journal.last, 'dire ${_script[0].texte}');
+
+      // « À retenir » : la lecture du cours s'arrête, la barre lit l'essentiel.
+      await tester.tap(find.text('À retenir'));
+      await tester.pumpAndSettle();
+      expect(moteur.parle, isFalse);
+      expect(find.text('Écouter l’essentiel'), findsOneWidget);
+      await tester.tap(find.byTooltip('Écouter l’essentiel'));
+      await tester.pump();
+      expect(moteur.journal.last, 'dire ${essentiel[0].texte}');
+      expect(find.text(essentiel[0].texte), findsOneWidget);
+
+      // Retour à « La leçon » : la barre redevient « Écouter la leçon ».
+      await tester.tap(find.text('La leçon'));
+      await tester.pumpAndSettle();
+      expect(moteur.parle, isFalse);
+      expect(ecouter, findsOneWidget);
+    });
+
     testWidgets('voix absente : avertissement affiché', (tester) async {
       await lancerApp(
         tester,

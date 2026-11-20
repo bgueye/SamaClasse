@@ -242,15 +242,28 @@ class _LeconScreenState extends State<LeconScreen> with RechargeSiNouveauContenu
             ),
           ),
         ),
-        // « Écouter la leçon » : sous la page, hors des onglets, pour que la
-        // lecture continue quand on passe à « À retenir ». Rien sans script.
-        // La clé recrée le lecteur si le script change (leçon corrigée et
-        // rechargée pendant la lecture) : jamais l'ancien texte lu.
-        BarreLecteur(
-          key: ValueKey((lecon.id, Object.hashAll(lecon.scriptAudio))),
-          segments: lecon.scriptAudio,
-        ),
+        _barreLecture(lecon),
       ],
+    );
+  }
+}
+
+/// Barre de lecture sous la page, hors des onglets (D34, D37).
+///
+/// Sur « À retenir », elle lit l'essentiel si la leçon en a un script
+/// (`script_retenir`) ; sinon, comme sur « La leçon », elle lit le cours :
+/// une lecture du cours continue alors en changeant d'onglet. Rien sans
+/// script. La clé recrée le lecteur quand le texte lu change (autre script,
+/// ou leçon corrigée et rechargée) : jamais l'ancien texte, et passer d'un
+/// script à l'autre arrête la lecture en cours.
+extension on _LeconScreenState {
+  Widget _barreLecture(Lecon lecon) {
+    final essentiel = _onglet == _Onglet.retenir && lecon.scriptRetenir.isNotEmpty;
+    final segments = essentiel ? lecon.scriptRetenir : lecon.scriptAudio;
+    return BarreLecteur(
+      key: ValueKey((lecon.id, essentiel, Object.hashAll(segments))),
+      segments: segments,
+      titre: essentiel ? 'Écouter l’essentiel' : 'Écouter la leçon',
     );
   }
 }

@@ -44,6 +44,18 @@ void main() {
       expect(Lecon.fromJson({...ligne, 'script_audio': null}).scriptAudio, isEmpty);
     });
 
+    test('script de « À retenir » (D37) : lu à part, vide sans colonne', () {
+      expect(Lecon.fromJson(ligne).scriptRetenir, isEmpty);
+      final lecon = Lecon.fromJson({
+        ...ligne,
+        'script_retenir': [
+          {'lang': 'fr-FR', 'texte': 'À retenir.'},
+        ],
+      });
+      expect(lecon.scriptRetenir, const [SegmentAudio(lang: 'fr-FR', texte: 'À retenir.')]);
+      expect(lecon.scriptAudio, isEmpty);
+    });
+
     test('script gardé dans la copie hors connexion', () {
       final script = [
         {'lang': 'fr-FR', 'texte': 'Leçon : le présent simple.'},

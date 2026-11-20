@@ -22,7 +22,7 @@ https://claude.ai/artifact/XXUbNZErgvvaKgHve2Bo3M
 | `Partage` | « Envoyer cette leçon » : lien samaclasse.app par une autre application | tous | fait (20/11/2026) : icône dans l'en-tête de la leçon |
 | `Fiche`, `FicheCorrige` | fiche A4 à imprimer (résumé, exercices) et son corrigé séparé | enseignant | fait (20/11/2026) : icône dans l'en-tête de la leçon, un seul PDF (fiche puis corrigé sur une nouvelle page), tous les exercices de la leçon, schémas remplacés par leur description |
 | `Indice` | un indice avant le corrigé | élève | à faire ; demande un indice rédigé par question |
-| `Essentiel` | « Écouter l’essentiel » : lecture de « À retenir » | élève | à faire |
+| `Essentiel` | « Écouter l’essentiel » : lecture de « À retenir » | élève | fait côté code (20/11/2026, D37) : la barre du bas lit `script_retenir` sur l'onglet « À retenir » ; sans surlignage de la notion lue ; scripts à rédiger |
 | `Revision` | « Révision du BFEM » : série mêlée par matière | élève | à faire |
 | `ResumeParent` | résumé simple de la semaine et « Que lui demander ce soir ? » | parent | à faire |
 | `Signaler` | « Signaler une erreur » sur une leçon ou un exercice | tous | à faire ; demande une migration |

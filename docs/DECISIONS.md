@@ -6,6 +6,21 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D37. « Écouter l’essentiel » : script oral de « À retenir » en base
+*Bocar, 20/11/2026.*
+Lu tel quel, « À retenir » sonnerait mal pour environ la moitié des leçons :
+langue étudiée mêlée au français dans une même ligne (« have / has + PP : I
+have gone »), formules (« a² + 2ab + b² »), barres obliques. Comme pour le
+cours (D34), le texte lu est donc rédigé pour l'oral et vérifié en base :
+colonne `lecons.script_retenir`, même format que `script_audio` (migration
+`lecons_script_retenir`, sans effet sur les règles RLS, vérifiée en rôle
+anon). L'application ne fabrique jamais ce texte. Une seule barre de
+lecture en bas de la leçon : sur « À retenir », elle lit l'essentiel s'il a
+un script, sinon le cours (une lecture du cours continue alors d'un onglet à
+l'autre, comme en D34). Passer d'un script à l'autre arrête la lecture.
+Contenu : scripts rédigés d'abord comme fichiers à relire par Bocar, puis
+écrits en base avec son accord, leçon par leçon.
+
 ### D36. Envoi et fiche : share_plus, pdf, printing ; adresses web sans « # »
 *Bocar, 20/11/2026.*
 Pour « Envoyer cette leçon » et « Fiche à imprimer » (D35), trois paquets

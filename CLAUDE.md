@@ -66,13 +66,15 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
     versions et rôle validateur (D33), « Écouter la leçon » : barre de
     lecture du script oral `lecons.script_audio` par `flutter_tts`
     (`lib/features/lecon/lecteur_lecon.dart`, D34 ; seule la leçon 28 a un
-    script ; à essayer sur le téléphone) ;
+    script ; à essayer sur le téléphone), « Écouter l’essentiel » (même
+    barre sur l'onglet « À retenir », colonne `lecons.script_retenir`, D37 ;
+    aucun script rédigé pour l'instant) ;
   - reste : signature Android, fiche Play Store et test fermé ; réinstaller
     l'application sous le nouvel identifiant sur le téléphone.
 - Reste à faire par Bocar : photographier les schémas des leçons 8, 9 et
   10 (repères « [Schéma : …] » à retirer ensuite), compléter les libellés
   des tableaux 17 et 31.
-- `flutter analyze` : aucun problème ; `flutter test` : 362/362, sans réseau
+- `flutter analyze` : aucun problème ; `flutter test` : 364/364, sans réseau
   (vraie application avec `test/outils/faux_depot.dart` : `FauxDepot`,
   `FauxCompte`, `FauxEnvoi`, `FausseRedaction`, `FauxChoixImage`,
   `FauxMoteurVocal`, `FauxPartage`, `FausseImpression`).
@@ -94,8 +96,8 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   texte corrigé dans `corrections_lecons` (la correction ouverte de la
   leçon), **jamais directement dans `lecons`** ; c'est un validateur qui le
   met en ligne depuis l'application. Procédure : `docs/CONTENU.md`.
-- Base : 12 migrations, de `schema_programme_lecons` à
-  `lecons_script_audio`. Bocar est rédacteur et validateur. Conseiller de
+- Base : 13 migrations, de `schema_programme_lecons` à
+  `lecons_script_retenir`. Bocar est rédacteur et validateur. Conseiller de
   sécurité, attendu : les
   fonctions `security definer` appelables par `authenticated` (contrôles
   faits dans les fonctions), « RLS sans règle » sur `codes_liaison` et
