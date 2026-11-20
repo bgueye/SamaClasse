@@ -17,8 +17,8 @@ https://claude.ai/artifact/XXUbNZErgvvaKgHve2Bo3M
 
 | Maquette | Écran | Public | État dans le code |
 | --- | --- | --- | --- |
-| `Main` | « Interroge-moi » : cartes de révision tirées de « À retenir » | élève | à faire (premier) |
-| `CartesParent` | « Fais réciter ton enfant » : question, réponse attendue visible du parent | parent | à faire (premier) |
+| `Main` | « Interroge-moi » : cartes de révision tirées de « À retenir » | élève | fait (20/11/2026), avec un écart : pas de « reviendront dans quelques jours » (pas encore de révision espacée) |
+| `CartesParent` | « Fais réciter ton enfant » : question, réponse attendue visible du parent | parent | fait (20/11/2026), avec des écarts : même écran que les cartes (sélecteur « Je révise seul » / « Je fais réciter », sans compte), question « Explique-moi : « notion ». », vouvoiement, pas encore de bouton « Écouter la question » ; ouvert aussi depuis « Suivi » (« Que lui demander ce soir ? ») |
 | `Partage` | « Envoyer cette leçon » : lien samaclasse.app par une autre application | tous | à faire |
 | `Fiche`, `FicheCorrige` | fiche A4 à imprimer (résumé, exercices) et son corrigé séparé | enseignant | à faire |
 | `Indice` | un indice avant le corrigé | élève | à faire ; demande un indice rédigé par question |

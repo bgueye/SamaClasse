@@ -114,6 +114,9 @@ lib/
     matiere/matiere_screen.dart       chapitres par partie, filtre
     matiere/regroupement.dart         regrouperParPartie(), etatChapitre()
     lecon/lecon_screen.dart           onglets « La leçon » / « À retenir »
+    revision/cartes_screen.dart       « Interroge-moi » (D35) : cartes de « À retenir », modes élève
+                                      et parent (`?mode=parent`)
+    revision/outils_cartes.dart       SeanceCartes (ordre, verso, bilan, cartes ratées), questionParent()
     lecon/lecteur_lecon.dart          « Écouter la leçon » (D34) : LecteurLecon (passages, voix,
                                       pause, sauts), BarreLecteur, languesAEssayer()
     exercices/exercices_screen.dart   série d'exercices, bilan
@@ -131,6 +134,7 @@ test/
   features/suivi_test.dart      suivi des enfants : semaine, derniers exercices, écran, 200 %
   features/validation_test.dart validation : points, publication, rôle, écran, 200 %
   features/schemas_test.dart    schémas : paragraphes, description, ajout, refus, retrait, 200 %
+  features/cartes_test.dart     « Interroge-moi » : séance, modes, quatre états, encart du suivi, 200 %
   features/lecteur_lecon_test.dart « Écouter la leçon » : ordre, voix, pause, sauts, langue absente,
                                 barre dans l'écran (exercices, retour), 200 %
   data/segment_audio_test.dart  script_audio : lecture tolérante, copie hors connexion
@@ -169,6 +173,7 @@ assets/fonts/                   polices embarquées (dont les polices de secours
 | `/classe/:classeId/matiere/:matiereId` | `MatiereScreen` | `classes()`, `matieres()`, `chapitres()` en parallèle |
 | `/lecon/:leconId` | `LeconScreen` | `lecon(id)` ; mémorise la dernière leçon |
 | `/lecon/:leconId/exercices` | `ExercicesScreen` | la `Lecon` passée en `extra`, sinon `lecon(id)` |
+| `/lecon/:leconId/reviser` | `CartesScreen` | `lecon(id)` ; `?mode=parent` ouvre le mode parent (D35) |
 | `/a-propos` | `AProposScreen` | aucune (page fixe : présentation, version, licences, D18) |
 | `/compte` | `CompteScreen` | connexion si pas de compte ; sinon `compte.enfants()`, `classes()` et `appareils()` ; téléphone lié : `TelephoneLie` |
 | `/lier` | `LierScreen` | `compte.lierCeTelephone(code)` (session anonyme, D32) |

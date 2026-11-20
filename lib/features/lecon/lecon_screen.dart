@@ -343,6 +343,16 @@ class _PageARetenir extends StatelessWidget {
                 ),
               ),
             ),
+        // « Interroge-moi » (D35) : action secondaire, les exercices restent
+        // l'action principale de l'écran.
+        if (lecon.aRetenir.isNotEmpty) ...[
+          OutlinedButton.icon(
+            onPressed: () => context.push('/lecon/${lecon.id}/reviser'),
+            icon: const Icon(Icons.style_outlined),
+            label: const Text('Interroge-moi'),
+          ),
+          const SizedBox(height: interligne / 2),
+        ],
         _BoutonExercices(lecon: lecon),
       ],
     );

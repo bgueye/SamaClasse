@@ -475,4 +475,44 @@ void main() {
     await tester.tap(find.text('La digestion et l’absorption'));
     await _capturer(tester, 'web_13_validation');
   });
+
+  // « Interroge-moi » (D35) : recto, verso, mode parent, bilan, encart du suivi.
+  testWidgets('cartes', (tester) async {
+    for (final (echelle, suffixe) in [(1.0, ''), (2.0, '_200')]) {
+      await lancerApp(tester, depot: FauxDepot(), chemin: '/lecon/1/reviser', echelleTexte: echelle);
+      await _capturer(tester, 'tel${suffixe}_30_cartes_recto');
+      final retourner = find.text('Retourner la carte');
+      await tester.ensureVisible(retourner);
+      await tester.pumpAndSettle();
+      await tester.tap(retourner);
+      await _capturer(tester, 'tel${suffixe}_31_cartes_verso');
+
+      await lancerApp(tester, depot: FauxDepot(), chemin: '/lecon/1/reviser?mode=parent', echelleTexte: echelle);
+      await _capturer(tester, 'tel${suffixe}_32_cartes_parent');
+      // Toutes les questions, la première ratée : bilan avec « à revoir ».
+      var premiere = true;
+      while (find.text('Bien répondu').evaluate().isNotEmpty) {
+        final bouton = find.text(premiere ? 'À revoir' : 'Bien répondu');
+        premiere = false;
+        await tester.ensureVisible(bouton);
+        await tester.pumpAndSettle();
+        await tester.tap(bouton);
+        await tester.pumpAndSettle();
+      }
+      await _capturer(tester, 'tel${suffixe}_33_cartes_bilan_parent');
+
+      await lancerApp(
+        tester,
+        depot: FauxDepot(),
+        compte: FauxCompte(
+          connecte: 'parent@exemple.sn',
+          enfants: [const Enfant(id: 1, prenom: 'Awa', classeId: 1)],
+          lectures: [LectureLecon(enfantId: 1, leconId: 1, lueLe: DateTime.now())],
+        ),
+        chemin: '/suivi',
+        echelleTexte: echelle,
+      );
+      await _capturer(tester, 'tel${suffixe}_34_suivi_ce_soir');
+    }
+  });
 }

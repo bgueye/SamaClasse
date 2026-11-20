@@ -216,6 +216,7 @@ class _SuiviConnecteState extends State<_SuiviConnecte> {
       maintenant: DateTime.now(),
     );
     final derniers = derniersExercices(enfantId: enfant.id, resultats: d.resultats, lecons: d.lecons);
+    final aReciter = derniereLeconARetenir(enfantId: enfant.id, lectures: d.lectures, lecons: d.lecons);
     final disponibles = leconsDeClasse(d.lecons, classe);
 
     return Column(
@@ -237,6 +238,12 @@ class _SuiviConnecteState extends State<_SuiviConnecte> {
         const _TitreSection('Cette semaine'),
         _CasesSemaine(bilan: bilan),
         const SizedBox(height: 26),
+        // « Que lui demander ce soir ? » (D35) : seulement s'il a lu une
+        // leçon qui a des notions à réciter.
+        if (aReciter != null) ...[
+          _ACeSoir(prenom: enfant.prenom, lecon: aReciter),
+          const SizedBox(height: 26),
+        ],
         const _TitreSection('Derniers exercices'),
         if (derniers.isEmpty)
           const Padding(
@@ -495,6 +502,53 @@ class _LigneExercice extends StatelessWidget {
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Encart « Que lui demander ce soir ? » : la dernière leçon lue et le
+/// bouton qui ouvre les cartes en mode parent.
+class _ACeSoir extends StatelessWidget {
+  const _ACeSoir({required this.prenom, required this.lecon});
+
+  final String prenom;
+  final Lecon lecon;
+
+  @override
+  Widget build(BuildContext context) {
+    final matiere = lecon.contexte?.matiere;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Couleurs.papier,
+        border: Border.all(color: Couleurs.bordureCarte, width: 1.5),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Semantics(
+              header: true,
+              child: const Text(
+                'Que lui demander ce soir ?',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Couleurs.texte),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Dernière leçon lue par $prenom : ${lecon.titre}${matiere == null ? '' : ' (${matiere.toLowerCase()})'}.',
+              style: const TextStyle(fontSize: 15, height: 1.4, color: Couleurs.texteDoux),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: () => context.push('/lecon/${lecon.id}/reviser?mode=parent'),
+              icon: const Icon(Icons.record_voice_over_outlined),
+              label: Text('Faire réciter $prenom'),
+            ),
+          ],
         ),
       ),
     );

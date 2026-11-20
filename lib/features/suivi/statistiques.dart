@@ -96,6 +96,26 @@ List<ExerciceFait> derniersExercices({
   ].take(nombre).toList();
 }
 
+/// Dernière leçon lue par l'enfant [enfantId] qui a des notions « À
+/// retenir » (de quoi le faire réciter, D35) ; `null` s'il n'y en a pas.
+///
+/// Une leçon qui n'est plus publiée (absente de [lecons]) est sautée, comme
+/// dans [derniersExercices].
+Lecon? derniereLeconARetenir({
+  required int enfantId,
+  required List<LectureLecon> lectures,
+  required List<Lecon> lecons,
+}) {
+  final parId = {for (final l in lecons) l.id: l};
+  final tries = [for (final l in lectures) if (l.enfantId == enfantId) l]
+    ..sort((a, b) => b.lueLe.compareTo(a.lueLe));
+  for (final lecture in tries) {
+    final lecon = parId[lecture.leconId];
+    if (lecon != null && lecon.aRetenir.isNotEmpty) return lecon;
+  }
+  return null;
+}
+
 /// Score affiché en face d'un exercice. Toujours en mots : la réussite n'est
 /// jamais signalée par la couleur seule (DESIGN.md).
 String libelleScore(ResultatExercice r) {
