@@ -149,6 +149,7 @@ test/
   features/schemas_test.dart    schémas : paragraphes, description, ajout, refus, retrait, 200 %
   features/fiche_test.dart      fiche (blocs, types, PDF réel), envoi, icônes de la leçon, 200 %
   features/projection_test.dart découpage, boutons, clavier, quitter, quatre états, 200 %
+  features/indice_test.dart     « Voir un indice » : modèle, bouton, encadré, « Recommencer », 200 %
   features/signalement_test.dart « Signaler une erreur » : motifs, messages, fenêtre (quatre états,
                                 leçon et exercice), section des rédacteurs, 200 %
   features/cartes_test.dart     « Interroge-moi » : séance, modes, quatre états, encart du suivi, 200 %

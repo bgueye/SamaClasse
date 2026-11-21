@@ -236,6 +236,7 @@ class Exercice {
     required this.donnees,
     required this.reponse,
     required this.corrige,
+    this.indice,
   });
 
   final int id;
@@ -251,6 +252,11 @@ class Exercice {
   /// Markdown, affiché après la réponse de l'élève.
   final String? corrige;
 
+  /// Indice montré à la demande, avant le corrigé (D39). Markdown court ;
+  /// `null` : pas de bouton « Voir un indice ». Une copie hors connexion
+  /// d'avant la colonne n'a pas la clé : `null` aussi, jusqu'à la mise à jour.
+  final String? indice;
+
   factory Exercice.fromJson(Map<String, dynamic> json) => Exercice(
         id: _entier(json['id']),
         ordre: _entier(json['ordre']),
@@ -260,7 +266,14 @@ class Exercice {
         donnees: json['donnees'],
         reponse: json['reponse'],
         corrige: json['corrige'] as String?,
+        indice: _texteOuNull(json['indice']),
       );
+}
+
+/// Texte non vide, ou `null` (absent, vide ou blanc).
+String? _texteOuNull(Object? valeur) {
+  if (valeur is! String) return null;
+  return valeur.trim().isEmpty ? null : valeur;
 }
 
 /// Où se situe une leçon : classe, matière, chapitre.

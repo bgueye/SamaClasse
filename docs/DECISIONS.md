@@ -6,6 +6,19 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D39. Un indice par exercice, montré à la demande, sans effet sur le suivi
+*Bocar, 21/11/2026.*
+Un écran d'exercice regroupe souvent plusieurs questions : l'indice est donc
+rangé par exercice (colonne facultative `exercices.indice`, migration
+`exercices_indice`), et non par question. Avant la correction, un bouton
+« Voir un indice » ouvre un encadré (ampoule, « Indice ») qui reste
+affiché avec le corrigé ; « Recommencer » le referme. Sans indice, pas de
+bouton. Le suivi des parents ne sait pas qu'un indice a été vu : c'est une
+aide, sans pénalité, et rien ne change dans `resultats`. Contenu : indices
+rédigés comme brouillons, relus par Bocar, puis écrits en base avec son
+accord, par lots (comme les scripts oraux, D37) ; un indice ne donne jamais
+la réponse.
+
 ### D38. « Signaler une erreur » : ouvert à tous, sans identité, limité
 *Bocar, 21/11/2026.*
 Tout le monde peut signaler une erreur sur une leçon ou un exercice publié,

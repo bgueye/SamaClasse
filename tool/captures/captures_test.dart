@@ -11,6 +11,7 @@
 // que les tests ordinaires utilisent une police de test à chasse fixe.
 // Données : le même jeu enregistré que les tests d'écrans.
 
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -534,6 +535,26 @@ void main() {
     await tester.tap(find.byTooltip('Partie suivante'));
     await _capturer(tester, 'web_21_projection_partie');
   });
+
+  // « Un indice avant le corrigé » (D39) : bouton, puis encadré ouvert.
+  for (final (suffixe, echelle) in [('', 1.0), ('_200', 2.0)]) {
+    testWidgets('indice$suffixe', (tester) async {
+      final donnees = jsonDecode(jsonEncode(donneesReelles)) as Map<String, dynamic>;
+      final lecon = (donnees['lecons'] as Map)['1'] as Map<String, dynamic>;
+      ((lecon['exercices'] as List).first as Map<String, dynamic>)['indice'] =
+          'Relis la notion « Phénomène physique » dans **À retenir** : la nature du corps change-t-elle ?';
+      await lancerApp(tester, depot: FauxDepot(donnees), chemin: '/lecon/1/exercices', echelleTexte: echelle);
+      await _capturer(tester, 'tel${suffixe}_45_indice_bouton');
+      final bouton = find.text('Voir un indice');
+      if (bouton.evaluate().isEmpty) {
+        await tester.scrollUntilVisible(bouton, 200, scrollable: find.byType(Scrollable).first);
+      }
+      await tester.ensureVisible(bouton);
+      await tester.pumpAndSettle();
+      await tester.tap(bouton);
+      await _capturer(tester, 'tel${suffixe}_46_indice_ouvert');
+    });
+  }
 
   // « Signaler une erreur » (D38) : fenêtre depuis un exercice (formulaire
   // rempli, erreur, merci), à 100 % et 200 %, puis la section des rédacteurs.

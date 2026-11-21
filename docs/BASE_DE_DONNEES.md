@@ -105,6 +105,7 @@ lecons ─< points_leves                   (phase 4, D25)
 | `donnees` | jsonb | matériel de l'exercice, selon le type |
 | `reponse` | jsonb | réponse attendue, selon le type |
 | `corrige` | text | Markdown, affiché après la réponse |
+| `indice` | text, facultatif | « Voir un indice » avant le corrigé (D39) : Markdown court, 3 à 500 caractères (contrainte `exercices_indice_longueur`), ne donne jamais la réponse. `null` : pas de bouton. Migration `exercices_indice` (21/11/2026), sans effet sur les règles RLS ; testée en `anon` (lecture d'un exercice publié, aucune modification) |
 
 Formats de `donnees` et `reponse` : voir `EXERCICES.md`.
 

@@ -122,6 +122,15 @@ Saisie libre (brouillon non envoyé), bouton « Voir le corrigé », puis
   doit être exact ; un décimal est accepté à 0,1 % près.
 - QCM, vrai ou faux : une question sans réponse compte faux.
 
+## Indice (D39)
+
+Colonne facultative `exercices.indice` (Markdown court, 3 à 500
+caractères), une par exercice, quel que soit le type. Avant la correction,
+« Voir un indice » ouvre l'encadré « Indice » ; il reste affiché avec le
+corrigé, et « Recommencer » le referme. Sans indice, pas de bouton. Rien
+n'est noté pour le suivi. Un indice renvoie à une notion de « À retenir »
+ou à une méthode : il ne donne jamais la réponse.
+
 ## Bilan de la série
 
 Un exercice est réussi si `CorrectionAuto.toutJuste`, ou si l'élève a répondu

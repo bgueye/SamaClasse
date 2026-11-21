@@ -109,6 +109,10 @@ class _SerieExercicesState extends State<_SerieExercices> {
   /// en arrière (« Précédent ») ne note pas deux fois le même exercice.
   final _notes = <int>{};
 
+  /// Exercices dont l'indice est ouvert pendant cette tentative (D39). Rien
+  /// n'est noté pour le suivi : l'indice est une aide, sans pénalité.
+  final _indicesVus = <int>{};
+
   final _defilement = ScrollController();
 
   List<Exercice> get _exercices => widget.lecon.exercices;
@@ -179,6 +183,7 @@ class _SerieExercicesState extends State<_SerieExercices> {
       _corrections.clear();
       _autoEvaluations.clear();
       _notes.clear(); // nouvelle tentative : nouveaux résultats
+      _indicesVus.clear(); // les indices se referment
     });
   }
 
@@ -282,6 +287,24 @@ class _SerieExercicesState extends State<_SerieExercices> {
                 correction: correction,
                 onChanged: (valeur) => setState(() => _reponses[e.id] = valeur),
               ),
+              // « Voir un indice » (D39) : seulement si l'exercice en a un, et
+              // avant la correction. Une fois ouvert, l'indice reste affiché.
+              if (e.indice != null) ...[
+                if (_indicesVus.contains(e.id)) ...[
+                  const SizedBox(height: 12),
+                  _EncadreIndice(texte: e.indice!),
+                ] else if (correction == null) ...[
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: OutlinedButton.icon(
+                      onPressed: () => setState(() => _indicesVus.add(e.id)),
+                      icon: const Icon(Icons.lightbulb_outline_rounded),
+                      label: const Text('Voir un indice'),
+                    ),
+                  ),
+                ],
+              ],
               if (correction != null) ...[
                 const SizedBox(height: 8),
                 _RetourCorrection(
@@ -465,6 +488,48 @@ class _RetourCorrection extends StatelessWidget {
         ),
       ReponseInvalide(:final raison) => _Encadre(juste: false, titre: 'Réponse incomplète', contenu: Text(raison)),
     };
+  }
+}
+
+/// Encadré « Indice » (D39, maquette `Indice`) : fond bleu pâle, ampoule et
+/// titre à l'encre, annoncé aux lecteurs d'écran quand il apparaît.
+class _EncadreIndice extends StatelessWidget {
+  const _EncadreIndice({required this.texte});
+
+  final String texte;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      liveRegion: true,
+      container: true,
+      child: DecoratedBox(
+        decoration: BoxDecoration(color: Couleurs.selection, borderRadius: BorderRadius.circular(14)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 2),
+                child: Icon(Icons.lightbulb_outline_rounded, color: Couleurs.encre),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text('Indice', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Couleurs.encre)),
+                    const SizedBox(height: 4),
+                    MarkdownCahier(data: texte),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

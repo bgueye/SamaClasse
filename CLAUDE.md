@@ -82,13 +82,16 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
 - **Scripts « À retenir »** (D37) : en base pour les 23 leçons (lots 1 et 2
   le 21/11/2026) ; brouillons dans `contenu/scripts_retenir/`, qui restent
   la référence. Reste : les écouter sur le téléphone.
-- **Idées D35, à reprendre** : indice avant le corrigé, révision du BFEM et programme d'une matière. Liste complète,
+- **« Voir un indice »** fait côté code le 21/11/2026 (D39) : colonne
+  facultative `exercices.indice`, un indice par exercice, sans effet sur le
+  suivi. Reste : rédiger les indices (brouillons, relecture, base par lots).
+- **Idées D35, à reprendre** : révision du BFEM et programme d'une matière. Liste complète,
   ordre et points ouverts : `docs/FEUILLE_DE_ROUTE.md`, phase 5, « Idées
   pour élèves, parents et enseignants (D35) ».
 - Reste à faire par Bocar : photographier les schémas des leçons 8, 9 et
   10 (repères « [Schéma : …] » à retirer ensuite), compléter les libellés
   des tableaux 17 et 31.
-- `flutter analyze` : aucun problème ; `flutter test` : 412/412, sans réseau
+- `flutter analyze` : aucun problème ; `flutter test` : 499/499, sans réseau
   (vraie application avec `test/outils/faux_depot.dart` : `FauxDepot`,
   `FauxCompte`, `FauxEnvoi`, `FausseRedaction`, `FauxChoixImage`,
   `FauxMoteurVocal`, `FauxPartage`, `FausseImpression`, `FauxSignalement`).
@@ -110,7 +113,7 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   texte corrigé dans `corrections_lecons` (la correction ouverte de la
   leçon), **jamais directement dans `lecons`** ; c'est un validateur qui le
   met en ligne depuis l'application. Procédure : `docs/CONTENU.md`.
-- Base : 14 migrations, de `schema_programme_lecons` à `signalements`.
+- Base : 15 migrations, de `schema_programme_lecons` à `exercices_indice`.
   Bocar est rédacteur et validateur. Conseiller de sécurité, attendu : les
   fonctions `security definer` appelables par `authenticated` (contrôles
   faits dans les fonctions), `signaler_erreur` appelable par `anon`

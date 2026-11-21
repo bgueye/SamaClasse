@@ -318,8 +318,10 @@ téléphone sauf mention :
    `test/data/scripts_retenir_test.dart`), relecture par Bocar, puis
    écriture en base avec son accord, leçon par leçon. Possible par lots
    par matière.
-3. **Un indice avant le corrigé** (maquette `Indice`) : demande un champ
-   (migration) et un indice rédigé par question : contenu à valider.
+3. **Un indice avant le corrigé** : fait côté code le 21/11/2026 (D39),
+   un indice par exercice, migration `exercices_indice` appliquée. Reste :
+   rédiger les indices (126 exercices) en brouillons
+   (`contenu/indices/`), relecture par Bocar, écriture en base par lots.
 4. **Révision du BFEM** et **programme d'une matière** pour l'enseignant
    (maquettes `Revision`, `Programme`) : utiles quand une classe sera plus
    complète.

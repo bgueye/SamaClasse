@@ -25,7 +25,8 @@ class TelechargementSupabase implements SourceContenu {
 
   final SupabaseClient _db;
 
-  static const _colonnesExercice = 'id, ordre, niveau, type, enonce, donnees, reponse, corrige';
+  // `indice` : « Voir un indice » avant le corrigé (D39), facultatif.
+  static const _colonnesExercice = 'id, ordre, niveau, type, enonce, donnees, reponse, corrige, indice';
 
   @override
   Future<Instantane> telechargerTout() async {
