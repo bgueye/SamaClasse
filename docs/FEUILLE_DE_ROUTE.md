@@ -319,9 +319,10 @@ téléphone sauf mention :
    écriture en base avec son accord, leçon par leçon. Possible par lots
    par matière.
 3. **Un indice avant le corrigé** : fait côté code le 21/11/2026 (D39),
-   un indice par exercice, migration `exercices_indice` appliquée. Reste :
-   rédiger les indices (126 exercices) en brouillons
-   (`contenu/indices/`), relecture par Bocar, écriture en base par lots.
+   un indice par exercice, migration `exercices_indice` appliquée.
+   Indices de 4ème (69 exercices) en base le 21/11/2026 avec l'accord de
+   Bocar. Reste : la Seconde L (57 exercices), brouillons dans
+   `contenu/indices/`, puis relecture et écriture en base.
 4. **Révision du BFEM** et **programme d'une matière** pour l'enseignant
    (maquettes `Revision`, `Programme`) : utiles quand une classe sera plus
    complète.
