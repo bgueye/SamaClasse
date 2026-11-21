@@ -38,8 +38,11 @@ Un exercice absent du fichier n'a pas d'indice (pas de bouton).
 
 1. Rédaction du brouillon ici (vérifié par `test/data/indices_test.dart` :
    format, longueur, guillemets, pas de « Indice : »).
-2. Vérification que l'indice ne contient pas la réponse attendue (requête
-   en lecture sur `exercices.reponse`, faite avant l'écriture en base).
+2. Vérification que l'indice ne contient pas la réponse attendue : requête
+   en lecture générée par `tool/indices/generer_requete.ps1 … -Controle`
+   (mauvaise leçon, exercice oublié, réponse de `exercices.reponse` ou bon
+   choix d'un QCM retrouvés dans l'indice). Pour les questions de cours et
+   les rédactions, `reponse` est vide : relire à la main contre le corrigé.
 3. Relecture et corrections par Bocar.
 4. Écriture en base (`exercices.indice`), seulement avec son accord, par lot.
    La requête se génère depuis les fichiers, jamais à la main :
@@ -51,4 +54,6 @@ Un exercice absent du fichier n'a pas d'indice (pas de bouton).
 ## État
 
 - 4ème (13 leçons, 69 exercices) : en base le 21/11/2026.
-- Seconde L (10 leçons, 57 exercices) : à rédiger.
+- Seconde L (10 leçons, 57 exercices) : en base le 21/11/2026.
+- Les 126 exercices ont un indice. Un nouvel exercice n'en a pas tant que
+  son indice n'est pas rédigé ici, relu, puis écrit en base.

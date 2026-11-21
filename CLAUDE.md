@@ -84,9 +84,9 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   la référence. Reste : les écouter sur le téléphone.
 - **« Voir un indice »** fait côté code le 21/11/2026 (D39) : colonne
   facultative `exercices.indice`, un indice par exercice, sans effet sur le
-  suivi. Indices en base pour les 69 exercices de 4ème (brouillons dans
-  `contenu/indices/`, requête générée par `tool/indices/generer_requete.ps1`).
-  Reste : la Seconde L (57 exercices).
+  suivi. Indices en base pour les 126 exercices (brouillons dans
+  `contenu/indices/`, requêtes d'écriture et de contrôle générées par
+  `tool/indices/generer_requete.ps1`). Reste : essayer sur le téléphone.
 - **Idées D35, à reprendre** : révision du BFEM et programme d'une matière. Liste complète,
   ordre et points ouverts : `docs/FEUILLE_DE_ROUTE.md`, phase 5, « Idées
   pour élèves, parents et enseignants (D35) ».
