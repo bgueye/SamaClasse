@@ -1,0 +1,10 @@
+[
+  {"lang": "fr-FR", "texte": "Mathématiques, classe de seconde L. À retenir : factoriser avec les identités remarquables."},
+  {"lang": "fr-FR", "texte": "Factoriser. C'est écrire une expression sous la forme d'un produit."},
+  {"lang": "fr-FR", "texte": "Le carré d'une somme. a au carré, plus deux a b, plus b au carré, égale a plus b, le tout au carré. Par exemple : quatre x au carré, plus quatre x, plus un, égale deux x plus un, le tout au carré."},
+  {"lang": "fr-FR", "texte": "Le carré d'une différence. a au carré, moins deux a b, plus b au carré, égale a moins b, le tout au carré. Le terme du milieu doit valoir deux a b."},
+  {"lang": "fr-FR", "texte": "La différence de deux carrés. a au carré, moins b au carré, égale a moins b, fois a plus b. Par exemple : vingt-cinq, moins x au carré, égale cinq moins x, fois cinq plus x."},
+  {"lang": "fr-FR", "texte": "Le cube d'une somme. a au cube, plus trois a carré b, plus trois a b carré, plus b au cube, égale a plus b, le tout au cube."},
+  {"lang": "fr-FR", "texte": "Vérifier. On redéveloppe le résultat : on doit retrouver l'expression de départ."},
+  {"lang": "fr-FR", "texte": "Fin du résumé. Pour vérifier que tu as retenu, essaie Interroge-moi, puis fais les exercices."}
+]

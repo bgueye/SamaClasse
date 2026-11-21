@@ -79,9 +79,9 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   traité par les rédacteurs (section « Erreurs signalées » de « Leçons à
   vérifier », `traiter_signalement`), mentionné dans la page de
   confidentialité. Reste : essai sur le téléphone.
-- **Scripts « À retenir »** (D37) : en base pour les 13 leçons de 4ème
-  (lot 1 le 21/11/2026, avant 4, 13 et 28) ; brouillons dans `contenu/scripts_retenir/`.
-  Reste : les 10 leçons de Seconde L (lot 2).
+- **Scripts « À retenir »** (D37) : en base pour les 23 leçons (lots 1 et 2
+  le 21/11/2026) ; brouillons dans `contenu/scripts_retenir/`, qui restent
+  la référence. Reste : les écouter sur le téléphone.
 - **Idées D35, à reprendre** : indice avant le corrigé, révision du BFEM et programme d'une matière. Liste complète,
   ordre et points ouverts : `docs/FEUILLE_DE_ROUTE.md`, phase 5, « Idées
   pour élèves, parents et enseignants (D35) ».

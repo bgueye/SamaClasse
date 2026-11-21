@@ -310,10 +310,10 @@ téléphone sauf mention :
    tous ; migration `signalements` appliquée et testée ; section « Erreurs
    signalées » dans « Leçons à vérifier » ; page « Politique de
    confidentialité » complétée. Reste : essai sur le téléphone.
-2. **Scripts « À retenir »** : lot 1 (les 10 leçons de 4ème : 1, 2, 3, 5,
-   6, 7, 22, 26, 27, 29) écrit en base le 21/11/2026 avec l'accord de
-   Bocar, à écouter sur le téléphone (sigles, nombres). Reste le lot 2 :
-   les 10 leçons de Seconde L. Brouillons dans
+2. ~~**Scripts « À retenir »**~~ : les 23 leçons ont leur script en base
+   le 21/11/2026, avec l'accord de Bocar (lot 1 : 4ème ; lot 2 : Seconde
+   L). Reste : les écouter sur le téléphone (sigles, nombres, formules,
+   passages espagnols courts de la leçon 24). Brouillons dans
    `contenu/scripts_retenir/` (règles dans son README, vérifiés par
    `test/data/scripts_retenir_test.dart`), relecture par Bocar, puis
    écriture en base avec son accord, leçon par leçon. Possible par lots
