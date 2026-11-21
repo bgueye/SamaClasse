@@ -69,8 +69,10 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
     script ; à essayer sur le téléphone), « Écouter l’essentiel » (même
     barre sur l'onglet « À retenir », colonne `lecons.script_retenir`, D37 ;
     aucun script rédigé pour l'instant) ;
-  - reste : signature Android (`android/app/build.gradle.kts`, modifié et
-    pas encore enregistré dans git), fiche Play Store et test fermé.
+  - signature Android faite le 21/11/2026 : clé d'envoi hors du dépôt,
+    lue par `android/key.properties` (ignoré par git), procédure dans
+    `docs/ARCHITECTURE.md`, « Signature Android » ;
+  - reste : fiche Play Store et test fermé.
 - **Idées D35, à reprendre** : « Signaler une erreur » (migration à
   soumettre), scripts « À retenir » des 20 autres leçons, indice avant le
   corrigé, révision du BFEM et programme d'une matière. Liste complète,

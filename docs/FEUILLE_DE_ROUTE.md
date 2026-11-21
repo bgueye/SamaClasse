@@ -263,7 +263,9 @@ compte Google Play déjà ouvert. Suppression du compte : migration
 `suppression_compte` appliquée le 15/11/2026.
 
 - Android : identifiant `sn.samaclasse.app` (D28, fait le 15/11/2026),
-  signature, nom d'éditeur sur le Play Store, fiche, test fermé.
+  ~~signature~~ (clé d'envoi créée et `.aab` signé le 21/11/2026, voir
+  `ARCHITECTURE.md`, « Signature Android »), nom d'éditeur sur le Play
+  Store, fiche, test fermé.
 - ~~Web~~ : **en ligne le 15/11/2026** sur https://samaclasse.app
   (Cloudflare Pages, D29 ; domaine D27). Pages « Politique de
   confidentialité » (`/confidentialite/`) et « Supprimer votre compte »

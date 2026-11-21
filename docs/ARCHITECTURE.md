@@ -286,6 +286,66 @@ Voir `EXERCICES.md`, section « Ajouter un type ».
 - Sans configuration, `main.dart` affiche un écran d'explication au lieu de
   planter.
 
+### Signature Android
+
+Google Play utilise la « signature d'application par Google Play » : Google
+garde la clé de signature finale, nous gardons seulement la **clé d'envoi**
+(upload key), qui prouve que le paquet `.aab` vient bien de nous.
+
+- La clé d'envoi est un fichier `.jks` rangé **hors du dépôt**, sur
+  l'ordinateur de Bocar (`C:\Users\admin\cles\samaclasse-envoi.jks`), avec
+  une copie de secours ailleurs (clé USB ou coffre de mots de passe). Une clé
+  perdue se remplace, mais il faut en faire la demande à Google et attendre.
+- `android/key.properties` (ignoré par git, comme `*.jks` et `*.keystore`
+  dans `android/.gitignore`) indique où est la clé et donne ses mots de
+  passe :
+
+  ```properties
+  storeFile=C:/Users/admin/cles/samaclasse-envoi.jks
+  storePassword=…
+  keyAlias=envoi
+  keyPassword=…
+  ```
+
+  `storeFile` s'écrit avec des `/`, en chemin absolu : un chemin relatif
+  partirait de `android/app/`.
+- `android/app/build.gradle.kts` lit ce fichier. S'il est absent (autre
+  machine, intégration continue), la version « release » est signée avec la
+  clé de débogage : elle marche sur un téléphone mais Google Play la refuse.
+- Créer la clé (une seule fois, garder les mots de passe dans un coffre).
+  `keytool` n'est pas dans le PATH : il est fourni avec Android Studio.
+
+  ```powershell
+  $keytool = 'C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe'
+  & $keytool -genkeypair -v -keystore C:\Users\admin\cles\samaclasse-envoi.jks `
+    -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias envoi
+  ```
+
+- Construire le paquet pour Google Play (augmenter d'abord le numéro après
+  le `+` dans `version` de `pubspec.yaml`) :
+
+  ```powershell
+  flutter build appbundle --dart-define-from-file=config/supabase.json
+  ```
+
+  Le fichier est `build/app/outputs/bundle/release/app-release.aab`.
+- Vérifier quelle clé a signé le paquet (en anglais : la version française
+  de `keytool -printcert` plante sur `MissingFormatArgumentException` ; les
+  options `-J…` entre guillemets, sinon PowerShell les coupe au point) :
+
+  ```powershell
+  & $keytool '-J-Duser.language=en' '-J-Duser.country=US' -printcert `
+    -jarfile build\app\outputs\bundle\release\app-release.aab
+  ```
+
+  `Owner` doit être `CN=Bocar Gueye, O=SamaClasse, …` et non
+  « Android Debug ». Empreinte SHA-256 de la clé d'envoi (créée le
+  21/11/2026, valable jusqu'en 2054) :
+  `86:A5:86:3A:36:72:FA:9A:27:E4:4D:86:2B:E8:C5:6A:2A:CD:34:9D:4A:3E:30:B6:F2:B7:9B:5F:A3:AE:B7:CF`.
+- L'empreinte SHA-256 de la clé de signature **de Google** (Play Console,
+  « Intégrité de l'application ») servira aux App Links (`assetlinks.json`
+  sur le site).
+
 ## Dépendances
 
 | Paquet | Usage |
