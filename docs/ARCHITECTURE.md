@@ -168,7 +168,10 @@ test/
   fixtures/supabase.json        réponses Supabase réelles (rôle anon, sans artefact_url)
   widget_test.dart              composants et zones de réponse
   flutter_test_config.dart      réglage commun : un tap qui manque sa cible fait échouer le test
-tool/captures/                  captures d'écran (flutter test tool/captures/…), images dans build/captures/
+tool/captures/                  captures d'écran (flutter test tool/captures/…), images dans build/captures/ ;
+                                --plain-name play_store : les 8 captures de la fiche Google Play (1080 × 1920)
+tool/play/play_store_test.dart  icône 512 × 512 et image de présentation 1024 × 500 → build/play/
+tool/indices/generer_requete.ps1 requêtes d'écriture et de contrôle des indices (contenu/indices/)
 tool/polices/sous_ensembles.py  fabrique les polices de secours (Python + fontTools, D17)
 tool/icone/icone_test.dart      dessine l'icône (D19) → assets/icone/, puis
                                 dart run flutter_launcher_icons && dart run flutter_native_splash:create

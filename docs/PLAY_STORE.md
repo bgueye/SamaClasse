@@ -101,9 +101,18 @@ annoncé. Le hors connexion porte sur tout le contenu publié (D16).
 
 | Élément | Format exigé | État |
 | --- | --- | --- |
-| Icône | PNG 512 × 512, 32 bits | à exporter depuis `assets/icone/` (D19) |
-| Image de présentation | PNG ou JPEG 1024 × 500 | à créer |
+| Icône | PNG 512 × 512, 32 bits | **prête** : `build/play/icone_512.png` (dessin D19, carré plein) |
+| Image de présentation | PNG ou JPEG 1024 × 500 | **prête** : `build/play/presentation_1024x500.png` |
 | Captures téléphone | 2 à 8, rapport 9:16 ou 16:9, côté long ≤ 2 × côté court | **prêtes** : 8 en 1080 × 1920 |
+
+L'icône et l'image de présentation se fabriquent avec
+`flutter test tool/play/play_store_test.dart` (formats vérifiés par le test).
+L'image de présentation reprend le protège-cahier de l'icône (bleu encre,
+lignes Seyès, marge rouge) : à gauche « SamaClasse » en écriture de cahier,
+« Leçons et exercices corrigés du programme sénégalais », puis « Indices,
+révisions, suivi des parents / Même sans internet » ; à droite, une page de
+cahier « À retenir » inclinée (texte réel de la leçon 1). Le texte reste
+dans la moitié gauche, loin des bords que Google peut recadrer.
 
 Les 8 captures se fabriquent avec
 `flutter test tool/captures/captures_test.dart --plain-name play_store` et
