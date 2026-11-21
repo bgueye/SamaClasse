@@ -12,6 +12,7 @@ import '../../core/widgets/markdown_cahier.dart';
 import '../../core/widgets/page_seyes.dart';
 import '../../data/data.dart';
 import '../correction/fiche_demande_correction.dart';
+import '../signalement/fiche_signalement.dart';
 import '../validation/outils_validation.dart' show messageErreurRedaction;
 import 'envoi_lecon.dart';
 import 'lecteur_lecon.dart';
@@ -349,6 +350,8 @@ class _PageLecon extends StatelessWidget {
         if (lecon.corps?.trim().isNotEmpty ?? false) MarkdownCahier(data: lecon.corps!, surSeyes: true),
         const SizedBox(height: interligne),
         _BoutonExercices(lecon: lecon),
+        // Pour tous, même sans compte (D38) : action discrète en bas de page.
+        BoutonSignaler(lecon: lecon),
       ],
     );
   }
@@ -398,6 +401,7 @@ class _PageARetenir extends StatelessWidget {
           const SizedBox(height: interligne / 2),
         ],
         _BoutonExercices(lecon: lecon),
+        BoutonSignaler(lecon: lecon),
       ],
     );
   }

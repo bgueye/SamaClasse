@@ -19,6 +19,7 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'models.dart' show ElementARetenir;
+import 'signalement.dart';
 import 'suivi.dart' show genererUuid;
 
 /// Leçon « à vérifier », telle que l'écran de validation l'affiche.
@@ -422,6 +423,14 @@ abstract class Redaction {
   /// Validateur : remet en ligne le texte de la version. Rend le numéro de
   /// la nouvelle version.
   Future<int> revenirAVersion(int versionId);
+
+  // --- Signalements des lecteurs (D38) ---
+
+  /// Signalements à traiter (état `nouveau`), du plus ancien au plus récent.
+  Future<List<Signalement>> signalements();
+
+  /// Marque le signalement traité, écarté, ou le remet à traiter.
+  Future<void> traiterSignalement(int id, EtatSignalement etat);
 }
 
 class RedactionSupabase implements Redaction {
@@ -640,4 +649,22 @@ class RedactionSupabase implements Redaction {
     final numero = await _client.rpc<num>('revenir_a_version', params: {'p_version_id': versionId});
     return numero.toInt();
   }
+
+  // --- Signalements des lecteurs (D38) ---
+
+  @override
+  Future<List<Signalement>> signalements() async {
+    // Règle RLS : seuls les rédacteurs lisent cette table. Le titre vient de
+    // `lecons`, que les rédacteurs lisent quel que soit le statut.
+    final lignes = await _client
+        .from('signalements')
+        .select('id, lecon_id, exercice_id, motif, precision_texte, recu_le, lecons(titre), exercices(ordre)')
+        .eq('etat', EtatSignalement.nouveau.code)
+        .order('recu_le');
+    return lignes.map(Signalement.fromJson).toList();
+  }
+
+  @override
+  Future<void> traiterSignalement(int id, EtatSignalement etat) =>
+      _client.rpc<void>('traiter_signalement', params: {'p_id': id, 'p_etat': etat.code});
 }

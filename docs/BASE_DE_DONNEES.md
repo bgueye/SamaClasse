@@ -229,6 +229,38 @@ fonctions :
 Avertissements attendus du conseiller de sécurité pour ces deux fonctions,
 comme pour `publier_lecon`.
 
+### `signalements` : « Signaler une erreur » (phase 5, D35, D38)
+Migration `signalements` (21/11/2026). Tout le monde signale, y compris un
+élève sans compte (`anon`).
+- `signalements` : `id`, `lecon_id`, `exercice_id` (vide : la leçon
+  elle-même ; sinon un exercice **de cette leçon**), `motif` (`faute`,
+  `corrige_faux`, `pas_comme_cahier`, `autre`), `precision_texte` (1 à 500
+  caractères, facultatif ; `precision` est un mot réservé), `etat`
+  (`nouveau`, `traite`, `ecarte`), `recu_le`, `traite_le`, `traite_par`.
+  **Aucune identité** de l'envoyeur. Lue par les rédacteurs seulement ;
+  écrite seulement par les fonctions.
+- `envois_signalements` : compteur par envoyeur, clé = empreinte SHA-256 de
+  `compte:<uuid>` (session connectée ou anonyme) ou `ip:<adresse>` (sans
+  session : `cf-connecting-ip`, sinon la première adresse de
+  `x-forwarded-for`, sinon `ip:inconnue` partagée). Effacé après une heure.
+  Aucune règle (remarque « RLS sans règle » du conseiller, voulue).
+- `signaler_erreur(lecon, exercice, motif, precision)` (`security definer`,
+  `anon` et `authenticated`) : leçon publiée seulement ; 5 envois par heure
+  et par envoyeur (P0001 au 6e), 100 par heure en tout. Précision vide ou
+  blanche gardée comme `null`.
+- `traiter_signalement(id, etat)` (`security definer`) : rédacteur
+  seulement ; `nouveau` remet à traiter (efface `traite_le`, `traite_par`).
+
+Tests du 21/11/2026 (leçon fictive annulée) : `anon` signale une leçon et
+un exercice ; exercice d'une autre leçon, leçon brouillon, motif inconnu,
+501 caractères refusés ; 6e envoi de la même adresse refusé, une autre
+adresse passe ; `anon` ne lit ni la table ni les compteurs, n'insère pas, ne
+traite pas ; un parent ne voit rien, ne modifie ni ne traite ; une session
+anonyme avec l'identifiant d'un rédacteur ne voit rien ; le rédacteur voit,
+traite (en son nom) et remet à traiter. Conseiller : avertissement attendu
+« Public Can Execute SECURITY DEFINER Function » sur `signaler_erreur`
+(voulu : ouvert à tous, contrôles dans la fonction).
+
 ### Vue `matieres_par_classe` (security_invoker)
 `classe_id`, `matiere_id`, `slug`, `nom`, `nb_chapitres`, `nb_lecons`
 (leçons **publiées**). Comme elle applique les RLS de la personne qui lit, les
@@ -264,6 +296,8 @@ RLS activée sur toutes les tables. Contenu en lecture seule pour `anon` et
 | `resultats` | `authenticated` : ceux de ses enfants (lecture, ajout), exercices publiés seulement ; ni modification ni suppression ; `anon` : rien |
 | `lecons`, `exercices`, `lecon_sources` (en plus) | rédacteur : tout, quel que soit le statut |
 | `points_leves` | rédacteur : lecture, ajout (point réellement à vérifier, en son nom), suppression avant publication ; `anon` et non-rédacteurs : rien |
+| `signalements` | rédacteur : lecture ; écriture par `signaler_erreur` (tous) et `traiter_signalement` (rédacteur) seulement ; `anon` et non-rédacteurs : rien en lecture |
+| `envois_signalements` | personne (fonction seulement) |
 
 Tests du 14/11/2026 (deux comptes simulés) : un parent ne voit, ne modifie
 ni ne supprime les enfants d'un autre, ne peut pas lui en donner un, ne peut

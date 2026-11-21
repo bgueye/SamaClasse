@@ -534,4 +534,63 @@ void main() {
     await tester.tap(find.byTooltip('Partie suivante'));
     await _capturer(tester, 'web_21_projection_partie');
   });
+
+  // « Signaler une erreur » (D38) : fenêtre depuis un exercice (formulaire
+  // rempli, erreur, merci), à 100 % et 200 %, puis la section des rédacteurs.
+  for (final (suffixe, echelle) in [('', 1.0), ('_200', 2.0)]) {
+    testWidgets('signalement$suffixe', (tester) async {
+      Future<void> montrer(Finder cible) async {
+        if (cible.evaluate().isEmpty) {
+          await tester.scrollUntilVisible(cible, 200, scrollable: find.byType(Scrollable).first);
+        }
+        await tester.ensureVisible(cible);
+        await tester.pumpAndSettle();
+      }
+
+      final envoi = FauxSignalement()..enPanne = true;
+      await lancerApp(tester, depot: FauxDepot(), signalement: envoi, chemin: '/lecon/1/exercices', echelleTexte: echelle);
+      await tester.pumpAndSettle();
+      await montrer(find.text('Signaler une erreur'));
+      await _capturer(tester, 'tel${suffixe}_40_signaler_bouton');
+      await tester.tap(find.text('Signaler une erreur'));
+      await _capturer(tester, 'tel${suffixe}_41_signaler_vide');
+      await tester.tap(find.text('Le corrigé me semble faux'));
+      // L'exercice a ses propres champs : on vise celui de la fenêtre.
+      await tester.enterText(
+        find.descendant(of: find.byType(BottomSheet), matching: find.byType(TextField)),
+        'Dans mon cahier, le résultat est 12.',
+      );
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Envoyer'));
+      await tester.tap(find.text('Envoyer'));
+      await _capturer(tester, 'tel${suffixe}_42_signaler_erreur');
+      envoi.enPanne = false;
+      await tester.ensureVisible(find.text('Envoyer'));
+      await tester.tap(find.text('Envoyer'));
+      await _capturer(tester, 'tel${suffixe}_43_signaler_merci');
+
+      Signalement s(int id, int? exercice, int? ordre, String motif, String? precision) => Signalement.fromJson({
+            'id': id,
+            'lecon_id': 1,
+            'exercice_id': exercice,
+            'motif': motif,
+            'precision_texte': precision,
+            'recu_le': '2026-11-21T19:15:00+00:00',
+            'lecons': {'titre': 'Introduction aux sciences physiques'},
+            'exercices': ordre == null ? null : {'ordre': ordre},
+          });
+      await lancerApp(
+        tester,
+        depot: FauxDepot(),
+        compte: FauxCompte(connecte: 'redacteur@exemple.sn'),
+        redaction: FausseRedaction(redacteur: true, signalements: [
+          s(1, 22, 3, 'corrige_faux', 'Dans mon cahier, le résultat est 12.'),
+          s(2, null, null, 'faute', null),
+        ]),
+        chemin: '/validation',
+        echelleTexte: echelle,
+      );
+      await _capturer(tester, 'tel${suffixe}_44_signalements_redacteur');
+    });
+  }
 }

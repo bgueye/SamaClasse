@@ -73,24 +73,29 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
     lue par `android/key.properties` (ignoré par git), procédure dans
     `docs/ARCHITECTURE.md`, « Signature Android » ;
   - reste : fiche Play Store et test fermé.
-- **Idées D35, à reprendre** : « Signaler une erreur » (migration à
-  soumettre), scripts « À retenir » des 20 autres leçons, indice avant le
-  corrigé, révision du BFEM et programme d'une matière. Liste complète,
+- **« Signaler une erreur »** fait le 21/11/2026 (D38) : ouvert à tous, même
+  sans compte, par la fonction `signaler_erreur` (5 envois par heure par
+  session ou adresse IP, 100 en tout) ; aucune identité gardée ; lu et
+  traité par les rédacteurs (section « Erreurs signalées » de « Leçons à
+  vérifier », `traiter_signalement`), mentionné dans la page de
+  confidentialité. Reste : essai sur le téléphone.
+- **Idées D35, à reprendre** : scripts « À retenir » des 20 autres leçons,
+  indice avant le corrigé, révision du BFEM et programme d'une matière. Liste complète,
   ordre et points ouverts : `docs/FEUILLE_DE_ROUTE.md`, phase 5, « Idées
   pour élèves, parents et enseignants (D35) ».
 - Reste à faire par Bocar : photographier les schémas des leçons 8, 9 et
   10 (repères « [Schéma : …] » à retirer ensuite), compléter les libellés
   des tableaux 17 et 31.
-- `flutter analyze` : aucun problème ; `flutter test` : 391/391, sans réseau
+- `flutter analyze` : aucun problème ; `flutter test` : 412/412, sans réseau
   (vraie application avec `test/outils/faux_depot.dart` : `FauxDepot`,
   `FauxCompte`, `FauxEnvoi`, `FausseRedaction`, `FauxChoixImage`,
-  `FauxMoteurVocal`, `FauxPartage`, `FausseImpression`).
+  `FauxMoteurVocal`, `FauxPartage`, `FausseImpression`, `FauxSignalement`).
 - Pour un nouvel écran : ses quatre états et 200 % dans un test d'écran
   (`test/features/`), et un coup d'œil avec `tool/captures/captures_test.dart`.
 - Écrans livrés : accueil, matière, leçon, exercices, « À propos », « Espace
   parents », « Suivi de mes enfants », « Leçons à vérifier », « Schémas de
   la leçon », « Lier ce téléphone », « Téléphone d'Awa », « Versions de la
-  leçon », aperçu d'une correction, « Interroge-moi » (cartes de
+  leçon », aperçu d'une correction, « Signaler une erreur » (fenêtre, D38), « Interroge-moi » (cartes de
   révision et mode parent, D35), « Envoyer cette leçon », « Fiche à imprimer »
   (PDF, D36), mode projection (D35). La lecture ne
   demande jamais de compte.
@@ -103,13 +108,14 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   texte corrigé dans `corrections_lecons` (la correction ouverte de la
   leçon), **jamais directement dans `lecons`** ; c'est un validateur qui le
   met en ligne depuis l'application. Procédure : `docs/CONTENU.md`.
-- Base : 13 migrations, de `schema_programme_lecons` à
-  `lecons_script_retenir`. Bocar est rédacteur et validateur. Conseiller de
-  sécurité, attendu : les
+- Base : 14 migrations, de `schema_programme_lecons` à `signalements`.
+  Bocar est rédacteur et validateur. Conseiller de sécurité, attendu : les
   fonctions `security definer` appelables par `authenticated` (contrôles
-  faits dans les fonctions), « RLS sans règle » sur `codes_liaison` et
-  `essais_liaison` (voulu), « Anonymous Access Policies » (sessions
-  anonymes activées ; règles vérifiées, voir `docs/BASE_DE_DONNEES.md`).
+  faits dans les fonctions), `signaler_erreur` appelable par `anon`
+  (voulu, D38), « RLS sans règle » sur `codes_liaison`, `essais_liaison`
+  et `envois_signalements` (voulu), « Anonymous Access Policies »
+  (sessions anonymes activées ; règles vérifiées, voir
+  `docs/BASE_DE_DONNEES.md`).
 - Dépôt distant : `origin` = https://github.com/bgueye/SamaClasse (branche
   `main`). Toujours demander avant de pousser.
 

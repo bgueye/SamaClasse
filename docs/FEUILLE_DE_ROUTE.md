@@ -306,11 +306,10 @@ téléphone sauf mention :
 
 **Reste à faire**, dans l'ordre proposé (à confirmer par Bocar) :
 
-1. **« Signaler une erreur »** (maquette `Signaler`) : demande une
-   migration à soumettre d'abord (table de signalements, écriture par
-   `anon` et `authenticated` avec une limite d'envois, lecture par les
-   rédacteurs), puis l'affichage des signalements dans « Leçons à
-   vérifier ». Décider si l'envoi est ouvert à tous ou réservé aux profils.
+1. ~~**« Signaler une erreur »**~~ : fait le 21/11/2026 (D38), ouvert à
+   tous ; migration `signalements` appliquée et testée ; section « Erreurs
+   signalées » dans « Leçons à vérifier » ; page « Politique de
+   confidentialité » complétée. Reste : essai sur le téléphone.
 2. **Scripts « À retenir » des 20 autres leçons** : brouillons dans
    `contenu/scripts_retenir/` (règles dans son README, vérifiés par
    `test/data/scripts_retenir_test.dart`), relecture par Bocar, puis

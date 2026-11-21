@@ -72,6 +72,9 @@ Future<void> main() async {
     suivi: suivi,
     // Validation des leçons (phase 4) : réservée aux rédacteurs par la base.
     redaction: RedactionSupabase(Supabase.instance.client),
+    // « Signaler une erreur » (D38) : fonction `signaler_erreur`, ouverte à
+    // tous, limitée par la base.
+    signalement: EnvoiSignalementSupabase(Supabase.instance.client),
     child: const SamaClasseApp(),
   ));
 }

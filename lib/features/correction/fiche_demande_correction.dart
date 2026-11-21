@@ -8,23 +8,32 @@ typedef DemandeCorrection = ({String motif, List<String> points});
 
 /// Ouvre la fenêtre « Demander une correction » pour la leçon [titre] (D33).
 /// Rend la raison et les points, ou `null` si le rédacteur annule.
-Future<DemandeCorrection?> afficherDemandeCorrection(BuildContext context, {required String titre}) =>
-    showDialog<DemandeCorrection>(context: context, builder: (context) => FicheDemandeCorrection(titre: titre));
+///
+/// [motif] : raison déjà écrite, à relire (par exemple depuis un
+/// signalement d'un lecteur, D38).
+Future<DemandeCorrection?> afficherDemandeCorrection(BuildContext context, {required String titre, String? motif}) =>
+    showDialog<DemandeCorrection>(
+      context: context,
+      builder: (context) => FicheDemandeCorrection(titre: titre, motif: motif),
+    );
 
 /// La leçon reste en ligne pendant la correction ; on note ici ce qu'il faut
 /// corriger et les points à vérifier avec les cahiers une fois le texte
 /// corrigé. Tutoiement (écran des rédacteurs).
 class FicheDemandeCorrection extends StatefulWidget {
-  const FicheDemandeCorrection({super.key, required this.titre});
+  const FicheDemandeCorrection({super.key, required this.titre, this.motif});
 
   final String titre;
+
+  /// Raison déjà écrite (signalement d'un lecteur), modifiable.
+  final String? motif;
 
   @override
   State<FicheDemandeCorrection> createState() => _FicheDemandeCorrectionState();
 }
 
 class _FicheDemandeCorrectionState extends State<FicheDemandeCorrection> {
-  final _motif = TextEditingController();
+  late final _motif = TextEditingController(text: widget.motif);
   final _points = TextEditingController();
   String? _erreurMotif;
   String? _erreurPoints;

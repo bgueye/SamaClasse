@@ -9,6 +9,7 @@ import '../../core/theme/theme.dart';
 import '../../core/widgets/composants.dart';
 import '../../core/widgets/etats.dart';
 import '../../data/data.dart';
+import '../correction/fiche_demande_correction.dart';
 import 'fiche_lever.dart';
 import 'outils_validation.dart';
 
@@ -98,6 +99,11 @@ class _ValidationState extends State<_Validation> {
   List<CorrectionLecon> _corrections = const [];
   final _correctionsFermees = <int>{};
 
+  /// Signalements des lecteurs à traiter (D38), et ceux traités ou écartés
+  /// pendant cette visite (retirés de la liste ; « Annuler » les remet).
+  List<Signalement> _signalements = const [];
+  final _signalementsTraites = <int>{};
+
   /// Compte validateur : peut publier et abandonner (D33).
   bool _validateur = false;
 
@@ -129,18 +135,75 @@ class _ValidationState extends State<_Validation> {
   Future<bool> _charger() async {
     final redaction = _scope.redaction;
     if (!await redaction.estRedacteur()) return false;
-    final (lecons, leves, corrections, validateur) = await (
+    final (lecons, leves, corrections, validateur, signalements) = await (
       redaction.leconsAVerifier(),
       redaction.pointsLeves(),
       redaction.correctionsEnCours(),
       redaction.estValidateur(),
+      redaction.signalements(),
     ).wait;
     _lecons = trierLecons(lecons);
     _leves = leves;
     _corrections = corrections;
     _validateur = validateur;
+    _signalements = signalements;
     _correctionsFermees.clear();
+    _signalementsTraites.clear();
     return true;
+  }
+
+  /// Marque le signalement traité ou écarté (D38). Il quitte la liste ; le
+  /// message propose « Annuler », qui le remet à traiter.
+  Future<void> _traiterSignalement(Signalement s, EtatSignalement etat, {String? message}) async {
+    final cle = 'signalement|${s.id}';
+    if (_enCours.contains(cle)) return;
+    setState(() => _enCours.add(cle));
+    try {
+      await _scope.redaction.traiterSignalement(s.id, etat);
+      if (!mounted) return;
+      setState(() => _signalementsTraites.add(s.id));
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text(message ?? (etat == EtatSignalement.traite ? 'Signalement traité.' : 'Signalement écarté.')),
+          action: SnackBarAction(label: 'Annuler', onPressed: () => _remettreSignalement(s)),
+        ));
+    } catch (e) {
+      if (mounted) _annoncer(messageErreurRedaction(e));
+    } finally {
+      if (mounted) setState(() => _enCours.remove(cle));
+    }
+  }
+
+  /// « Annuler » après un traitement : le signalement redevient à traiter.
+  Future<void> _remettreSignalement(Signalement s) async {
+    try {
+      await _scope.redaction.traiterSignalement(s.id, EtatSignalement.nouveau);
+      if (mounted) setState(() => _signalementsTraites.remove(s.id));
+    } catch (e) {
+      if (mounted) _annoncer(messageErreurRedaction(e));
+    }
+  }
+
+  /// « Demander une correction » depuis un signalement : la raison est
+  /// préremplie, le rédacteur la relit et ajoute les points à vérifier.
+  /// Une fois la correction demandée, le signalement est traité.
+  Future<void> _corrigerDepuis(Signalement s) async {
+    final demande = await afficherDemandeCorrection(context, titre: s.titreLecon, motif: motifCorrectionDepuis(s));
+    if (demande == null || !mounted) return;
+    try {
+      await _scope.redaction.demanderCorrection(leconId: s.leconId, motif: demande.motif, points: demande.points);
+    } catch (e) {
+      if (mounted) _annoncer(messageErreurRedaction(e));
+      return;
+    }
+    if (!mounted) return;
+    // La nouvelle correction apparaît dans « Corrections en cours ».
+    try {
+      _corrections = await _scope.redaction.correctionsEnCours();
+    } catch (_) {}
+    if (!mounted) return;
+    await _traiterSignalement(s, EtatSignalement.traite, message: 'Correction demandée, signalement traité.');
   }
 
   void _recharger() => setState(() {
@@ -393,6 +456,7 @@ class _ValidationState extends State<_Validation> {
 
         final aVerifier = [for (final l in _lecons) if (!_publiees.contains(l.id)) l];
         final corrections = [for (final c in _corrections) if (!_correctionsFermees.contains(c.id)) c];
+        final signalements = [for (final s in _signalements) if (!_signalementsTraites.contains(s.id)) s];
         return RefreshIndicator(
           onRefresh: _actualiser,
           child: ListView(
@@ -409,10 +473,11 @@ class _ValidationState extends State<_Validation> {
               ),
               if (_bandeau != null) Padding(padding: const EdgeInsets.fromLTRB(12, 14, 0, 0), child: _Bandeau(_bandeau!)),
               const SizedBox(height: 12),
-              if (_lecons.isEmpty && corrections.isEmpty)
+              if (_lecons.isEmpty && corrections.isEmpty && signalements.isEmpty)
                 const MessageVide(
                   titre: 'Rien à vérifier',
-                  texte: 'Toutes les leçons sont publiées ou encore en brouillon, et aucune correction n’est en cours.',
+                  texte: 'Toutes les leçons sont publiées ou encore en brouillon, aucune correction n’est en cours '
+                      'et aucune erreur n’est signalée.',
                 )
               else
                 for (final l in _lecons)
@@ -460,6 +525,34 @@ class _ValidationState extends State<_Validation> {
                       onSchemas: () => context.push('/lecon/${c.leconId}/schemas'),
                       onPublier: () => _publierCorrection(c),
                       onAbandonner: () => _abandonnerCorrection(c),
+                    ),
+                  ),
+              ],
+              // Erreurs signalées par les lecteurs (D38).
+              if (signalements.isNotEmpty) ...[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 28, 0, 4),
+                  child: Semantics(header: true, child: const Text('Erreurs signalées', style: Styles.sectionTitre)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 0, 8),
+                  child: Text(
+                    resumeSignalements(signalements.length),
+                    style: const TextStyle(fontSize: 14, height: 1.45, color: Couleurs.texteDoux),
+                  ),
+                ),
+                for (final s in signalements)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: _CarteSignalement(
+                      signalement: s,
+                      enCours: _enCours.contains('signalement|${s.id}'),
+                      onOuvrir: () => context.push(
+                        s.exerciceId == null ? '/lecon/${s.leconId}' : '/lecon/${s.leconId}/exercices',
+                      ),
+                      onCorriger: () => _corrigerDepuis(s),
+                      onTraite: () => _traiterSignalement(s, EtatSignalement.traite),
+                      onEcarter: () => _traiterSignalement(s, EtatSignalement.ecarte),
                     ),
                   ),
               ],
@@ -772,6 +865,107 @@ class _CarteCorrection extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// Une erreur signalée par un lecteur (D38) : où, quoi, la précision, puis
+/// les actions. Toujours dépliée : il y a peu à lire.
+class _CarteSignalement extends StatelessWidget {
+  const _CarteSignalement({
+    required this.signalement,
+    required this.enCours,
+    required this.onOuvrir,
+    required this.onCorriger,
+    required this.onTraite,
+    required this.onEcarter,
+  });
+
+  final Signalement signalement;
+
+  /// Traitement en cours : les boutons attendent la réponse.
+  final bool enCours;
+  final VoidCallback onOuvrir;
+  final VoidCallback onCorriger;
+  final VoidCallback onTraite;
+  final VoidCallback onEcarter;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = signalement;
+    return DecoratedBox(
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Couleurs.bordure))),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 2),
+                  child: Icon(Icons.flag_outlined, color: Couleurs.etiquette, size: 22),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        libelleSignalement(s),
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, height: 1.3),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(s.motif.libelle, style: const TextStyle(fontSize: 15, height: 1.4, color: Couleurs.texte)),
+                      if (s.precision != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          '« ${s.precision} »',
+                          style: const TextStyle(fontSize: 15, height: 1.45, fontStyle: FontStyle.italic, color: Couleurs.texteDoux),
+                        ),
+                      ],
+                      const SizedBox(height: 4),
+                      Text(recuLeSignalement(s), style: Styles.secondaire),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Wrap(
+              children: [
+                TextButton.icon(
+                  onPressed: onOuvrir,
+                  icon: const Icon(Icons.open_in_new_rounded, size: 20),
+                  label: Text(s.exerciceId == null ? 'Ouvrir la leçon' : 'Ouvrir les exercices'),
+                ),
+                TextButton.icon(
+                  onPressed: enCours ? null : onCorriger,
+                  icon: const Icon(Icons.rate_review_outlined, size: 20),
+                  label: const Text('Demander une correction'),
+                ),
+              ],
+            ),
+            Wrap(
+              spacing: 10,
+              runSpacing: 8,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: enCours ? null : onTraite,
+                  icon: const Icon(Icons.check_rounded, size: 20),
+                  label: const Text('C’est corrigé'),
+                ),
+                OutlinedButton.icon(
+                  onPressed: enCours ? null : onEcarter,
+                  icon: const Icon(Icons.do_not_disturb_alt_rounded, size: 20),
+                  label: const Text('Pas d’erreur'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

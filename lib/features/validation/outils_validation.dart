@@ -142,6 +142,44 @@ List<LeconAVerifier> trierLecons(List<LeconAVerifier> lecons) => [...lecons]..so
     return matiere != 0 ? matiere : a.titre.compareTo(b.titre);
   });
 
+// --- Signalements des lecteurs (D38) ---
+
+/// Phrase sous « Signalements ».
+String resumeSignalements(int nombre) => switch (nombre) {
+      1 => '1 erreur signalée par un lecteur attend ta vérification.',
+      _ => '$nombre erreurs signalées par des lecteurs attendent ta vérification.',
+    };
+
+/// « Exercice 3 · L'Afrique au XVIe siècle » ou « Leçon · … ». Le numéro est
+/// l'ordre de l'exercice dans la leçon, celui que l'élève voit.
+String libelleSignalement(Signalement s) => '${_ouSignalement(s) ?? 'Leçon'} · ${s.titreLecon}';
+
+/// « Exercice 3 », « Exercice » (numéro inconnu), ou `null` pour la leçon.
+String? _ouSignalement(Signalement s) {
+  if (s.exerciceId == null) return null;
+  final n = s.ordreExercice;
+  return n == null ? 'Exercice' : 'Exercice $n';
+}
+
+/// « Reçu le 21/11/2026 à 20:15 » (heure du téléphone).
+String recuLeSignalement(Signalement s) {
+  final d = s.recuLe.toLocal();
+  String deux(int n) => n.toString().padLeft(2, '0');
+  return 'Reçu le ${deux(d.day)}/${deux(d.month)}/${d.year} à ${deux(d.hour)}:${deux(d.minute)}';
+}
+
+/// Raison proposée pour « Demander une correction » à partir d'un
+/// signalement : le motif, l'exercice, puis la précision du lecteur.
+/// Tronquée à [longueurMaxMotif] caractères (contrainte de la base).
+String motifCorrectionDepuis(Signalement s) {
+  final exercice = _ouSignalement(s);
+  final ou = exercice == null ? '' : ' (${exercice.toLowerCase()})';
+  final precision = s.precision == null ? '' : ' : « ${s.precision} »';
+  final texte = 'Signalement d’un lecteur$ou, ${s.motif.libelle.toLowerCase()}$precision';
+  final runes = texte.runes.toList();
+  return runes.length <= longueurMaxMotif ? texte : '${String.fromCharCodes(runes.take(longueurMaxMotif - 1))}…';
+}
+
 /// Message à afficher pour une erreur de rédaction (tutoiement).
 ///
 /// Les refus de `publier_lecon` (code P0001) ont déjà un message clair en

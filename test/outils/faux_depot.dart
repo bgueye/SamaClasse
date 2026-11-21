@@ -461,7 +461,9 @@ class FausseRedaction implements Redaction {
     List<SchemaLecon>? schemas,
     List<CorrectionLecon>? corrections,
     List<VersionLecon>? versions,
+    List<Signalement>? signalements,
   })  : validateur = validateur ?? redacteur,
+        signalementsEnBase = [...?signalements],
         lecons = [...?lecons],
         leves = [...?leves],
         textes = {...?textes},
@@ -479,6 +481,10 @@ class FausseRedaction implements Redaction {
   final List<CorrectionLecon> corrections;
   final List<VersionLecon> versionsEnBase;
   final correctionsFermees = <int, String>{}; // id → « publiee » ou « abandonnee »
+
+  /// Signalements « en base » (D38) et ce que les rédacteurs en ont fait.
+  final List<Signalement> signalementsEnBase;
+  final traitements = <int, EtatSignalement>{};
   final List<LeconAVerifier> lecons;
   final List<PointLeve> leves;
   final publiees = <int>[];
@@ -862,6 +868,29 @@ class FausseRedaction implements Redaction {
 
   @override
   String adresseImage(String chemin) => 'https://exemple.supabase.co/storage/v1/object/public/schemas/$chemin';
+
+  // --- Signalements (D38) ---
+
+  @override
+  Future<List<Signalement>> signalements() async {
+    await _avant('signalements');
+    _exigerRedacteur();
+    // Comme la requête : seulement ceux à traiter, du plus ancien au plus récent.
+    return [
+      for (final s in signalementsEnBase)
+        if ((traitements[s.id] ?? EtatSignalement.nouveau) == EtatSignalement.nouveau) s,
+    ]..sort((a, b) => a.recuLe.compareTo(b.recuLe));
+  }
+
+  @override
+  Future<void> traiterSignalement(int id, EtatSignalement etat) async {
+    await _avant('traiter');
+    _exigerRedacteur();
+    if (!signalementsEnBase.any((s) => s.id == id)) {
+      throw const PostgrestException(message: 'Ce signalement n\'existe pas.', code: 'P0002');
+    }
+    traitements[id] = etat;
+  }
 }
 
 /// Appareil photo et galerie sans matériel : rend [octets] (ou `null` pour
@@ -945,6 +974,37 @@ class FauxMoteurVocal implements MoteurVocal {
   }
 }
 
+/// Signalements sans réseau (D38) : garde ce qui a été « reçu ». Peut
+/// simuler une coupure ([enPanne]), la limite d'envois de la base
+/// ([limite], refus P0001 au-delà) ou faire attendre l'envoi ([attente],
+/// pour voir l'état « envoi en cours »).
+class FauxSignalement implements EnvoiSignalement {
+  final recus = <({int leconId, int? exerciceId, MotifSignalement motif, String? precision})>[];
+  bool enPanne = false;
+  int? limite;
+  Completer<void>? attente;
+
+  @override
+  Future<void> signaler({
+    required int leconId,
+    int? exerciceId,
+    required MotifSignalement motif,
+    String? precision,
+  }) async {
+    final a = attente;
+    if (a != null) await a.future;
+    if (enPanne) throw const SocketException('Pas de connexion (test)');
+    final l = limite;
+    if (l != null && recus.length >= l) {
+      throw const PostgrestException(
+        message: 'Tu as déjà envoyé plusieurs signalements. Réessaie dans une heure.',
+        code: 'P0001',
+      );
+    }
+    recus.add((leconId: leconId, exerciceId: exerciceId, motif: motif, precision: precision));
+  }
+}
+
 /// Partage sans téléphone : garde ce qui a été envoyé ou copié.
 class FauxPartage extends Partage {
   final envois = <String>[];
@@ -988,6 +1048,7 @@ Future<void> lancerApp(
   Compte? compte,
   FauxEnvoi? envoi,
   Redaction? redaction,
+  EnvoiSignalement? signalement,
   ChoixImage? choixImage,
   MoteurVocal? moteurVocal,
   Partage? partage,
@@ -1021,6 +1082,7 @@ Future<void> lancerApp(
     compte: leCompte,
     suivi: suivi,
     redaction: redaction ?? FausseRedaction(),
+    signalement: signalement ?? FauxSignalement(),
     choixImage: choixImage ?? FauxChoixImage(),
     // Toujours un faux : flutter_tts n'a pas de canal natif dans les tests.
     creerMoteurVocal: () => moteurVocal ?? FauxMoteurVocal(),

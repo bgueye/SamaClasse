@@ -6,6 +6,20 @@ remettre en cause). À compléter à chaque décision nouvelle, en haut de liste
 
 ---
 
+### D38. « Signaler une erreur » : ouvert à tous, sans identité, limité
+*Bocar, 21/11/2026.*
+Tout le monde peut signaler une erreur sur une leçon ou un exercice publié,
+y compris un élève sans profil ni compte : c'est la grande majorité des
+lecteurs. Un motif parmi quatre (maquette `Signaler`) et une précision
+facultative de 500 caractères, avec sous le champ « N’écris pas ton nom ni
+ton numéro. » (texte d'un enfant, lu par les rédacteurs seulement). Aucune
+identité gardée avec le signalement. Contre l'envoi en masse : 5 envois par
+heure par session ou, sans session, par adresse IP (empreinte SHA-256
+seulement, effacée après une heure), et 100 par heure en tout. Limite
+connue : une classe derrière un même wifi partage les 5 envois. Sans réseau,
+l'application ne garde pas le signalement pour plus tard (simplicité) : elle
+demande de réessayer. Migration `signalements`, voir `BASE_DE_DONNEES.md`.
+
 ### D37. « Écouter l’essentiel » : script oral de « À retenir » en base
 *Bocar, 20/11/2026.*
 Lu tel quel, « À retenir » sonnerait mal pour environ la moitié des leçons :

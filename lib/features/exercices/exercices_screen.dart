@@ -8,6 +8,7 @@ import '../../core/widgets/composants.dart';
 import '../../core/widgets/etats.dart';
 import '../../core/widgets/markdown_cahier.dart';
 import '../../data/data.dart';
+import '../signalement/fiche_signalement.dart';
 import 'outils_exercices.dart';
 import 'saisies/saisie_exercice.dart';
 
@@ -290,6 +291,9 @@ class _SerieExercicesState extends State<_SerieExercices> {
                   onAutoEvaluation: (juste) => setState(() => _autoEvaluations[e.id] = juste),
                 ),
               ],
+              // Pour tous, même sans compte (D38) : énoncé, saisie ou corrigé.
+              const SizedBox(height: 16),
+              BoutonSignaler(lecon: widget.lecon, exercice: e, numeroExercice: _index + 1),
             ],
           ),
         ),

@@ -19,6 +19,7 @@ class AppScope extends InheritedWidget {
     required this.compte,
     required this.suivi,
     required this.redaction,
+    required this.signalement,
     this.choixImage = const ChoixImageSysteme(),
     this.creerMoteurVocal = MoteurFlutterTts.new,
     this.partage = const PartageSysteme(),
@@ -40,6 +41,10 @@ class AppScope extends InheritedWidget {
 
   /// Validation et publication des leçons (phase 4), pour les rédacteurs.
   final Redaction redaction;
+
+  /// « Signaler une erreur » (D38) : ouvert à tous, même sans compte. Un
+  /// faux dans les tests.
+  final EnvoiSignalement signalement;
 
   /// Appareil photo et galerie, pour ajouter un schéma à une leçon
   /// (rédacteurs, phase 5). Remplacé par un faux dans les tests.
@@ -70,6 +75,7 @@ class AppScope extends InheritedWidget {
       compte != oldWidget.compte ||
       suivi != oldWidget.suivi ||
       redaction != oldWidget.redaction ||
+      signalement != oldWidget.signalement ||
       choixImage != oldWidget.choixImage ||
       creerMoteurVocal != oldWidget.creerMoteurVocal ||
       partage != oldWidget.partage ||

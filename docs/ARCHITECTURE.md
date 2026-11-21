@@ -88,6 +88,9 @@ lib/
                                 téléphone, file d'attente locale, envoi au retour du réseau (D24)
     liaison.dart                téléphones d'enfants liés par un code (D32) : CodeLiaison,
                                 AppareilLie, typeAppareil(), verifierTelephoneLie()
+    signalement.dart            « Signaler une erreur » (D38) : MotifSignalement, EnvoiSignalement
+                                (fonction signaler_erreur), Signalement (vu des rédacteurs),
+                                messageErreurSignalement()
     data.dart                   export groupé
   features/
     a_propos/a_propos_screen.dart     présentation, version, licences, crédit (D18)
@@ -127,6 +130,8 @@ lib/
     fiche/fiche_pdf.dart              dessin du PDF A4 (paquet pdf, polices embarquées), corrigé à part
     lecon/lecteur_lecon.dart          « Écouter la leçon » (D34) : LecteurLecon (passages, voix,
                                       pause, sauts), BarreLecteur, languesAEssayer()
+    signalement/fiche_signalement.dart « Signaler une erreur » (D38) : BoutonSignaler (leçon,
+                                      exercice), fenêtre d'envoi ; traitement dans « Leçons à vérifier »
     exercices/exercices_screen.dart   série d'exercices, bilan
     exercices/outils_exercices.dart   reponseInitiale(), libelleChemin()…
     exercices/saisies/                une zone de réponse par type (voir EXERCICES.md)
@@ -144,6 +149,8 @@ test/
   features/schemas_test.dart    schémas : paragraphes, description, ajout, refus, retrait, 200 %
   features/fiche_test.dart      fiche (blocs, types, PDF réel), envoi, icônes de la leçon, 200 %
   features/projection_test.dart découpage, boutons, clavier, quitter, quatre états, 200 %
+  features/signalement_test.dart « Signaler une erreur » : motifs, messages, fenêtre (quatre états,
+                                leçon et exercice), section des rédacteurs, 200 %
   features/cartes_test.dart     « Interroge-moi » : séance, modes, quatre états, encart du suivi, 200 %
   features/lecteur_lecon_test.dart « Écouter la leçon » : ordre, voix, pause, sauts, langue absente,
                                 barre dans l'écran (exercices, retour), 200 %
@@ -153,7 +160,7 @@ test/
   data/suivi_test.dart          file d'attente du suivi : hors connexion, doublons, refus, écrans
   core/seyes_test.dart          alignement du texte sur les lignes Seyès (vraies polices)
   outils/faux_depot.dart        FauxDepot, FaussesPreferences, FauxCompte, FauxEnvoi, FausseRedaction,
-                                FauxStockageFile, FauxMoteurVocal, FauxPartage,
+                                FauxStockageFile, FauxMoteurVocal, FauxPartage, FauxSignalement,
                                 FausseImpression, lancerApp(),
                                 FausseSource, FauxStockage, instantaneReel()
   outils/polices.dart           chargement des vraies polices dans un test

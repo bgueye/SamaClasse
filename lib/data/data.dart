@@ -9,5 +9,6 @@ export 'models.dart';
 export 'redaction.dart';
 export 'samaclasse_repository.dart';
 export 'segment_audio.dart';
+export 'signalement.dart';
 export 'suivi.dart';
 export 'telechargement_supabase.dart';
