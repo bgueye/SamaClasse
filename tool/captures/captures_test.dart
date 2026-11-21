@@ -536,6 +536,104 @@ void main() {
     await _capturer(tester, 'web_21_projection_partie');
   });
 
+  // Captures pour la fiche Google Play (docs/PLAY_STORE.md) : 1080 × 1920
+  // (360 × 640 à la densité 3), le rapport 9:16 que Google accepte, dans
+  // build/captures/play/. La leçon 1 reçoit son vrai script « À retenir » et
+  // ses vrais indices, lus dans les brouillons du dépôt (contenu/), comme en
+  // base : le jeu enregistré date d'avant ces colonnes.
+  testWidgets('play_store', (tester) async {
+    const taille = Size(360, 640);
+    final donnees = jsonDecode(jsonEncode(donneesReelles)) as Map<String, dynamic>;
+    final lecon = (donnees['lecons'] as Map)['1'] as Map<String, dynamic>;
+    lecon['script_retenir'] = jsonDecode(File('contenu/scripts_retenir/lecon_1.json').readAsStringSync());
+    final indices = jsonDecode(File('contenu/indices/lecon_1.json').readAsStringSync()) as Map<String, dynamic>;
+    for (final e in (lecon['exercices'] as List).cast<Map<String, dynamic>>()) {
+      e['indice'] = indices['${e['id']}'];
+    }
+    // Nombre de leçons publiées par matière, relevé en base (rôle anon,
+    // vue matieres_par_classe) le 21/11/2026 : le jeu enregistré date
+    // d'avant les publications et afficherait « Pas encore de leçon ».
+    const leconsPubliees = {
+      1: {'anglais': 1, 'education-civique': 1, 'espagnol': 0, 'francais': 3, 'geographie': 2,
+          'histoire': 2, 'mathematiques': 1, 'sciences-physiques': 2, 'svt': 1},
+      2: {'anglais': 1, 'economie': 1, 'espagnol': 2, 'francais': 1, 'geographie': 1,
+          'histoire': 1, 'mathematiques': 1, 'sciences-physiques': 1, 'svt': 1},
+    };
+    for (final MapEntry(:key, :value) in leconsPubliees.entries) {
+      for (final m in ((donnees['matieres'] as Map)['$key'] as List).cast<Map<String, dynamic>>()) {
+        m['nb_lecons'] = value[m['slug']] ?? m['nb_lecons'];
+      }
+    }
+    // Sciences physiques, 4ème : la leçon 29 (chapitre 2), publiée depuis.
+    final chapitres = ((donnees['chapitres'] as Map)['1-2'] as List).cast<Map<String, dynamic>>();
+    chapitres.firstWhere((c) => c['numero'] == 2)['lecons'] = [
+      {
+        'id': 29,
+        'titre': 'Grandeurs physiques et mesures',
+        'numero': 1,
+        'exercices': [
+          {'count': 6},
+        ],
+      },
+    ];
+    Future<void> ouvrir(String chemin, {Compte? compte, Preferences? preferences}) => lancerApp(
+          tester,
+          depot: FauxDepot(donnees),
+          chemin: chemin,
+          taille: taille,
+          compte: compte,
+          preferences: preferences,
+        );
+    Future<void> capturer(String nom) async {
+      await tester.pumpAndSettle();
+      await tester.runAsync(() async {
+        final image = await captureImage(find.byType(SamaClasseApp).evaluate().single);
+        expect((image.width, image.height), (1080, 1920), reason: 'format exigé par Google Play');
+        final octets = await image.toByteData(format: ui.ImageByteFormat.png);
+        File('$_dossier/play/$nom.png')
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(octets!.buffer.asUint8List());
+      });
+    }
+
+    await ouvrir('/');
+    await capturer('1_accueil');
+
+    await ouvrir('/classe/1/matiere/2');
+    await capturer('2_matiere');
+
+    await ouvrir('/lecon/1');
+    await capturer('3_lecon');
+
+    await ouvrir('/lecon/1');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('À retenir').first);
+    await capturer('4_a_retenir');
+
+    await ouvrir('/lecon/1/exercices');
+    await tester.pumpAndSettle();
+    final bouton = find.text('Voir un indice');
+    await tester.ensureVisible(bouton);
+    await tester.pumpAndSettle();
+    await tester.tap(bouton);
+    await capturer('5_exercice_indice');
+    await tester.tap(find.text('Voir le corrigé'));
+    await tester.pumpAndSettle();
+    // Le corrigé s'ajoute sous l'indice : on fait défiler jusqu'à lui.
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -650));
+    await capturer('6_exercice_corrige');
+
+    await ouvrir('/lecon/1/reviser');
+    await capturer('7_interroge_moi');
+
+    await ouvrir(
+      '/suivi',
+      compte: _compteAvecSuivi(),
+      preferences: FaussesPreferences(enfant: const EnfantActif(id: 1, prenom: 'Awa')),
+    );
+    await capturer('8_suivi');
+  });
+
   // « Un indice avant le corrigé » (D39) : bouton, puis encadré ouvert.
   for (final (suffixe, echelle) in [('', 1.0), ('_200', 2.0)]) {
     testWidgets('indice$suffixe', (tester) async {

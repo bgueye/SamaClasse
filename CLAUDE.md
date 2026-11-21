@@ -187,6 +187,7 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
 | Règles éditoriales et cycle de publication des leçons | `docs/CONTENU.md` |
 | Étapes suivantes, critères d'acceptation, décisions ouvertes | `docs/FEUILLE_DE_ROUTE.md` |
 | Décisions déjà prises et leurs raisons | `docs/DECISIONS.md` |
+| Fiche Google Play, sécurité des données, classification | `docs/PLAY_STORE.md` |
 
 ## Supabase
 
