@@ -81,12 +81,12 @@ Premier lancement sur une machine : `powershell -ExecutionPolicy Bypass -File .\
   confidentialité. Reste : essai sur le téléphone.
 - **Scripts « À retenir »** (D37) : en base pour les 23 leçons (lots 1 et 2
   le 21/11/2026) ; brouillons dans `contenu/scripts_retenir/`, qui restent
-  la référence. Reste : les écouter sur le téléphone.
+  la référence. Écoute essayée sur le téléphone : bonne.
 - **« Voir un indice »** fait côté code le 21/11/2026 (D39) : colonne
   facultative `exercices.indice`, un indice par exercice, sans effet sur le
   suivi. Indices en base pour les 126 exercices (brouillons dans
   `contenu/indices/`, requêtes d'écriture et de contrôle générées par
-  `tool/indices/generer_requete.ps1`). Reste : essayer sur le téléphone.
+  `tool/indices/generer_requete.ps1`). Essayé sur le téléphone : bon.
 - **Idées D35, à reprendre** : révision du BFEM et programme d'une matière. Liste complète,
   ordre et points ouverts : `docs/FEUILLE_DE_ROUTE.md`, phase 5, « Idées
   pour élèves, parents et enseignants (D35) ».

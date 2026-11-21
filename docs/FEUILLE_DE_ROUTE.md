@@ -312,8 +312,7 @@ téléphone sauf mention :
    confidentialité » complétée. Reste : essai sur le téléphone.
 2. ~~**Scripts « À retenir »**~~ : les 23 leçons ont leur script en base
    le 21/11/2026, avec l'accord de Bocar (lot 1 : 4ème ; lot 2 : Seconde
-   L). Reste : les écouter sur le téléphone (sigles, nombres, formules,
-   passages espagnols courts de la leçon 24). Brouillons dans
+   L). Écoute essayée sur le téléphone le 21/11/2026 : bonne. Brouillons dans
    `contenu/scripts_retenir/` (règles dans son README, vérifiés par
    `test/data/scripts_retenir_test.dart`), relecture par Bocar, puis
    écriture en base avec son accord, leçon par leçon. Possible par lots
@@ -321,7 +320,8 @@ téléphone sauf mention :
 3. ~~**Un indice avant le corrigé**~~ : fait le 21/11/2026 (D39), un
    indice par exercice, migration `exercices_indice` ; les 126 exercices
    ont leur indice en base avec l'accord de Bocar (brouillons dans
-   `contenu/indices/`). Reste : essayer sur le téléphone.
+   `contenu/indices/`). Essayé sur le téléphone le 21/11/2026 : les
+   indices s'affichent bien.
 4. **Révision du BFEM** et **programme d'une matière** pour l'enseignant
    (maquettes `Revision`, `Programme`) : utiles quand une classe sera plus
    complète.
